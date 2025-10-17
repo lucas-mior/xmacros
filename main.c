@@ -69,12 +69,12 @@ struct_unpack(struct struct_fmt *fmt, unsigned char *buffer, void *structure)
 void
 struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nested)
 {
-#define MATCH(X, fmt) \
+#define PRIMITIVE(X, fmt) \
     if(!strcmp(type, #X)) { \
         printf(fmt, *(X *) pointer); \
         continue; \
     }
-#define MATCH_S(X) \
+#define STRUCT(X) \
     if(!strcmp(type, #X)) { \
         struct_print(&X##_fmt, fmt->names[i], pointer, ++nested); \
         if (nested) \
@@ -94,33 +94,33 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
         printf("\t %s %s: &%zu [%zu] = ",
                fmt->types[i], fmt->names[i], fmt->offsets[i], fmt->sizes[i]);
 
-        MATCH(char, "%c\n");
-        MATCH(uchar, "%c\n");
-        MATCH(int, "%d\n");
-        MATCH(uint, "%d\n");
-        MATCH(long, "%ld\n");
-        MATCH(ulong, "%ld\n");
-        MATCH(char *, "%s\n");
-        MATCH(float, "%f\n");
-        MATCH(double, "%f\n");
-        MATCH(int8, "%d\n");
-        MATCH(int16, "%d\n");
-        MATCH(int32, "%d\n");
-        MATCH(int64, "%ld\n");
-        MATCH(uint8, "%u\n");
-        MATCH(uint16, "%u\n");
-        MATCH(uint32, "%u\n");
-        MATCH(uint64, "%lu\n");
-        MATCH(usize, "%zu\n");
-        MATCH(isize, "%zu\n");
-        MATCH_S(OtherStruct);
-        MATCH_S(MyStruct);
+        PRIMITIVE(char, "%c\n");
+        PRIMITIVE(uchar, "%c\n");
+        PRIMITIVE(int, "%d\n");
+        PRIMITIVE(uint, "%d\n");
+        PRIMITIVE(long, "%ld\n");
+        PRIMITIVE(ulong, "%ld\n");
+        PRIMITIVE(char *, "%s\n");
+        PRIMITIVE(float, "%f\n");
+        PRIMITIVE(double, "%f\n");
+        PRIMITIVE(int8, "%d\n");
+        PRIMITIVE(int16, "%d\n");
+        PRIMITIVE(int32, "%d\n");
+        PRIMITIVE(int64, "%ld\n");
+        PRIMITIVE(uint8, "%u\n");
+        PRIMITIVE(uint16, "%u\n");
+        PRIMITIVE(uint32, "%u\n");
+        PRIMITIVE(uint64, "%lu\n");
+        PRIMITIVE(usize, "%zu\n");
+        PRIMITIVE(isize, "%zu\n");
+        STRUCT(OtherStruct);
+        STRUCT(MyStruct);
 
         error("Missing printf for type %s.\n", type);
         exit(EXIT_FAILURE);
 
-#undef MATCH
-#undef MATCH_S
+#undef PRIMITIVE
+#undef STRUCT
         /* print_buffer(((unsigned char*)structure)+fmt->offsets[i], fmt->sizes[i]); */
         printf("\n");
     }
