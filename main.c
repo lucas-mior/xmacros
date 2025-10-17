@@ -76,8 +76,8 @@ main(int argc, char **argv)
     STRUCT_PRINT(pbig, 0);
 
     {
-        SmallStruct tst2;
-        NumberStruct sst2;
+        SmallStruct small_struct_from_buffer;
+        NumberStruct number_struct_from_buffer;
 
         unsigned char *tbuff = xmalloc(SmallStruct_fmt.packed_size*sizeof(*tbuff));
         unsigned char *sbuff = xmalloc(NumberStruct_fmt.packed_size*sizeof(*sbuff));
@@ -92,11 +92,11 @@ main(int argc, char **argv)
         print_buffer(sbuff, sizeof(tbuff));
         printf("\n");
 
-        struct_unpack(&SmallStruct_fmt, tbuff, &tst2);
-        struct_unpack(&NumberStruct_fmt, sbuff, &sst2);
+        struct_unpack(&SmallStruct_fmt, tbuff, &small_struct_from_buffer);
+        struct_unpack(&NumberStruct_fmt, sbuff, &number_struct_from_buffer);
 
-        STRUCT_PRINT(&tst2, 0);
-        STRUCT_PRINT(&sst2, 0);
+        STRUCT_PRINT(&small_struct_from_buffer, 0);
+        STRUCT_PRINT(&number_struct_from_buffer, 0);
     }
 
     return 0;
