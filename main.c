@@ -2,7 +2,6 @@
 #include <stddef.h>
 #include <limits.h>
 #include <stdint.h>
-#include "util.c"
 
 #define STRUCT_NAME NumberStruct
 #define STRUCT_FIELDS \

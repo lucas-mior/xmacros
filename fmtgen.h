@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stddef.h>
+#include "util.c"
 
 #ifndef STRUCT_FMT_DEF
     #define STRUCT_FMT_DEF
