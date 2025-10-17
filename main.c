@@ -80,7 +80,7 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
         if (nested) \
             nested -= 1; \
         continue; \
-    } \
+    }
 
 #define GREEN "\x1b[32m"
 #define RED "\x1b[31m"
