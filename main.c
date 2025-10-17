@@ -59,25 +59,6 @@ struct_unpack(struct struct_fmt *fmt, unsigned char *buffer, void *structure)
     return pos;
 }
 
-typedef union Types {
-    char tchar;
-    short tshort;
-    int tint;
-    long tlong;
-    uchar tuchar;
-    ushort tushort;
-    uint tuint;
-    ulong tulong;
-    float tfloat;
-    double tdouble;
-    char * tstring;
-} Types;
-
-typedef struct Value {
-    Types tval;
-    char *fmt;
-} Value;
-
 #define STRUCT_PRINT(NAME, NESTED) \
     _Generic((NAME), \
     BigStruct : struct_print(&BigStruct_fmt, #NAME, &NAME, NESTED), \
