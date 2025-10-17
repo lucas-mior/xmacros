@@ -1,3 +1,15 @@
+#include <stdio.h>
+
+#if __INCLUDE_LEVEL__ == 0
+#define EXPAND_STRUCTS STRUCT(SmallStruct)
+#define STRUCT_NAME SmallStruct
+#define STRUCT_FIELDS \
+    X(char *, string) \
+    X(int, i)
+#include "fmtgen.h"
+#endif
+
+
 #ifndef EXPAND_STRUCTS
 #error "EXPAND_STRUCTS is undefined"
 #endif
