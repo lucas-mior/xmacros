@@ -28,11 +28,11 @@
 #define CAT_NOEXPAND(A, B) A ## B
 #define CAT(A, B) CAT_NOEXPAND(A, B)
 
-struct STRUCT_NAME {
+typedef struct STRUCT_NAME {
     #define X(L, R) L R;
     STRUCT_FIELDS
     #undef X
-};
+} STRUCT_NAME;
 
 struct struct_fmt CAT(STRUCT_NAME, _fmt) = {
 
