@@ -6,12 +6,16 @@
 
 #define STRUCT_NAME OtherStruct
 #define STRUCT_FIELDS \
-    X(float, f)
+    X(int, i) \
+    X(float, f) \
+    X(char, c)
 #include "fmtgen.h"
 
 #define STRUCT_NAME MyStruct
 #define STRUCT_FIELDS \
-    X(double, d)
+    X(long, l) \
+    X(double, d) \
+    X(int, i)
 #include "fmtgen.h"
 
 void
@@ -93,7 +97,8 @@ formatter(const char *type, void *pointer) {
         error("float case: %f\n", tval.tfloat);
     } else if (MATCH(double)) {
         fmt = "%f";
-        tval.tdouble = *(double *) pointer;
+        /* tval.tdouble = *(double *) pointer; */
+        memcpy(&tval.tdouble, pointer, sizeof(double));
         error("double case: %f\n", tval.tdouble);
     } else {
         error("formaatter.\n");
@@ -116,7 +121,6 @@ struct_print(struct struct_fmt *fmt, void *structure)
         char fmt_buffer[128];
         Value value = formatter(fmt->types[i], ((unsigned char*)structure)+fmt->offsets[i]);
         SNPRINTF(fmt_buffer, "\t %%s %%s: &%%zu [%%zu] = %s", value.fmt);
-        error("format_buffer = %s\n", fmt_buffer);
         printf(fmt_buffer,
                fmt->types[i], fmt->names[i], fmt->offsets[i], fmt->sizes[i],
                value.tval);
@@ -129,8 +133,8 @@ struct_print(struct struct_fmt *fmt, void *structure)
 int
 main(int argc, char **argv)
 {
-    OtherStruct other = {.f = 100.0f};
-    MyStruct mine = {.d = 100.0};
+    OtherStruct other = {.i = 50, .f = 100.0f, .c = 'a'};
+    MyStruct mine = {.l = 100, .d = 100.0, .i = 2000};
 
     unsigned char tbuff[OtherStruct_fmt.packed_size];
     struct_pack(&MyStruct_fmt, &other, tbuff);
