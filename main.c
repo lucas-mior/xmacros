@@ -76,25 +76,28 @@ struct_unpack(struct struct_fmt *fmt, unsigned char *buffer, void *structure)
 void
 struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nested)
 {
-#define PRIMITIVE(TYPE, fmt) \
-    if(!strcmp(type, #TYPE)) { \
-        printf(fmt, *(TYPE *) pointer); \
-        continue; \
-    }
-#define STRUCT(TYPE) \
-    if(!strcmp(type, #TYPE)) { \
-        struct_print(&TYPE##_fmt, fmt->names[i], pointer, ++nested); \
-        if (nested) \
-            nested -= 1; \
-        continue; \
-    } \
-    if(!strcmp(type, #TYPE " *")) { \
-        TYPE **tmp = pointer; \
-        struct_print(&TYPE##_fmt, fmt->names[i], *tmp, ++nested); \
-        if (nested) \
-            nested -= 1; \
-        continue; \
-    }
+#ifndef MACRO_DEBUGGING
+#define __NL__
+#define __TAB__
+#endif
+
+#define PRIMITIVE(TYPE, fmt) if (!strcmp(type, #TYPE)) { __NL__ \
+    printf(fmt, *(TYPE *) pointer); __NL__ \
+    continue; __NL__ \
+}
+#define STRUCT(TYPE) if (!strcmp(type, #TYPE)) { __NL__ \
+    struct_print(&TYPE##_fmt, fmt->names[i], pointer, ++nested); __NL__ \
+    if (nested) __NL__ \
+__TAB__ nested -= 1; __NL__ \
+continue; __NL__ \
+} __NL__ \
+if(!strcmp(type, #TYPE " *")) { __NL__ \
+    TYPE **tmp = pointer; __NL__ \
+    struct_print(&TYPE##_fmt, fmt->names[i], *tmp, ++nested); __NL__ \
+    if (nested) __NL__ \
+__TAB__ nested -= 1; __NL__ \
+    continue; __NL__ \
+}
 
 #define GREEN "\x1b[32m"
 #define RED "\x1b[31m"
