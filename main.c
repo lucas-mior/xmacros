@@ -114,11 +114,24 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
                fmt->types[i], fmt->names[i], fmt->offsets[i], fmt->sizes[i]);
 
         MATCH(char, "%c\n");
+        MATCH(uchar, "%c\n");
         MATCH(int, "%d\n");
+        MATCH(uint, "%d\n");
         MATCH(long, "%ld\n");
+        MATCH(ulong, "%ld\n");
         MATCH(char *, "%s\n");
         MATCH(float, "%f\n");
         MATCH(double, "%f\n");
+        MATCH(int8, "%d\n");
+        MATCH(int16, "%d\n");
+        MATCH(int32, "%d\n");
+        MATCH(int64, "%ld\n");
+        MATCH(uint8, "%u\n");
+        MATCH(uint16, "%u\n");
+        MATCH(uint32, "%u\n");
+        MATCH(uint64, "%lu\n");
+        MATCH(usize, "%zu\n");
+        MATCH(isize, "%zu\n");
         MATCH_S(OtherStruct);
         MATCH_S(MyStruct);
 
