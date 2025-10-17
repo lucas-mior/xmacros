@@ -81,12 +81,29 @@ Value
 formatter(const char *type, void *pointer) {
 }
 
+#define ARRAY_STRING(BUFFER, SEP, ARRAY, LENGTH) \
+  _Generic((ARRAY), \
+    int *: array_string(BUFFER, sizeof(BUFFER), SEP, "%d", ARRAY, LENGTH), \
+    float *: array_string(BUFFER, sizeof(BUFFER), SEP, "%f", ARRAY, LENGTH), \
+    double *: array_string(BUFFER, sizeof(BUFFER), SEP, "%f", ARRAY, LENGTH), \
+    char **: array_string(BUFFER, sizeof(BUFFER), SEP, "%s", ARRAY, LENGTH) \
+  )
+
+#define STRUCT_PRINT(NAME, NESTED) \
+    _Generic((NAME), \
+    BigStruct : struct_print(&BigStruct_fmt, #NAME, &NAME, NESTED), \
+    MyStruct : struct_print(&MyStruct_fmt, #NAME, &NAME, NESTED), \
+    OtherStruct : struct_print(&OtherStruct_fmt, #NAME, &NAME, NESTED) \
+)
+
 void
-struct_print(struct struct_fmt *fmt, void *structure, int nested)
+struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nested)
 {
 #define MATCH(X) !strcmp(type, #X)
 
-    printf("%s:\n", fmt->struct_name);
+    if (!nested)
+        printf("%s %s:", fmt->struct_name, name);
+    printf("\n");
     for (size_t i = 0; i < fmt->num_members; i++) {
         char fmt_buffer[128];
         const char *type = fmt->types[i];
@@ -109,7 +126,7 @@ struct_print(struct struct_fmt *fmt, void *structure, int nested)
         } else if (MATCH(double)) {
             printf("%f", *(double *) pointer);
         } else if (MATCH(OtherStruct)) {
-            struct_print(&OtherStruct_fmt, pointer, ++nested);
+            struct_print(&OtherStruct_fmt, fmt->names[i], pointer, ++nested);
         } else {
             error("Missing printf for type %s.\n", type);
             exit(EXIT_FAILURE);
@@ -141,9 +158,9 @@ main(int argc, char **argv)
     print_buffer(sbuff, sizeof(tbuff));
     printf("\n");
 
-    struct_print(&OtherStruct_fmt, &other, 0);
-    struct_print(&MyStruct_fmt, &mine, 0);
-    struct_print(&BigStruct_fmt, &big, 0);
+    STRUCT_PRINT(other, 0);
+    STRUCT_PRINT(mine, 0);
+    STRUCT_PRINT(big, 0);
 
     OtherStruct tst2;
     MyStruct sst2;
@@ -151,8 +168,8 @@ main(int argc, char **argv)
     struct_unpack(&OtherStruct_fmt, tbuff, &tst2); 
     struct_unpack(&MyStruct_fmt, sbuff, &sst2); 
 
-    struct_print(&OtherStruct_fmt, &tst2, 0);
-    struct_print(&MyStruct_fmt, &sst2, 0);
+    STRUCT_PRINT(tst2, 0);
+    STRUCT_PRINT(sst2, 0);
 
     return 0;
 }
