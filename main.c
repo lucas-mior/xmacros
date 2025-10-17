@@ -102,5 +102,5 @@ main(int argc, char **argv)
         STRUCT_PRINT(&number_struct_from_buffer);
     }
 
-    return 0;
+    exit(EXIT_SUCCESS);
 }
