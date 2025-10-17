@@ -67,23 +67,23 @@ struct_print(struct struct_fmt *fmt, void *structure)
 int
 main(int argc, char **argv)
 {
-    OtherStruct tst = {.a = 5, .b = 0.0f, .c = 'a'};
-    MyStruct sst = {.l = 1024, .g = 0.0, .f = 2048};
+    OtherStruct other = {.a = 5, .b = 0.0f, .c = 'a'};
+    MyStruct mine = {.l = 1024, .g = 0.0, .f = 2048};
 
     unsigned char tbuff[OtherStruct_fmt.packed_size];
-    struct_pack(&MyStruct_fmt, &tst, tbuff);
+    struct_pack(&MyStruct_fmt, &other, tbuff);
     printf("t packed:\n\t");
     print_buffer(tbuff, sizeof(tbuff));
     printf("\n");
 
     unsigned char sbuff[MyStruct_fmt.packed_size];
-    struct_pack(&MyStruct_fmt, &sst, sbuff);
+    struct_pack(&MyStruct_fmt, &mine, sbuff);
     printf("s packed:\n\t");
     print_buffer(sbuff, sizeof(tbuff));
     printf("\n");
 
-    struct_print(&OtherStruct_fmt, &tst);
-    struct_print(&MyStruct_fmt, &sst);
+    struct_print(&OtherStruct_fmt, &other);
+    struct_print(&MyStruct_fmt, &mine);
 
     OtherStruct tst2;
     MyStruct sst2;
