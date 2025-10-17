@@ -4,7 +4,7 @@
 #include <string.h>
 #include "util.c"
 
-#define STRUCT_NAME MyStruct
+#define STRUCT_NAME NumberStruct
 #define STRUCT_FIELDS \
     X(long, l) \
     X(double, d) \
@@ -12,18 +12,18 @@
     X(int, i)
 #include "fmtgen.h"
 
-#define STRUCT_NAME OtherStruct
+#define STRUCT_NAME SmallStruct
 #define STRUCT_FIELDS \
     X(int, i) \
     X(char *, string) \
     X(char, c) \
-    X(MyStruct, my_s)
+    X(NumberStruct, my_s)
 #include "fmtgen.h"
 
 #define STRUCT_NAME BigStruct
 #define STRUCT_FIELDS \
     X(long, l) \
-    X(OtherStruct *, other_struct)
+    X(SmallStruct *, other_struct)
 #include "fmtgen.h"
 
 void
@@ -63,8 +63,8 @@ struct_unpack(struct struct_fmt *fmt, unsigned char *buffer, void *structure)
 #define STRUCT_PRINT(NAME, NESTED) \
   _Generic((NAME), \
     BigStruct *:   struct_print(&BigStruct_fmt,   #NAME, NAME, NESTED), \
-    MyStruct *:    struct_print(&MyStruct_fmt,    #NAME, NAME, NESTED), \
-    OtherStruct *: struct_print(&OtherStruct_fmt, #NAME, NAME, NESTED) \
+    NumberStruct *:struct_print(&NumberStruct_fmt,    #NAME, NAME, NESTED), \
+    SmallStruct *: struct_print(&SmallStruct_fmt, #NAME, NAME, NESTED) \
   )
 
 void
@@ -127,8 +127,8 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
         PRIMITIVE(isize, "%zu\n");
         PRIMITIVE(void *, "%p\n");
 
-        STRUCT(OtherStruct);
-        STRUCT(MyStruct);
+        STRUCT(SmallStruct);
+        STRUCT(NumberStruct);
 
         printf("\n");
         error("Missing printf for type "RED"%s"RESET".\n", type);
@@ -145,12 +145,12 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
 int
 main(int argc, char **argv)
 {
-    MyStruct mine = {
+    NumberStruct mine = {
         .l = 100,
         .d = 100.0,
         .i = 2000
     };
-    OtherStruct other = {
+    SmallStruct other = {
         .i = 50,
         .string = "superstring",
         .c = 'a',
@@ -163,14 +163,14 @@ main(int argc, char **argv)
 
     BigStruct *pbig = &big;
 
-    unsigned char tbuff[OtherStruct_fmt.packed_size];
-    struct_pack(&OtherStruct_fmt, &other, tbuff);
+    unsigned char tbuff[SmallStruct_fmt.packed_size];
+    struct_pack(&SmallStruct_fmt, &other, tbuff);
     printf("t packed:\n\t");
     print_buffer(tbuff, sizeof(tbuff));
     printf("\n");
 
-    unsigned char sbuff[MyStruct_fmt.packed_size];
-    struct_pack(&MyStruct_fmt, &mine, sbuff);
+    unsigned char sbuff[NumberStruct_fmt.packed_size];
+    struct_pack(&NumberStruct_fmt, &mine, sbuff);
     printf("s packed:\n\t");
     print_buffer(sbuff, sizeof(tbuff));
     printf("\n");
@@ -180,11 +180,11 @@ main(int argc, char **argv)
     STRUCT_PRINT(&big, 0);
     STRUCT_PRINT(pbig, 0);
 
-    OtherStruct tst2;
-    MyStruct sst2;
+    SmallStruct tst2;
+    NumberStruct sst2;
 
-    struct_unpack(&OtherStruct_fmt, tbuff, &tst2);
-    struct_unpack(&MyStruct_fmt, sbuff, &sst2);
+    struct_unpack(&SmallStruct_fmt, tbuff, &tst2);
+    struct_unpack(&NumberStruct_fmt, sbuff, &sst2);
 
     STRUCT_PRINT(&tst2, 0);
     STRUCT_PRINT(&sst2, 0);
