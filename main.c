@@ -45,6 +45,8 @@
 int
 main(int argc, char **argv)
 {
+    (void) argc;
+    (void) argv;
     NumberStruct mine = {
         .c = 'c',
         .s = SHRT_MAX,
