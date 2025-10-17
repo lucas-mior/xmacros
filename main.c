@@ -101,6 +101,7 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
     if (!nested)
         printf("%s %s:", fmt->struct_name, name);
     printf("\n");
+
     for (size_t i = 0; i < fmt->num_members; i++) {
         const char *type = fmt->types[i];
         void *pointer = ((unsigned char*)structure)+fmt->offsets[i];
@@ -121,6 +122,7 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
         exit(EXIT_FAILURE);
 
 #undef MATCH
+#undef MATCH_S
         /* print_buffer(((unsigned char*)structure)+fmt->offsets[i], fmt->sizes[i]); */
         printf("\n");
     }
