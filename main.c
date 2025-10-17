@@ -2,6 +2,8 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
+#include <stdint.h>
 #include "util.c"
 
 #define STRUCT_NAME NumberStruct
@@ -20,7 +22,7 @@
 
 #define STRUCT_NAME SmallStruct
 #define STRUCT_FIELDS \
-    X(char *, "This is a cool string") \
+    X(char *, string) \
     X(NumberStruct, number_struct)
 #include "fmtgen.h"
 
@@ -112,10 +114,12 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
 
         PRIMITIVE(char, "%c\n");
         PRIMITIVE(uchar, "%c\n");
+        PRIMITIVE(short, "%d\n");
+        PRIMITIVE(ushort, "%u\n");
         PRIMITIVE(int, "%d\n");
-        PRIMITIVE(uint, "%d\n");
+        PRIMITIVE(uint, "%u\n");
         PRIMITIVE(long, "%ld\n");
-        PRIMITIVE(ulong, "%ld\n");
+        PRIMITIVE(ulong, "%lu\n");
         PRIMITIVE(char *, "%s\n");
         PRIMITIVE(float, "%f\n");
         PRIMITIVE(double, "%f\n");
@@ -150,14 +154,19 @@ int
 main(int argc, char **argv)
 {
     NumberStruct mine = {
-        .l = 100,
-        .d = 100.0,
-        .i = 2000
+        .c = 'c',
+        .s = SHRT_MAX,
+        .i = INT_MAX,
+        .l = LONG_MAX,
+        .uc = 'd',
+        .us = USHRT_MAX,
+        .ui = UINT_MAX,
+        .ul = ULONG_MAX,
+        .f = 0.5f,
+        .d = 0.5
     };
     SmallStruct other = {
-        .i = 50,
         .string = "superstring",
-        .c = 'a',
         .number_struct = mine
     };
     BigStruct big = {
@@ -184,14 +193,14 @@ main(int argc, char **argv)
     STRUCT_PRINT(&big, 0);
     STRUCT_PRINT(pbig, 0);
 
-    SmallStruct tst2;
-    NumberStruct sst2;
+    /* SmallStruct tst2; */
+    /* NumberStruct sst2; */
 
-    struct_unpack(&SmallStruct_fmt, tbuff, &tst2);
-    struct_unpack(&NumberStruct_fmt, sbuff, &sst2);
+    /* struct_unpack(&SmallStruct_fmt, tbuff, &tst2); */
+    /* struct_unpack(&NumberStruct_fmt, sbuff, &sst2); */
 
-    STRUCT_PRINT(&tst2, 0);
-    STRUCT_PRINT(&sst2, 0);
+    /* STRUCT_PRINT(&tst2, 0); */
+    /* STRUCT_PRINT(&sst2, 0); */
 
     return 0;
 }
