@@ -2,3 +2,5 @@ a.out
 xmacros
 .tags.vim
 tags
+*.gch
+compile_commands.json
