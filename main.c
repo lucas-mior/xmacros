@@ -35,7 +35,7 @@ print_buffer(unsigned char *buffer, size_t size)
 
 size_t
 struct_pack(struct struct_fmt *fmt, void *structure, unsigned char *buffer)
-{ 
+{
     size_t pos = 0;
 
     for (size_t i = 0; i < fmt->num_members; i++) {
@@ -132,9 +132,21 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
 int
 main(int argc, char **argv)
 {
-    MyStruct mine = {.l = 100, .d = 100.0, .i = 2000};
-    OtherStruct other = {.i = 50, .string = "superstring", .c = 'a', .my_s = mine};
-    BigStruct big = {.l = 100, .other_struct = other };
+    MyStruct mine = {
+        .l = 100,
+        .d = 100.0,
+        .i = 2000
+    };
+    OtherStruct other = {
+        .i = 50,
+        .string = "superstring",
+        .c = 'a',
+        .my_s = mine
+    };
+    BigStruct big = {
+        .l = 100,
+        .other_struct = other
+    };
 
     unsigned char tbuff[OtherStruct_fmt.packed_size];
     struct_pack(&OtherStruct_fmt, &other, tbuff);
@@ -155,8 +167,8 @@ main(int argc, char **argv)
     OtherStruct tst2;
     MyStruct sst2;
 
-    struct_unpack(&OtherStruct_fmt, tbuff, &tst2); 
-    struct_unpack(&MyStruct_fmt, sbuff, &sst2); 
+    struct_unpack(&OtherStruct_fmt, tbuff, &tst2);
+    struct_unpack(&MyStruct_fmt, sbuff, &sst2);
 
     STRUCT_PRINT(tst2, 0);
     STRUCT_PRINT(sst2, 0);
