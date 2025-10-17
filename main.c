@@ -87,7 +87,16 @@ typedef struct Value {
 void
 struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nested)
 {
-#define MATCH(X) !strcmp(type, #X)
+#define MATCH(X, fmt) \
+    if(!strcmp(type, #X)) { \
+        printf(fmt, *(X *) pointer); \
+        continue; \
+    }
+#define MATCH_S(X) \
+    if(!strcmp(type, #X)) { \
+        struct_print(&X##_fmt, fmt->names[i], pointer, ++nested); \
+        continue; \
+    } \
 
     if (!nested)
         printf("%s %s:", fmt->struct_name, name);
@@ -100,24 +109,16 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
         printf("\t %s %s: &%zu [%zu] = ",
                fmt->types[i], fmt->names[i], fmt->offsets[i], fmt->sizes[i]);
 
-        if (MATCH(char)) {
-            printf("%c", *(char *) pointer);
-        } else if (MATCH(int)) {
-            printf("%d", *(int *) pointer);
-        } else if (MATCH(long)) {
-            printf("%ld", *(long *) pointer);
-        } else if (MATCH(char *)) {
-            printf("%s", *(char  **) pointer);
-        } else if (MATCH(float)) {
-            printf("%f", *(float *) pointer);
-        } else if (MATCH(double)) {
-            printf("%f", *(double *) pointer);
-        } else if (MATCH(OtherStruct)) {
-            struct_print(&OtherStruct_fmt, fmt->names[i], pointer, ++nested);
-        } else {
-            error("Missing printf for type %s.\n", type);
-            exit(EXIT_FAILURE);
-        }
+        MATCH(char, "%c\n");
+        MATCH(int, "%d\n");
+        MATCH(long, "%ld\n");
+        MATCH(char *, "%s\n");
+        MATCH(float, "%f\n");
+        MATCH(double, "%f\n");
+        MATCH_S(OtherStruct);
+
+        error("Missing printf for type %s.\n", type);
+        exit(EXIT_FAILURE);
 
 #undef MATCH
         /* print_buffer(((unsigned char*)structure)+fmt->offsets[i], fmt->sizes[i]); */
