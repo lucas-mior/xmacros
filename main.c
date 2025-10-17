@@ -75,26 +75,29 @@ main(int argc, char **argv)
     STRUCT_PRINT(&big, 0);
     STRUCT_PRINT(pbig, 0);
 
-    /* SmallStruct tst2; */
-    /* NumberStruct sst2; */
+    {
+        SmallStruct tst2;
+        NumberStruct sst2;
 
-    /* unsigned char tbuff[SmallStruct_fmt.packed_size]; */
-    /* struct_pack(&SmallStruct_fmt, &other, tbuff); */
-    /* printf("t packed:\n\t"); */
-    /* print_buffer(tbuff, sizeof(tbuff)); */
-    /* printf("\n"); */
+        unsigned char *tbuff = xmalloc(SmallStruct_fmt.packed_size*sizeof(*tbuff));
+        unsigned char *sbuff = xmalloc(NumberStruct_fmt.packed_size*sizeof(*sbuff));
 
-    /* unsigned char sbuff[NumberStruct_fmt.packed_size]; */
-    /* struct_pack(&NumberStruct_fmt, &mine, sbuff); */
-    /* printf("s packed:\n\t"); */
-    /* print_buffer(sbuff, sizeof(tbuff)); */
-    /* printf("\n"); */
+        struct_pack(&SmallStruct_fmt, &other, tbuff);
+        printf("t packed:\n\t");
+        print_buffer(tbuff, sizeof(tbuff));
+        printf("\n");
 
-    /* struct_unpack(&SmallStruct_fmt, tbuff, &tst2); */
-    /* struct_unpack(&NumberStruct_fmt, sbuff, &sst2); */
+        struct_pack(&NumberStruct_fmt, &mine, sbuff);
+        printf("s packed:\n\t");
+        print_buffer(sbuff, sizeof(tbuff));
+        printf("\n");
 
-    /* STRUCT_PRINT(&tst2, 0); */
-    /* STRUCT_PRINT(&sst2, 0); */
+        struct_unpack(&SmallStruct_fmt, tbuff, &tst2);
+        struct_unpack(&NumberStruct_fmt, sbuff, &sst2);
+
+        STRUCT_PRINT(&tst2, 0);
+        STRUCT_PRINT(&sst2, 0);
+    }
 
     return 0;
 }
