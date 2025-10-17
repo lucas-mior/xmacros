@@ -1,5 +1,4 @@
 #ifndef STRUCT_FMT_DEF
-    /* One time only definitons */
     #define STRUCT_FMT_DEF
     struct struct_fmt {
         char const *struct_name;
