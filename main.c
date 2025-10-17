@@ -57,7 +57,7 @@ struct_print(struct struct_fmt *fmt, void *structure)
 {
     printf("%s:\n", fmt->struct_name);
     for (size_t i = 0; i < fmt->num_members; i++) {
-        printf("\t%s: %zu %zu =", fmt->names[i], fmt->offsets[i], fmt->sizes[i]);
+        printf("\t%s: &%zu [%zu] =", fmt->names[i], fmt->offsets[i], fmt->sizes[i]);
         print_buffer(((unsigned char*)structure)+fmt->offsets[i], fmt->sizes[i]);
         printf("\n");
     }
