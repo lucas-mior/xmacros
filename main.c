@@ -34,11 +34,11 @@
     STRUCT(NumberStruct);
 #include "fmt_functions.h"
 
-#define STRUCT_PRINT(NAME, NESTED) \
+#define STRUCT_PRINT(NAME) \
   _Generic((NAME), \
-    BigStruct *:   struct_print(&BigStruct_fmt,   #NAME, NAME, NESTED), \
-    NumberStruct *:struct_print(&NumberStruct_fmt,    #NAME, NAME, NESTED), \
-    SmallStruct *: struct_print(&SmallStruct_fmt, #NAME, NAME, NESTED) \
+    BigStruct *:   struct_print(&BigStruct_fmt,   #NAME, NAME, 0), \
+    NumberStruct *:struct_print(&NumberStruct_fmt,    #NAME, NAME, 0), \
+    SmallStruct *: struct_print(&SmallStruct_fmt, #NAME, NAME, 0) \
   )
 
 int
@@ -70,10 +70,10 @@ main(int argc, char **argv)
     (void) argc;
     (void) argv;
 
-    STRUCT_PRINT(&other, 0);
-    STRUCT_PRINT(&mine, 0);
-    STRUCT_PRINT(&big, 0);
-    STRUCT_PRINT(pbig, 0);
+    STRUCT_PRINT(&other);
+    STRUCT_PRINT(&mine);
+    STRUCT_PRINT(&big);
+    STRUCT_PRINT(pbig);
 
     {
         SmallStruct small_struct_from_buffer;
@@ -95,8 +95,8 @@ main(int argc, char **argv)
         struct_unpack(&SmallStruct_fmt, tbuff, &small_struct_from_buffer);
         struct_unpack(&NumberStruct_fmt, sbuff, &number_struct_from_buffer);
 
-        STRUCT_PRINT(&small_struct_from_buffer, 0);
-        STRUCT_PRINT(&number_struct_from_buffer, 0);
+        STRUCT_PRINT(&small_struct_from_buffer);
+        STRUCT_PRINT(&number_struct_from_buffer);
     }
 
     return 0;
