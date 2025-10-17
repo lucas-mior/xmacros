@@ -77,18 +77,6 @@ typedef struct Value {
     char *fmt;
 } Value;
 
-Value
-formatter(const char *type, void *pointer) {
-}
-
-#define ARRAY_STRING(BUFFER, SEP, ARRAY, LENGTH) \
-  _Generic((ARRAY), \
-    int *: array_string(BUFFER, sizeof(BUFFER), SEP, "%d", ARRAY, LENGTH), \
-    float *: array_string(BUFFER, sizeof(BUFFER), SEP, "%f", ARRAY, LENGTH), \
-    double *: array_string(BUFFER, sizeof(BUFFER), SEP, "%f", ARRAY, LENGTH), \
-    char **: array_string(BUFFER, sizeof(BUFFER), SEP, "%s", ARRAY, LENGTH) \
-  )
-
 #define STRUCT_PRINT(NAME, NESTED) \
     _Generic((NAME), \
     BigStruct : struct_print(&BigStruct_fmt, #NAME, &NAME, NESTED), \
