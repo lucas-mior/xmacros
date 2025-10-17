@@ -93,7 +93,6 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
         printf("%s %s:", fmt->struct_name, name);
     printf("\n");
     for (size_t i = 0; i < fmt->num_members; i++) {
-        char fmt_buffer[128];
         const char *type = fmt->types[i];
         void *pointer = ((unsigned char*)structure)+fmt->offsets[i];
         for (int j = 0; j < nested; j += 1)
