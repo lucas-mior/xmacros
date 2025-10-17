@@ -43,7 +43,7 @@ typedef struct STRUCT_NAME {
     #undef X
 } STRUCT_NAME;
 
-struct struct_fmt CAT(STRUCT_NAME, _fmt) = {
+static struct struct_fmt CAT(STRUCT_NAME, _fmt) = {
 
     .struct_name = STR(STRUCT_NAME),
 

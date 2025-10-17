@@ -16,7 +16,7 @@
 #error "EXPAND_STRUCTS is undefined"
 #endif
 
-void
+static void
 struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nested)
 {
 #define PRIMITIVE(TYPE, fmt) \
@@ -56,28 +56,28 @@ if(!strcmp(type, #TYPE " *")) {  \
             printf("\t");
         printf("\t "GREEN"%s"RESET" %s = ", fmt->types[i], fmt->names[i]);
 
-        PRIMITIVE(char, "%c\n");
-        PRIMITIVE(uchar, "%c\n");
-        PRIMITIVE(short, "%d\n");
-        PRIMITIVE(ushort, "%u\n");
-        PRIMITIVE(int, "%d\n");
-        PRIMITIVE(uint, "%u\n");
-        PRIMITIVE(long, "%ld\n");
-        PRIMITIVE(ulong, "%lu\n");
-        PRIMITIVE(char *, "%s\n");
-        PRIMITIVE(float, "%f\n");
-        PRIMITIVE(double, "%f\n");
-        PRIMITIVE(int8, "%d\n");
-        PRIMITIVE(int16, "%d\n");
-        PRIMITIVE(int32, "%d\n");
-        PRIMITIVE(int64, "%ld\n");
-        PRIMITIVE(uint8, "%u\n");
-        PRIMITIVE(uint16, "%u\n");
-        PRIMITIVE(uint32, "%u\n");
-        PRIMITIVE(uint64, "%lu\n");
-        PRIMITIVE(usize, "%zu\n");
-        PRIMITIVE(isize, "%zu\n");
-        PRIMITIVE(void *, "%p\n");
+        PRIMITIVE(char, "%c\n")
+        PRIMITIVE(uchar, "%c\n")
+        PRIMITIVE(short, "%d\n")
+        PRIMITIVE(ushort, "%u\n")
+        PRIMITIVE(int, "%d\n")
+        PRIMITIVE(uint, "%u\n")
+        PRIMITIVE(long, "%ld\n")
+        PRIMITIVE(ulong, "%lu\n")
+        PRIMITIVE(char *, "%s\n")
+        PRIMITIVE(float, "%f\n")
+        PRIMITIVE(double, "%f\n")
+        PRIMITIVE(int8, "%d\n")
+        PRIMITIVE(int16, "%d\n")
+        PRIMITIVE(int32, "%d\n")
+        PRIMITIVE(int64, "%ld\n")
+        PRIMITIVE(uint8, "%u\n")
+        PRIMITIVE(uint16, "%u\n")
+        PRIMITIVE(uint32, "%u\n")
+        PRIMITIVE(uint64, "%lu\n")
+        PRIMITIVE(usize, "%zu\n")
+        PRIMITIVE(isize, "%zd\n")
+        PRIMITIVE(void *, "%p\n")
 
         EXPAND_STRUCTS
 
@@ -94,7 +94,7 @@ if(!strcmp(type, #TYPE " *")) {  \
     printf("}\n");
 }
 
-void
+static void
 print_buffer(unsigned char *buffer, size_t size)
 {
     for (size_t j = 0; j < size; j++) {
@@ -102,7 +102,7 @@ print_buffer(unsigned char *buffer, size_t size)
     }
 }
 
-size_t
+static size_t
 struct_pack(struct struct_fmt *fmt, void *structure, unsigned char *buffer)
 {
     size_t pos = 0;
@@ -115,7 +115,7 @@ struct_pack(struct struct_fmt *fmt, void *structure, unsigned char *buffer)
     return pos;
 }
 
-size_t
+static size_t
 struct_unpack(struct struct_fmt *fmt, unsigned char *buffer, void *structure)
 {
     size_t pos = 0;
@@ -127,4 +127,3 @@ struct_unpack(struct struct_fmt *fmt, unsigned char *buffer, void *structure)
 
     return pos;
 }
-

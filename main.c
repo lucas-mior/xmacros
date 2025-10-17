@@ -44,8 +44,6 @@
 int
 main(int argc, char **argv)
 {
-    (void) argc;
-    (void) argv;
     NumberStruct mine = {
         .c = 'c',
         .s = SHRT_MAX,
@@ -69,17 +67,8 @@ main(int argc, char **argv)
 
     BigStruct *pbig = &big;
 
-    unsigned char tbuff[SmallStruct_fmt.packed_size];
-    struct_pack(&SmallStruct_fmt, &other, tbuff);
-    printf("t packed:\n\t");
-    print_buffer(tbuff, sizeof(tbuff));
-    printf("\n");
-
-    unsigned char sbuff[NumberStruct_fmt.packed_size];
-    struct_pack(&NumberStruct_fmt, &mine, sbuff);
-    printf("s packed:\n\t");
-    print_buffer(sbuff, sizeof(tbuff));
-    printf("\n");
+    (void) argc;
+    (void) argv;
 
     STRUCT_PRINT(&other, 0);
     STRUCT_PRINT(&mine, 0);
@@ -88,6 +77,18 @@ main(int argc, char **argv)
 
     /* SmallStruct tst2; */
     /* NumberStruct sst2; */
+
+    /* unsigned char tbuff[SmallStruct_fmt.packed_size]; */
+    /* struct_pack(&SmallStruct_fmt, &other, tbuff); */
+    /* printf("t packed:\n\t"); */
+    /* print_buffer(tbuff, sizeof(tbuff)); */
+    /* printf("\n"); */
+
+    /* unsigned char sbuff[NumberStruct_fmt.packed_size]; */
+    /* struct_pack(&NumberStruct_fmt, &mine, sbuff); */
+    /* printf("s packed:\n\t"); */
+    /* print_buffer(sbuff, sizeof(tbuff)); */
+    /* printf("\n"); */
 
     /* struct_unpack(&SmallStruct_fmt, tbuff, &tst2); */
     /* struct_unpack(&NumberStruct_fmt, sbuff, &sst2); */

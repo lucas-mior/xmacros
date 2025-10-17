@@ -444,6 +444,7 @@ error(char *format, ...) {
 void
 fatal(int status) {
 #ifdef DEBUGGING
+    (void) status;
     abort();
 #else
     exit(status);
