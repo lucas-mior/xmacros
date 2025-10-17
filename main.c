@@ -79,8 +79,11 @@ main(int argc, char **argv)
         SmallStruct small_struct_from_buffer;
         NumberStruct number_struct_from_buffer;
 
-        uchar *small_struct_buffer = xmalloc(SmallStruct_fmt.packed_size*sizeof(*small_struct_buffer));
-        uchar *number_struct_buffer = xmalloc(NumberStruct_fmt.packed_size*sizeof(*number_struct_buffer));
+        uchar *small_struct_buffer;
+        uchar *number_struct_buffer;
+
+        small_struct_buffer = xmalloc(SmallStruct_fmt.packed_size*sizeof(*small_struct_buffer));
+        number_struct_buffer = xmalloc(NumberStruct_fmt.packed_size*sizeof(*number_struct_buffer));
 
         struct_pack(&SmallStruct_fmt, &other, small_struct_buffer);
         printf("t packed:\n\t");
