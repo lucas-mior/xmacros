@@ -79,21 +79,21 @@ main(int argc, char **argv)
         SmallStruct small_struct_from_buffer;
         NumberStruct number_struct_from_buffer;
 
-        unsigned char *tbuff = xmalloc(SmallStruct_fmt.packed_size*sizeof(*tbuff));
-        unsigned char *sbuff = xmalloc(NumberStruct_fmt.packed_size*sizeof(*sbuff));
+        uchar *small_struct_buffer = xmalloc(SmallStruct_fmt.packed_size*sizeof(*small_struct_buffer));
+        uchar *number_struct_buffer = xmalloc(NumberStruct_fmt.packed_size*sizeof(*number_struct_buffer));
 
-        struct_pack(&SmallStruct_fmt, &other, tbuff);
+        struct_pack(&SmallStruct_fmt, &other, small_struct_buffer);
         printf("t packed:\n\t");
-        print_buffer(tbuff, sizeof(tbuff));
+        print_buffer(small_struct_buffer, sizeof(small_struct_buffer));
         printf("\n");
 
-        struct_pack(&NumberStruct_fmt, &mine, sbuff);
+        struct_pack(&NumberStruct_fmt, &mine, number_struct_buffer);
         printf("s packed:\n\t");
-        print_buffer(sbuff, sizeof(tbuff));
+        print_buffer(number_struct_buffer, sizeof(small_struct_buffer));
         printf("\n");
 
-        struct_unpack(&SmallStruct_fmt, tbuff, &small_struct_from_buffer);
-        struct_unpack(&NumberStruct_fmt, sbuff, &number_struct_from_buffer);
+        struct_unpack(&SmallStruct_fmt, small_struct_buffer, &small_struct_from_buffer);
+        struct_unpack(&NumberStruct_fmt, number_struct_buffer, &number_struct_from_buffer);
 
         STRUCT_PRINT(&small_struct_from_buffer);
         STRUCT_PRINT(&number_struct_from_buffer);
