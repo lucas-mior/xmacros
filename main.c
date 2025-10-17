@@ -111,7 +111,7 @@ if(!strcmp(type, #TYPE " *")) {  \
         void *pointer = ((unsigned char*)structure)+fmt->offsets[i];
         for (int j = 0; j < nested; j += 1)
             printf("\t");
-        printf("\t "GREEN"%s"RESET" %s: &%zu [%zu] = ",
+        printf("\t "GREEN"%s"RESET" %s = ",
                fmt->types[i], fmt->names[i], fmt->offsets[i], fmt->sizes[i]);
 
         PRIMITIVE(char, "%c\n");
