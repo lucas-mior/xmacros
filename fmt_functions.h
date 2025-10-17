@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <string.h>
+#include "util.c"
 
 #if __INCLUDE_LEVEL__ == 0
 #define EXPAND_STRUCTS STRUCT(SmallStruct)
