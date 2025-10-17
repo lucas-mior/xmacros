@@ -60,11 +60,11 @@ struct_unpack(struct struct_fmt *fmt, unsigned char *buffer, void *structure)
 }
 
 #define STRUCT_PRINT(NAME, NESTED) \
-    _Generic((NAME), \
-    BigStruct: struct_print(&BigStruct_fmt,       #NAME, &NAME, NESTED), \
-    MyStruct: struct_print(&MyStruct_fmt,         #NAME, &NAME, NESTED), \
-    OtherStruct: struct_print(&OtherStruct_fmt,   #NAME, &NAME, NESTED) \
-)
+  _Generic((NAME), \
+    BigStruct *:   struct_print(&BigStruct_fmt,   #NAME, NAME, NESTED), \
+    MyStruct *:    struct_print(&MyStruct_fmt,    #NAME, NAME, NESTED), \
+    OtherStruct *: struct_print(&OtherStruct_fmt, #NAME, NAME, NESTED) \
+  )
 
 void
 struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nested)
@@ -77,6 +77,13 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
 #define STRUCT(TYPE) \
     if(!strcmp(type, #TYPE)) { \
         struct_print(&TYPE##_fmt, fmt->names[i], pointer, ++nested); \
+        if (nested) \
+            nested -= 1; \
+        continue; \
+    } \
+    if(!strcmp(type, #TYPE " *")) { \
+        TYPE **tmp = pointer; \
+        struct_print(&TYPE##_fmt, fmt->names[i], *tmp, ++nested); \
         if (nested) \
             nested -= 1; \
         continue; \
@@ -167,10 +174,10 @@ main(int argc, char **argv)
     print_buffer(sbuff, sizeof(tbuff));
     printf("\n");
 
-    STRUCT_PRINT(other, 0);
-    STRUCT_PRINT(mine, 0);
-    STRUCT_PRINT(big, 0);
-    STRUCT_PRINT(*pbig, 0);
+    STRUCT_PRINT(&other, 0);
+    STRUCT_PRINT(&mine, 0);
+    STRUCT_PRINT(&big, 0);
+    STRUCT_PRINT(pbig, 0);
 
     OtherStruct tst2;
     MyStruct sst2;
@@ -178,8 +185,8 @@ main(int argc, char **argv)
     struct_unpack(&OtherStruct_fmt, tbuff, &tst2);
     struct_unpack(&MyStruct_fmt, sbuff, &sst2);
 
-    STRUCT_PRINT(tst2, 0);
-    STRUCT_PRINT(sst2, 0);
+    STRUCT_PRINT(&tst2, 0);
+    STRUCT_PRINT(&sst2, 0);
 
     return 0;
 }
