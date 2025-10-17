@@ -9,6 +9,7 @@
         size_t *offsets;
         size_t *sizes;
         char const **names;
+        char const **types;
     };
 #endif
 
@@ -65,7 +66,13 @@ struct struct_fmt CAT(STRUCT_NAME, _fmt) = {
     },
 
     .names = (char const *[]){
-        #define X(L, R) #L ":" #R,
+        #define X(L, R) #R,
+        STRUCT_FIELDS
+        #undef X
+    },
+
+    .types = (char const *[]){
+        #define X(L, R) #L,
         STRUCT_FIELDS
         #undef X
     },

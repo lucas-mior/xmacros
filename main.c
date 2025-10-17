@@ -2,20 +2,16 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include "util.c"
 
 #define STRUCT_NAME OtherStruct
 #define STRUCT_FIELDS \
-    X(int, a) \
-    X(float, b) \
-    X(char, c)
+    X(float, f)
 #include "fmtgen.h"
 
 #define STRUCT_NAME MyStruct
 #define STRUCT_FIELDS \
-    X(long, l) \
-    X(double, g) \
-    X(unsigned long long, f) \
-    X(int, x)
+    X(double, d)
 #include "fmtgen.h"
 
 void
@@ -52,13 +48,79 @@ struct_unpack(struct struct_fmt *fmt, unsigned char *buffer, void *structure)
     return pos;
 }
 
+typedef union Types {
+    char tchar;
+    short tshort;
+    int tint;
+    long tlong;
+    uchar tuchar;
+    ushort tushort;
+    uint tuint;
+    ulong tulong;
+    float tfloat;
+    double tdouble;
+    char * tstring;
+} Types;
+
+typedef struct Value {
+    Types tval;
+    char *fmt;
+} Value;
+
+Value
+formatter(const char *type, void *pointer) {
+#define MATCH(X) !strcmp(type, #X)
+    Value value;
+
+    Types tval;
+    char *fmt;
+
+    if (MATCH(char)) {
+        fmt = "%c";
+        tval.tchar = *(char *) pointer;
+    } else if (MATCH(int)) {
+        fmt = "%d";
+        tval.tint = *(int *) pointer;
+    } else if (MATCH(long)) {
+        fmt = "%ld";
+        tval.tlong = *(long *) pointer;
+    } else if (MATCH(char *)) {
+        fmt = "%s";
+        tval.tstring = *(char  **) pointer;
+    } else if (MATCH(float)) {
+        fmt = "%f";
+        tval.tfloat = *(float *) pointer;
+        error("float case: %f\n", tval.tfloat);
+    } else if (MATCH(double)) {
+        fmt = "%f";
+        tval.tdouble = *(double *) pointer;
+        error("double case: %f\n", tval.tdouble);
+    } else {
+        error("formaatter.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    value.fmt = fmt;
+    value.tval = tval;
+
+    return value;
+
+#undef MATCH
+}
+
 void
 struct_print(struct struct_fmt *fmt, void *structure)
 {
     printf("%s:\n", fmt->struct_name);
     for (size_t i = 0; i < fmt->num_members; i++) {
-        printf("\t%s: &%zu [%zu] =", fmt->names[i], fmt->offsets[i], fmt->sizes[i]);
-        print_buffer(((unsigned char*)structure)+fmt->offsets[i], fmt->sizes[i]);
+        char fmt_buffer[128];
+        Value value = formatter(fmt->types[i], ((unsigned char*)structure)+fmt->offsets[i]);
+        SNPRINTF(fmt_buffer, "\t %%s %%s: &%%zu [%%zu] = %s", value.fmt);
+        error("format_buffer = %s\n", fmt_buffer);
+        printf(fmt_buffer,
+               fmt->types[i], fmt->names[i], fmt->offsets[i], fmt->sizes[i],
+               value.tval);
+        /* print_buffer(((unsigned char*)structure)+fmt->offsets[i], fmt->sizes[i]); */
         printf("\n");
     }
 }
@@ -67,8 +129,8 @@ struct_print(struct struct_fmt *fmt, void *structure)
 int
 main(int argc, char **argv)
 {
-    OtherStruct other = {.a = 5, .b = 0.0f, .c = 'a'};
-    MyStruct mine = {.l = 1024, .g = 0.0, .f = 2048};
+    OtherStruct other = {.f = 100.0f};
+    MyStruct mine = {.d = 100.0};
 
     unsigned char tbuff[OtherStruct_fmt.packed_size];
     struct_pack(&MyStruct_fmt, &other, tbuff);
