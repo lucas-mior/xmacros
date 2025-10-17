@@ -18,6 +18,12 @@
     X(int, i)
 #include "fmtgen.h"
 
+#define STRUCT_NAME BigStruct
+#define STRUCT_FIELDS \
+    X(long, l) \
+    X(OtherStruct, other_struct)
+#include "fmtgen.h"
+
 void
 print_buffer(unsigned char *buffer, size_t size)
 {
@@ -76,7 +82,7 @@ formatter(const char *type, void *pointer) {
 }
 
 void
-struct_print(struct struct_fmt *fmt, void *structure)
+struct_print(struct struct_fmt *fmt, void *structure, int nested)
 {
 #define MATCH(X) !strcmp(type, #X)
 
@@ -85,22 +91,27 @@ struct_print(struct struct_fmt *fmt, void *structure)
         char fmt_buffer[128];
         const char *type = fmt->types[i];
         void *pointer = ((unsigned char*)structure)+fmt->offsets[i];
+        for (int j = 0; j < nested; j += 1)
+            printf("\t");
         printf("\t %s %s: &%zu [%zu] = ",
                fmt->types[i], fmt->names[i], fmt->offsets[i], fmt->sizes[i]);
 
         if (MATCH(char)) {
-            printf( "%c", *(char *) pointer);
+            printf("%c", *(char *) pointer);
         } else if (MATCH(int)) {
-            printf( "%d", *(int *) pointer);
+            printf("%d", *(int *) pointer);
         } else if (MATCH(long)) {
-            printf( "%ld", *(long *) pointer);
+            printf("%ld", *(long *) pointer);
         } else if (MATCH(char *)) {
-            printf( "%s", *(char  **) pointer);
+            printf("%s", *(char  **) pointer);
         } else if (MATCH(float)) {
-            printf( "%f", *(float *) pointer);
+            printf("%f", *(float *) pointer);
         } else if (MATCH(double)) {
-            printf( "%f", *(double *) pointer);
+            printf("%f", *(double *) pointer);
+        } else if (MATCH(OtherStruct)) {
+            struct_print(&OtherStruct_fmt, pointer, ++nested);
         } else {
+            error("Missing printf for type %s.\n", type);
             exit(EXIT_FAILURE);
         }
 
@@ -116,6 +127,7 @@ main(int argc, char **argv)
 {
     OtherStruct other = {.i = 50, .f = 100.0f, .c = 'a'};
     MyStruct mine = {.l = 100, .d = 100.0, .i = 2000};
+    BigStruct big = {.l = 100, .other_struct = other };
 
     unsigned char tbuff[OtherStruct_fmt.packed_size];
     struct_pack(&MyStruct_fmt, &other, tbuff);
@@ -129,8 +141,9 @@ main(int argc, char **argv)
     print_buffer(sbuff, sizeof(tbuff));
     printf("\n");
 
-    struct_print(&OtherStruct_fmt, &other);
-    struct_print(&MyStruct_fmt, &mine);
+    struct_print(&OtherStruct_fmt, &other, 0);
+    struct_print(&MyStruct_fmt, &mine, 0);
+    struct_print(&BigStruct_fmt, &big, 0);
 
     OtherStruct tst2;
     MyStruct sst2;
@@ -138,8 +151,8 @@ main(int argc, char **argv)
     struct_unpack(&OtherStruct_fmt, tbuff, &tst2); 
     struct_unpack(&MyStruct_fmt, sbuff, &sst2); 
 
-    struct_print(&OtherStruct_fmt, &tst2);
-    struct_print(&MyStruct_fmt, &sst2);
+    struct_print(&OtherStruct_fmt, &tst2, 0);
+    struct_print(&MyStruct_fmt, &sst2, 0);
 
     return 0;
 }
