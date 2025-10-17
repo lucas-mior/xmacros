@@ -117,7 +117,7 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
         STRUCT(OtherStruct);
         STRUCT(MyStruct);
 
-        error("Missing printf for type %s.\n", type);
+        error("Missing printf for type '%s'.\n", type);
         exit(EXIT_FAILURE);
 
 #undef PRIMITIVE
