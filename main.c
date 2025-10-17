@@ -7,7 +7,7 @@
 #define STRUCT_NAME OtherStruct
 #define STRUCT_FIELDS \
     X(int, i) \
-    X(float, f) \
+    X(char *, string) \
     X(char, c)
 #include "fmtgen.h"
 
@@ -129,12 +129,12 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
 int
 main(int argc, char **argv)
 {
-    OtherStruct other = {.i = 50, .f = 100.0f, .c = 'a'};
+    OtherStruct other = {.i = 50, .string = "superstring", .c = 'a'};
     MyStruct mine = {.l = 100, .d = 100.0, .i = 2000};
     BigStruct big = {.l = 100, .other_struct = other };
 
     unsigned char tbuff[OtherStruct_fmt.packed_size];
-    struct_pack(&MyStruct_fmt, &other, tbuff);
+    struct_pack(&OtherStruct_fmt, &other, tbuff);
     printf("t packed:\n\t");
     print_buffer(tbuff, sizeof(tbuff));
     printf("\n");
