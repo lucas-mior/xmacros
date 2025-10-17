@@ -82,8 +82,11 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
         continue; \
     } \
 
+#define GREEN "\x1b[32m"
+#define RESET "\x1b[0m"
+
     if (!nested)
-        printf("%s %s:", fmt->struct_name, name);
+        printf(GREEN"%s"RESET" %s:", fmt->struct_name, name);
     printf("\n");
 
     for (size_t i = 0; i < fmt->num_members; i++) {
@@ -91,7 +94,7 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
         void *pointer = ((unsigned char*)structure)+fmt->offsets[i];
         for (int j = 0; j < nested; j += 1)
             printf("\t");
-        printf("\t %s %s: &%zu [%zu] = ",
+        printf("\t "GREEN"%s"RESET" %s: &%zu [%zu] = ",
                fmt->types[i], fmt->names[i], fmt->offsets[i], fmt->sizes[i]);
 
         PRIMITIVE(char, "%c\n");
