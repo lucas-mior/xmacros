@@ -26,7 +26,7 @@
 #define STRUCT_NAME BigStruct
 #define STRUCT_FIELDS \
     X(long, l) \
-    X(SmallStruct *, other_struct)
+    X(SmallStruct *, small_struct)
 #include "fmtgen.h"
 
 #define EXPAND_STRUCTS \
@@ -56,13 +56,13 @@ main(int argc, char **argv)
         .f = 0.5f,
         .d = 0.5
     };
-    SmallStruct other = {
+    SmallStruct small = {
         .string = "superstring",
         .number_struct = mine
     };
     BigStruct big = {
         .l = 100,
-        .other_struct = &other
+        .small_struct = &small
     };
 
     BigStruct *pbig = &big;
@@ -70,7 +70,7 @@ main(int argc, char **argv)
     (void) argc;
     (void) argv;
 
-    STRUCT_PRINT(&other);
+    STRUCT_PRINT(&small);
     STRUCT_PRINT(&mine);
     STRUCT_PRINT(&big);
     STRUCT_PRINT(pbig);
@@ -85,7 +85,7 @@ main(int argc, char **argv)
         small_struct_buffer = xmalloc(SmallStruct_fmt.packed_size*sizeof(*small_struct_buffer));
         number_struct_buffer = xmalloc(NumberStruct_fmt.packed_size*sizeof(*number_struct_buffer));
 
-        struct_pack(&SmallStruct_fmt, &other, small_struct_buffer);
+        struct_pack(&SmallStruct_fmt, &small, small_struct_buffer);
         printf("t packed:\n\t");
         print_buffer(small_struct_buffer, sizeof(small_struct_buffer));
         printf("\n");
