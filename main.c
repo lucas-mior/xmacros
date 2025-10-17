@@ -82,15 +82,17 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
 }
 #define STRUCT(TYPE) if (!strcmp(type, #TYPE)) {  \
     struct_print(&TYPE##_fmt, fmt->names[i], pointer, ++nested);  \
-    if (nested)  \
- nested -= 1;  \
-continue;  \
+    if (nested) { \
+        nested -= 1;  \
+    } \
+    continue;  \
 }  \
 if(!strcmp(type, #TYPE " *")) {  \
     TYPE **tmp = pointer;  \
     struct_print(&TYPE##_fmt, fmt->names[i], *tmp, ++nested);  \
-    if (nested)  \
- nested -= 1;  \
+    if (nested) { \
+        nested -= 1;  \
+    } \
     continue;  \
 }
 
