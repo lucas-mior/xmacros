@@ -73,57 +73,38 @@ typedef struct Value {
 
 Value
 formatter(const char *type, void *pointer) {
-#define MATCH(X) !strcmp(type, #X)
-    Value value;
-
-    Types tval;
-    char *fmt;
-
-    if (MATCH(char)) {
-        fmt = "%c";
-        tval.tchar = *(char *) pointer;
-    } else if (MATCH(int)) {
-        fmt = "%d";
-        tval.tint = *(int *) pointer;
-    } else if (MATCH(long)) {
-        fmt = "%ld";
-        tval.tlong = *(long *) pointer;
-    } else if (MATCH(char *)) {
-        fmt = "%s";
-        tval.tstring = *(char  **) pointer;
-    } else if (MATCH(float)) {
-        fmt = "%f";
-        tval.tfloat = *(float *) pointer;
-        error("float case: %f\n", tval.tfloat);
-    } else if (MATCH(double)) {
-        fmt = "%f";
-        /* tval.tdouble = *(double *) pointer; */
-        memcpy(&tval.tdouble, pointer, sizeof(double));
-        error("double case: %f\n", tval.tdouble);
-    } else {
-        error("formaatter.\n");
-        exit(EXIT_FAILURE);
-    }
-
-    value.fmt = fmt;
-    value.tval = tval;
-
-    return value;
-
-#undef MATCH
 }
 
 void
 struct_print(struct struct_fmt *fmt, void *structure)
 {
+#define MATCH(X) !strcmp(type, #X)
+
     printf("%s:\n", fmt->struct_name);
     for (size_t i = 0; i < fmt->num_members; i++) {
         char fmt_buffer[128];
-        Value value = formatter(fmt->types[i], ((unsigned char*)structure)+fmt->offsets[i]);
-        SNPRINTF(fmt_buffer, "\t %%s %%s: &%%zu [%%zu] = %s", value.fmt);
-        printf(fmt_buffer,
-               fmt->types[i], fmt->names[i], fmt->offsets[i], fmt->sizes[i],
-               value.tval);
+        const char *type = fmt->types[i];
+        void *pointer = ((unsigned char*)structure)+fmt->offsets[i];
+        printf("\t %s %s: &%zu [%zu] = ",
+               fmt->types[i], fmt->names[i], fmt->offsets[i], fmt->sizes[i]);
+
+        if (MATCH(char)) {
+            printf( "%c", *(char *) pointer);
+        } else if (MATCH(int)) {
+            printf( "%d", *(int *) pointer);
+        } else if (MATCH(long)) {
+            printf( "%ld", *(long *) pointer);
+        } else if (MATCH(char *)) {
+            printf( "%s", *(char  **) pointer);
+        } else if (MATCH(float)) {
+            printf( "%f", *(float *) pointer);
+        } else if (MATCH(double)) {
+            printf( "%f", *(double *) pointer);
+        } else {
+            exit(EXIT_FAILURE);
+        }
+
+#undef MATCH
         /* print_buffer(((unsigned char*)structure)+fmt->offsets[i], fmt->sizes[i]); */
         printf("\n");
     }
