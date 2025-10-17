@@ -22,7 +22,7 @@
 #define STRUCT_NAME BigStruct
 #define STRUCT_FIELDS \
     X(long, l) \
-    X(OtherStruct, other_struct)
+    X(OtherStruct *, other_struct)
 #include "fmtgen.h"
 
 void
@@ -61,9 +61,12 @@ struct_unpack(struct struct_fmt *fmt, unsigned char *buffer, void *structure)
 
 #define STRUCT_PRINT(NAME, NESTED) \
     _Generic((NAME), \
-    BigStruct : struct_print(&BigStruct_fmt, #NAME, &NAME, NESTED), \
-    MyStruct : struct_print(&MyStruct_fmt, #NAME, &NAME, NESTED), \
-    OtherStruct : struct_print(&OtherStruct_fmt, #NAME, &NAME, NESTED) \
+    BigStruct *: struct_print(&BigStruct_fmt,     #NAME, NAME, NESTED), \
+    MyStruct *: struct_print(&MyStruct_fmt,       #NAME, NAME, NESTED), \
+    OtherStruct *: struct_print(&OtherStruct_fmt, #NAME, NAME, NESTED) \
+    BigStruct: struct_print(&BigStruct_fmt,       #NAME, &NAME, NESTED), \
+    MyStruct: struct_print(&MyStruct_fmt,         #NAME, &NAME, NESTED), \
+    OtherStruct: struct_print(&OtherStruct_fmt,   #NAME, &NAME, NESTED), \
 )
 
 void
@@ -83,6 +86,7 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
     } \
 
 #define GREEN "\x1b[32m"
+#define RED "\x1b[31m"
 #define RESET "\x1b[0m"
 
     if (!nested)
@@ -121,7 +125,7 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
         STRUCT(OtherStruct);
         STRUCT(MyStruct);
 
-        error("Missing printf for type '%s'.\n", type);
+        error("Missing printf for type "RED"%s"RESET".\n", type);
         exit(EXIT_FAILURE);
 
 #undef PRIMITIVE
@@ -148,8 +152,10 @@ main(int argc, char **argv)
     };
     BigStruct big = {
         .l = 100,
-        .other_struct = other
+        .other_struct = &other
     };
+
+    BigStruct *pbig = &big;
 
     unsigned char tbuff[OtherStruct_fmt.packed_size];
     struct_pack(&OtherStruct_fmt, &other, tbuff);
@@ -166,15 +172,16 @@ main(int argc, char **argv)
     STRUCT_PRINT(other, 0);
     STRUCT_PRINT(mine, 0);
     STRUCT_PRINT(big, 0);
+    STRUCT_PRINT(*pbig, 0);
 
-    OtherStruct tst2;
-    MyStruct sst2;
+    /* OtherStruct tst2; */
+    /* MyStruct sst2; */
 
-    struct_unpack(&OtherStruct_fmt, tbuff, &tst2);
-    struct_unpack(&MyStruct_fmt, sbuff, &sst2);
+    /* struct_unpack(&OtherStruct_fmt, tbuff, &tst2); */
+    /* struct_unpack(&MyStruct_fmt, sbuff, &sst2); */
 
-    STRUCT_PRINT(tst2, 0);
-    STRUCT_PRINT(sst2, 0);
+    /* STRUCT_PRINT(tst2, 0); */
+    /* STRUCT_PRINT(sst2, 0); */
 
     return 0;
 }
