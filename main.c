@@ -113,6 +113,7 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
         PRIMITIVE(uint64, "%lu\n");
         PRIMITIVE(usize, "%zu\n");
         PRIMITIVE(isize, "%zu\n");
+
         STRUCT(OtherStruct);
         STRUCT(MyStruct);
 
