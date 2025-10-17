@@ -12,26 +12,18 @@ if (!strcmp(type, #TYPE)) {  \
 }
 #define STRUCT(TYPE) \
 if (!strcmp(type, #TYPE)) {  \
-    printf("{"); \
     struct_print(&TYPE##_fmt, fmt->names[i], pointer, ++nested);  \
     if (nested) { \
         nested -= 1;  \
     } \
-    for (int j = 0; j < nested; j += 1) \
-        printf("\t"); \
-    printf("}"); \
     continue;  \
 }  \
 if(!strcmp(type, #TYPE " *")) {  \
     TYPE **tmp = pointer;  \
-    printf("{"); \
     struct_print(&TYPE##_fmt, fmt->names[i], *tmp, ++nested);  \
     if (nested) { \
         nested -= 1;  \
     } \
-    for (int j = 0; j < nested; j += 1) \
-        printf("\t"); \
-    printf("}"); \
     continue;  \
 }
 
@@ -40,8 +32,8 @@ if(!strcmp(type, #TYPE " *")) {  \
 #define RESET "\x1b[0m"
 
     if (!nested)
-        printf(GREEN"%s"RESET" %s:", fmt->struct_name, name);
-    printf("\n{");
+        printf(GREEN"%s"RESET" %s = ", fmt->struct_name, name);
+    printf("{\n");
 
     for (size_t i = 0; i < fmt->num_members; i++) {
         const char *type = fmt->types[i];
@@ -83,6 +75,8 @@ if(!strcmp(type, #TYPE " *")) {  \
 #undef STRUCT
         /* print_buffer(((unsigned char*)structure)+fmt->offsets[i], fmt->sizes[i]); */
     }
+    for (int j = 0; j < nested; j += 1)
+        printf("\t");
     printf("}\n");
 }
 
