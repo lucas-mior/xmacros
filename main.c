@@ -82,8 +82,8 @@ main(int argc, char **argv)
         uchar *small_struct_buffer;
         uchar *number_struct_buffer;
 
-        small_struct_buffer = xmalloc(SmallStruct_fmt.packed_size*sizeof(*small_struct_buffer));
-        number_struct_buffer = xmalloc(NumberStruct_fmt.packed_size*sizeof(*number_struct_buffer));
+        small_struct_buffer = xmalloc(SmallStruct_fmt.packed_size);
+        number_struct_buffer = xmalloc(NumberStruct_fmt.packed_size);
 
         struct_pack(&SmallStruct_fmt, &small, small_struct_buffer);
         printf("t packed:\n\t");
