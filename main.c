@@ -6,18 +6,22 @@
 
 #define STRUCT_NAME NumberStruct
 #define STRUCT_FIELDS \
+    X(char, c) \
+    X(short, s) \
+    X(int, i) \
     X(long, l) \
-    X(double, d) \
-    X(double, d2) \
-    X(int, i)
+    X(uchar, uc) \
+    X(ushort, us) \
+    X(uint, ui) \
+    X(ulong, ul) \
+    X(float, f) \
+    X(double, d)
 #include "fmtgen.h"
 
 #define STRUCT_NAME SmallStruct
 #define STRUCT_FIELDS \
-    X(int, i) \
-    X(char *, string) \
-    X(char, c) \
-    X(NumberStruct, my_s)
+    X(char *, "This is a cool string") \
+    X(NumberStruct, number_struct)
 #include "fmtgen.h"
 
 #define STRUCT_NAME BigStruct
@@ -154,7 +158,7 @@ main(int argc, char **argv)
         .i = 50,
         .string = "superstring",
         .c = 'a',
-        .my_s = mine
+        .number_struct = mine
     };
     BigStruct big = {
         .l = 100,
