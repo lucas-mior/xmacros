@@ -8,6 +8,7 @@
 #define STRUCT_FIELDS \
     X(long, l) \
     X(double, d) \
+    X(double, d2) \
     X(int, i)
 #include "fmtgen.h"
 
