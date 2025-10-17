@@ -4,13 +4,6 @@
 #include <string.h>
 #include "util.c"
 
-#define STRUCT_NAME OtherStruct
-#define STRUCT_FIELDS \
-    X(int, i) \
-    X(char *, string) \
-    X(char, c)
-#include "fmtgen.h"
-
 #define STRUCT_NAME MyStruct
 #define STRUCT_FIELDS \
     X(long, l) \
@@ -18,11 +11,18 @@
     X(int, i)
 #include "fmtgen.h"
 
+#define STRUCT_NAME OtherStruct
+#define STRUCT_FIELDS \
+    X(int, i) \
+    X(char *, string) \
+    X(char, c) \
+    X(MyStruct, my_s)
+#include "fmtgen.h"
+
 #define STRUCT_NAME BigStruct
 #define STRUCT_FIELDS \
     X(long, l) \
-    X(OtherStruct, other_struct) \
-    X(MyStruct, my_struct)
+    X(OtherStruct, other_struct)
 #include "fmtgen.h"
 
 void
@@ -131,8 +131,8 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
 int
 main(int argc, char **argv)
 {
-    OtherStruct other = {.i = 50, .string = "superstring", .c = 'a'};
     MyStruct mine = {.l = 100, .d = 100.0, .i = 2000};
+    OtherStruct other = {.i = 50, .string = "superstring", .c = 'a', .my_s = mine};
     BigStruct big = {.l = 100, .other_struct = other };
 
     unsigned char tbuff[OtherStruct_fmt.packed_size];
