@@ -21,7 +21,8 @@
 #define STRUCT_NAME BigStruct
 #define STRUCT_FIELDS \
     X(long, l) \
-    X(OtherStruct, other_struct)
+    X(OtherStruct, other_struct) \
+    X(MyStruct, my_struct)
 #include "fmtgen.h"
 
 void
@@ -95,6 +96,8 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
 #define MATCH_S(X) \
     if(!strcmp(type, #X)) { \
         struct_print(&X##_fmt, fmt->names[i], pointer, ++nested); \
+        if (nested) \
+            nested -= 1; \
         continue; \
     } \
 
@@ -117,6 +120,7 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
         MATCH(float, "%f\n");
         MATCH(double, "%f\n");
         MATCH_S(OtherStruct);
+        MATCH_S(MyStruct);
 
         error("Missing printf for type %s.\n", type);
         exit(EXIT_FAILURE);
