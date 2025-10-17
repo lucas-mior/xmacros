@@ -76,11 +76,13 @@ struct_unpack(struct struct_fmt *fmt, unsigned char *buffer, void *structure)
 void
 struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nested)
 {
-#define PRIMITIVE(TYPE, fmt) if (!strcmp(type, #TYPE)) {  \
+#define PRIMITIVE(TYPE, fmt) \
+if (!strcmp(type, #TYPE)) {  \
     printf(fmt, *(TYPE *) pointer);  \
     continue;  \
 }
-#define STRUCT(TYPE) if (!strcmp(type, #TYPE)) {  \
+#define STRUCT(TYPE) \
+if (!strcmp(type, #TYPE)) {  \
     struct_print(&TYPE##_fmt, fmt->names[i], pointer, ++nested);  \
     if (nested) { \
         nested -= 1;  \
