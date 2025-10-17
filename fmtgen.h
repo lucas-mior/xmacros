@@ -13,8 +13,6 @@
     };
 #endif
 
-/* Error Checking */
-
 #ifndef STRUCT_NAME
     #error "Did not define STRUCT_NAME before including fmtgen.h"
 #endif
