@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include <stddef.h>
+
 #ifndef STRUCT_FMT_DEF
     #define STRUCT_FMT_DEF
     struct struct_fmt {
@@ -10,6 +13,13 @@
         char const **names;
         char const **types;
     };
+#endif
+
+#if __INCLUDE_LEVEL__ == 0
+#define STRUCT_NAME SmallStruct
+#define STRUCT_FIELDS \
+    X(char *, string) \
+    X(int, i)
 #endif
 
 #ifndef STRUCT_NAME
