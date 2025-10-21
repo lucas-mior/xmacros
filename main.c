@@ -44,12 +44,12 @@
 int
 main(int argc, char **argv) {
     NumberStruct mine = {.c = 'c',
-                         .s = SHRT_MAX,
-                         .i = INT_MAX,
-                         .l = LONG_MAX,
                          .uc = 'd',
+                         .s = SHRT_MAX,
                          .us = USHRT_MAX,
+                         .i = INT_MAX,
                          .ui = UINT_MAX,
+                         .l = LONG_MAX,
                          .ul = ULONG_MAX,
                          .f = 0.5f,
                          .d = 0.5};
