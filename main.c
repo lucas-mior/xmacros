@@ -14,7 +14,8 @@
     X(long, il)                                                                \
     X(ulong, ul)                                                               \
     X(float, f)                                                                \
-    X(double, d)
+    X(double, d)                                                               \
+    X(long double, ld)
 #include "fmtgen.h"
 
 #define STRUCT_NAME SmallStruct
@@ -52,7 +53,8 @@ main(int argc, char **argv) {
                          .il = LONG_MAX,
                          .ul = ULONG_MAX,
                          .f = 0.5f,
-                         .d = 0.5};
+                         .d = 0.5,
+                         .ld = 0.5};
     SmallStruct small = {.string = "superstring", .number_struct = mine};
     BigStruct big = {.l = 100, .small_struct = &small};
 

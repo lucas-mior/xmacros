@@ -67,6 +67,7 @@ if(!strcmp(type, #TYPE " *")) {  \
         PRIMITIVE(char *, "%s\n")
         PRIMITIVE(float, "%f\n")
         PRIMITIVE(double, "%f\n")
+        PRIMITIVE(long double, "%Lf\n")
         PRIMITIVE(int8, "%d\n")
         PRIMITIVE(int16, "%d\n")
         PRIMITIVE(int32, "%d\n")
