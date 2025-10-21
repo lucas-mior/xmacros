@@ -4,3 +4,4 @@ xmacros
 tags
 *.gch
 compile_commands.json
+.cache
