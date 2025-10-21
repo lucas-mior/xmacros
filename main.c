@@ -6,12 +6,12 @@
 #define STRUCT_NAME NumberStruct
 #define STRUCT_FIELDS                                                          \
     X(char, c)                                                                 \
-    X(short, s)                                                                \
-    X(int, i)                                                                  \
-    X(long, l)                                                                 \
     X(uchar, uc)                                                               \
+    X(short, s)                                                                \
     X(ushort, us)                                                              \
+    X(int, i)                                                                  \
     X(uint, ui)                                                                \
+    X(long, l)                                                                 \
     X(ulong, ul)                                                               \
     X(float, f)                                                                \
     X(double, d)
