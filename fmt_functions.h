@@ -17,8 +17,8 @@
 #endif
 
 static void
-struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nested)
-{
+struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nested) {
+
 #define PRIMITIVE(TYPE, fmt) \
 if (!strcmp(type, #TYPE)) {  \
     printf(fmt, *(TYPE *) pointer);  \
@@ -95,16 +95,14 @@ if(!strcmp(type, #TYPE " *")) {  \
 }
 
 static void
-print_buffer(unsigned char *buffer, size_t size)
-{
+print_buffer(unsigned char *buffer, size_t size) {
     for (size_t j = 0; j < size; j++) {
         printf(" %02x", buffer[j]);
     }
 }
 
 static size_t
-struct_pack(struct struct_fmt *fmt, void *structure, unsigned char *buffer)
-{
+struct_pack(struct struct_fmt *fmt, void *structure, unsigned char *buffer) {
     size_t pos = 0;
 
     for (size_t i = 0; i < fmt->num_members; i++) {
@@ -116,8 +114,7 @@ struct_pack(struct struct_fmt *fmt, void *structure, unsigned char *buffer)
 }
 
 static size_t
-struct_unpack(struct struct_fmt *fmt, unsigned char *buffer, void *structure)
-{
+struct_unpack(struct struct_fmt *fmt, unsigned char *buffer, void *structure) {
     size_t pos = 0;
 
     for (size_t i = 0; i < fmt->num_members; i++) {
