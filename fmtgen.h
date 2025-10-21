@@ -24,17 +24,17 @@ typedef ssize_t isize;
 #endif
 
 #ifndef STRUCT_FMT_DEF
-    #define STRUCT_FMT_DEF
-    struct struct_fmt {
-        char const *struct_name;
-        size_t num_members;
-        size_t struct_size;
-        size_t packed_size;
-        size_t *offsets;
-        size_t *sizes;
-        char const **names;
-        char const **types;
-    };
+#define STRUCT_FMT_DEF
+struct struct_fmt {
+    char const *struct_name;
+    size_t num_members;
+    size_t struct_size;
+    size_t packed_size;
+    size_t *offsets;
+    size_t *sizes;
+    char const **names;
+    char const **types;
+};
 #endif
 
 #if __INCLUDE_LEVEL__ == 0
