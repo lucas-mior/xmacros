@@ -23,7 +23,7 @@ typedef size_t usize;
 typedef ssize_t isize;
 #endif
 
-#if !defined(STRUCT_FMT_DEF)
+#if __INCLUDE_LEVEL__ && !defined(STRUCT_FMT_DEF)
 #define STRUCT_FMT_DEF
 struct struct_fmt {
     char const *struct_name;
