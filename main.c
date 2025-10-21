@@ -7,7 +7,7 @@
 #define STRUCT_FIELDS                                                          \
     X(char, ic)                                                                \
     X(uchar, uc)                                                               \
-    X(short, is)                                                               \
+    X(signed short, is)                                                        \
     X(ushort, us)                                                              \
     X(int, ii)                                                                 \
     X(uint, ui)                                                                \

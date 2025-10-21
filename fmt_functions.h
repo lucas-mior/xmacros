@@ -20,7 +20,7 @@ static void
 struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nested) {
 
 #define PRIMITIVE(TYPE, fmt) \
-if (!strcmp(type, #TYPE)) {  \
+if (!strcmp(type, #TYPE) || !strcmp(type, "signed "#TYPE)) {  \
     printf(fmt, *(TYPE *) pointer);  \
     continue;  \
 }
