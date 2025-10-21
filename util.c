@@ -29,7 +29,7 @@
 #include <stdint.h>
 #include <time.h>
 
-#ifdef __WIN32__
+#if defined(__WIN32__)
 #include <windows.h>
 #else
 #include <sys/mman.h>
@@ -119,7 +119,7 @@ static char *itoa2(long, char *);
 static long atoi2(char *);
 static size_t util_page_size = 0;
 
-#ifdef __WIN32__
+#if defined(__WIN32__)
 uint32
 util_nthreads(void) {
     SYSTEM_INFO sysinfo;
@@ -275,7 +275,7 @@ snprintf2(char *buffer, size_t size, char *format, ...) {
     return n;
 }
 
-#ifdef __WIN32__
+#if defined(__WIN32__)
 int
 util_command(const int argc, char **argv) {
     char *cmdline;
@@ -429,7 +429,7 @@ error(char *format, ...) {
 
 void
 fatal(int status) {
-#ifdef DEBUGGING
+#if defined(DEBUGGING)
     (void)status;
     abort();
 #else
@@ -554,7 +554,7 @@ util_copy_file(const char *destination, const char *source) {
     return 0;
 }
 
-#ifdef __linux__
+#if defined(__linux__)
 #include <dirent.h>
 void
 send_signal(const char *executable, const int32 signal_number) {
@@ -695,7 +695,7 @@ atoi2(char *str) {
     return atoi(str);
 }
 
-#ifdef TESTING_util
+#if defined(TESTING_util)
 #include <assert.h>
 
 int
