@@ -31,7 +31,8 @@
 
 #define EXPAND_STRUCTS                                                         \
     STRUCT(SmallStruct);                                                       \
-    STRUCT(NumberStruct);
+    STRUCT(NumberStruct);                                                      \
+    STRUCT(BigStruct);
 #include "fmt_functions.h"
 
 #define STRUCT_PRINT(NAME)                                                     \
