@@ -12,7 +12,7 @@
 #endif
 
 
-#ifndef EXPAND_STRUCTS
+#if !defined(EXPAND_STRUCTS)
 #error "EXPAND_STRUCTS is undefined"
 #endif
 

@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#ifndef INTEGERS
+#if !defined(INTEGERS)
 #define INTEGERS
 typedef unsigned char uchar;
 typedef unsigned short ushort;
@@ -44,11 +44,11 @@ struct struct_fmt {
     X(int, i)
 #endif
 
-#ifndef STRUCT_NAME
+#if !defined(STRUCT_NAME)
     #error "Did not define STRUCT_NAME before including fmtgen.h"
 #endif
 
-#ifndef STRUCT_FIELDS
+#if !defined(STRUCT_FIELDS)
     #error "Did not define STRUCT_FIELDS before including fmtgen.h"
 #endif
 

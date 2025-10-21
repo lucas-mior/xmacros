@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UTIL_C
+#if !defined(UTIL_C)
 #define UTIL_C
 
 #include <errno.h>
@@ -40,19 +40,19 @@
 #define SIZEMB(X) ((size_t)(X)*1024ul*1024ul)
 #define SIZEGB(X) ((size_t)(X)*1024ul*1024ul*1024ul)
 
-#ifndef LENGTH
+#if !defined(LENGTH)
 #define LENGTH(x) (isize)((sizeof(x) / sizeof(*x)))
 #endif
-#ifndef SNPRINTF
+#if !defined(SNPRINTF)
 #define SNPRINTF(BUFFER, FORMAT, ...)                                          \
     snprintf2(BUFFER, sizeof(BUFFER), FORMAT, __VA_ARGS__)
 #endif
-#ifndef ARRAY_STRING
+#if !defined(ARRAY_STRING)
 #define ARRAY_STRING(BUFFER, SEP, ARRAY, LENGTH)                               \
     array_string(BUFFER, sizeof(BUFFER), SEP, ARRAY, LENGTH)
 #endif
 
-#ifndef DEBUGGING
+#if !defined(DEBUGGING)
 #define DEBUGGING 0
 #endif
 
@@ -74,7 +74,7 @@
 #define ALIGN(x) UTIL_ALIGN(x, ALIGNMENT)
 #endif
 
-#ifndef INTEGERS
+#if !defined(INTEGERS)
 #define INTEGERS
 typedef unsigned char uchar;
 typedef unsigned short ushort;
@@ -134,7 +134,7 @@ util_nthreads(void) {
 }
 #endif
 
-#ifndef __WIN32__
+#if !defined(__WIN32__)
 void *
 xmmap_commit(size_t *size) {
     void *p;
@@ -420,7 +420,7 @@ error(char *format, ...) {
 
     buffer[n] = '\0';
     write(STDERR_FILENO, buffer, (size_t)n);
-#ifndef __WIN32__
+#if !defined(__WIN32__)
     fsync(STDERR_FILENO);
     fsync(STDOUT_FILENO);
 #endif
@@ -630,7 +630,7 @@ send_signal(const char *executable, const int32 signal_number) {
     return;
 }
 #else
-#ifndef __WIN32__
+#if !defined(__WIN32__)
 void
 send_signal(const char *executable, const int32 signal_number) {
     char signal_string[14];
