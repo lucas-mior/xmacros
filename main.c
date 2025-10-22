@@ -3,6 +3,8 @@
 #include <limits.h>
 #include <stdint.h>
 
+static char *program;
+
 #define STRUCT_NAME NumberStruct
 #define STRUCT_FIELDS                                                          \
     X(char, ic)                                                                \
@@ -61,7 +63,7 @@ main(int argc, char **argv) {
     BigStruct *pbig = &big;
 
     (void)argc;
-    (void)argv;
+    program = argv[0];
 
     STRUCT_PRINT(&small);
     STRUCT_PRINT(&mine);
