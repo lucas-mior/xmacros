@@ -18,6 +18,7 @@ if [ $CC = "clang" ]; then
     CFLAGS="$CFLAGS -Wno-double-promotion"
     CFLAGS="$CFLAGS -Wno-constant-logical-operand"
     CFLAGS="$CFLAGS -Wno-padded"
+    CFLAGS="$CFLAGS -Wno-implicit-void-ptr-cast"
 fi
 
 $CC $CFLAGS main.c -o ./xmacros
