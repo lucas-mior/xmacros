@@ -43,6 +43,7 @@ static char *program = __FILE__;
 #define TESTING_util 0
 #endif
 
+
 #if !defined(SIZEKB)
 #define SIZEKB(X) ((size_t)(X)*1024ul)
 #define SIZEMB(X) ((size_t)(X)*1024ul*1024ul)
