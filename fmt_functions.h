@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
-#include "util.c"
+
+#define error(...) fprintf(stderr, __VA_ARGS__)
 
 #if __INCLUDE_LEVEL__ == 0
 #define EXPAND_STRUCTS STRUCT(SmallStruct)
@@ -76,8 +77,6 @@ if(!strcmp(type, #TYPE " *")) {  \
         PRIMITIVE(uint16, "%u\n")
         PRIMITIVE(uint32, "%u\n")
         PRIMITIVE(uint64, "%lu\n")
-        PRIMITIVE(usize, "%zu\n")
-        PRIMITIVE(isize, "%zd\n")
         PRIMITIVE(void *, "%p\n")
 
         EXPAND_STRUCTS
