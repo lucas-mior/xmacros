@@ -50,7 +50,7 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
         printf(GREEN"%s"RESET" %s = ", fmt->struct_name, name);
     printf("{\n");
 
-    for (size_t i = 0; i < fmt->num_members; i++) {
+    for (size_t i = 0; i < fmt->num_members; i += 1) {
         const char *type = fmt->types[i];
         void *pointer = ((unsigned char*)structure)+fmt->offsets[i];
         for (int j = 0; j < nested; j += 1)
@@ -96,7 +96,7 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
 
 static void
 print_buffer(unsigned char *buffer, size_t size) {
-    for (size_t j = 0; j < size; j++) {
+    for (size_t j = 0; j < size; j += 1) {
         printf(" %02x", buffer[j]);
     }
 }
@@ -105,7 +105,7 @@ static size_t
 struct_pack(struct struct_fmt *fmt, void *structure, unsigned char *buffer) {
     size_t pos = 0;
 
-    for (size_t i = 0; i < fmt->num_members; i++) {
+    for (size_t i = 0; i < fmt->num_members; i += 1) {
         memcpy(buffer+pos, ((unsigned char*)structure)+fmt->offsets[i], fmt->sizes[i]);
         pos += fmt->sizes[i];
     }
@@ -117,7 +117,7 @@ static size_t
 struct_unpack(struct struct_fmt *fmt, unsigned char *buffer, void *structure) {
     size_t pos = 0;
 
-    for (size_t i = 0; i < fmt->num_members; i++) {
+    for (size_t i = 0; i < fmt->num_members; i += 1) {
         memcpy(((unsigned char*)structure)+fmt->offsets[i], buffer+pos, fmt->sizes[i]);
         pos += fmt->sizes[i];
     }
