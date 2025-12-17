@@ -21,26 +21,26 @@ static void
 struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nested) {
 
 #define PRIMITIVE(TYPE, fmt) \
-if (!strcmp(type, #TYPE) || !strcmp(type, "signed "#TYPE)) {  \
-    printf(fmt, *(TYPE *) pointer);  \
-    continue;  \
-}
+    if (!strcmp(type, #TYPE) || !strcmp(type, "signed "#TYPE)) {  \
+        printf(fmt, *(TYPE *) pointer);  \
+        continue;  \
+    }
 #define STRUCT(TYPE) \
-if (!strcmp(type, #TYPE)) {  \
-    struct_print(&TYPE##_fmt, fmt->names[i], pointer, ++nested);  \
-    if (nested) { \
-        nested -= 1;  \
-    } \
-    continue;  \
-}  \
-if(!strcmp(type, #TYPE " *")) {  \
-    TYPE **tmp = pointer;  \
-    struct_print(&TYPE##_fmt, fmt->names[i], *tmp, ++nested);  \
-    if (nested) { \
-        nested -= 1;  \
-    } \
-    continue;  \
-}
+    if (!strcmp(type, #TYPE)) {  \
+        struct_print(&TYPE##_fmt, fmt->names[i], pointer, ++nested);  \
+        if (nested) { \
+            nested -= 1;  \
+        } \
+        continue;  \
+    }  \
+    if(!strcmp(type, #TYPE " *")) {  \
+        TYPE **tmp = pointer;  \
+        struct_print(&TYPE##_fmt, fmt->names[i], *tmp, ++nested);  \
+        if (nested) { \
+            nested -= 1;  \
+        } \
+        continue;  \
+    }
 
 #define GREEN "\x1b[32m"
 #define RED "\x1b[31m"
