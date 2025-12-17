@@ -17,6 +17,10 @@
 #error "EXPAND_STRUCTS is undefined"
 #endif
 
+#define GREEN "\x1b[32m"
+#define RED "\x1b[31m"
+#define RESET "\x1b[0m"
+
 static void
 struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nested) {
 
@@ -41,10 +45,6 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
         } \
         continue;  \
     }
-
-#define GREEN "\x1b[32m"
-#define RED "\x1b[31m"
-#define RESET "\x1b[0m"
 
     if (!nested)
         printf(GREEN"%s"RESET" %s = ", fmt->struct_name, name);
