@@ -77,7 +77,7 @@ typedef struct StructFormat {
     size_t *sizes;
     char **names;
     char **types;
-    int32 *type_ids; /* Stores enum Type or TYPE_STRUCT */
+    int32 *type_ids;
 } StructFormat;
 
 static void
