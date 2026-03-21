@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#if !defined(__INCLUDE_LEVEL__) || (__INCLUDE_LEVEL__ >= 1)
 #if !defined(EXPAND_STRUCTS)
 #error "EXPAND_STRUCTS is undefined"
+#endif
 #endif
 
 static void
