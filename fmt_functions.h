@@ -24,7 +24,8 @@
 
 static void
 dispatch_print(void *pointer, char *type, char *name, int32 nested) {
-    #define STRUCT(TYPE) \
+#undef STRUCT
+#define STRUCT(TYPE) \
     if (strcmp(type, #TYPE) == 0) { \
         CAT(TYPE, _print)((TYPE *)pointer, name, nested); \
         return; \
@@ -36,8 +37,20 @@ dispatch_print(void *pointer, char *type, char *name, int32 nested) {
     }
     
     EXPAND_STRUCTS
-    #undef STRUCT
+#undef STRUCT
 
     print_primitive(pointer, type);
     return;
 }
+
+#define STRUCT(TYPE) TYPE *: CAT(TYPE, _print)((TYPE *)_v, _n, 0),
+
+#define STRUCT_PRINT(VAR) \
+    do { \
+        void *_v = (VAR); \
+        char *_n = #VAR; \
+        _Generic((VAR), \
+            EXPAND_STRUCTS \
+            default: (void)0 \
+        ); \
+    } while (0)

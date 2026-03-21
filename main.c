@@ -37,12 +37,6 @@
     STRUCT(BigStruct)
 #include "fmt_functions.h"
 
-#define STRUCT_PRINT(VAR)                                                      \
-    _Generic((VAR),                                                            \
-        BigStruct *:    BigStruct_print((BigStruct *)(VAR), #VAR, 0),          \
-        NumberStruct *: NumberStruct_print((NumberStruct *)(VAR), #VAR, 0),    \
-        SmallStruct *:  SmallStruct_print((SmallStruct *)(VAR), #VAR, 0))
-
 #define ENUM_NAME WeekDay
 #define ENUM_PREFIX_ WEEK_DAY_
 #define ENUM_FIELDS       \
