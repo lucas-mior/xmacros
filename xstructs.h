@@ -199,11 +199,13 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
 static size_t
 CAT(STRUCT_NAME, _pack)(STRUCT_NAME *structure, uchar *buffer) {
     size_t pos = 0;
+
     #define X(L, R) \
     memcpy(buffer + pos, &structure->R, sizeof(L)); \
     pos += sizeof(L);
     STRUCT_FIELDS
     #undef X
+
     return pos;
 }
 
