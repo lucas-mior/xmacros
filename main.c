@@ -17,19 +17,19 @@
     X(float, f)                                                                \
     X(double, d)                                                               \
     X(long double, ld)
-#include "xstructs.h"
+#include "xstructs.c"
 
 #define STRUCT_NAME SmallStruct
 #define STRUCT_FIELDS                                                          \
     X(char *, string)                                                          \
     X(NumberStruct, number_struct)
-#include "xstructs.h"
+#include "xstructs.c"
 
 #define STRUCT_NAME BigStruct
 #define STRUCT_FIELDS                                                          \
     X(long, l)                                                                 \
     X(SmallStruct *, small_struct)
-#include "xstructs.h"
+#include "xstructs.c"
 
 #define EXPAND_STRUCTS                                                         \
     STRUCT(SmallStruct)                                                        \
@@ -48,7 +48,7 @@
     X(THURSDAY)       \
     X(FRIDAY, 5)      \
     X(SATURDAY, 20)
-#include "xenums.h"
+#include "xenums.c"
 
 #define ENUM_NAME PowerOfTwo
 #define ENUM_PREFIX_ POWER_OF2_
@@ -62,7 +62,7 @@
     X(THIRTY2)      \
     X(SIXTY4)       \
 
-#include "xenums.h"
+#include "xenums.c"
 
 int
 main(int argc, char **argv) {

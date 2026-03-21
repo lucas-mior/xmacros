@@ -239,8 +239,34 @@ CAT(STRUCT_NAME, _unpack)(uchar *buffer, STRUCT_NAME *structure) {
 #include "fmt_functions.h"
 
 int main(void) {
-    ASSERT(true);
-    exit(EXIT_SUCCESS);
+    ExampleStruct original;
+    ExampleStruct restored;
+    uchar *buffer;
+    size_t packed_size;
+
+    original.x = 1337;
+    original.str = "Metaprogramming logic";
+
+    ASSERT(strcmp(ExampleStruct_fmt.struct_name, "ExampleStruct") == 0);
+    ASSERT(ExampleStruct_fmt.num_members == 2);
+    ASSERT(ExampleStruct_fmt.struct_size == sizeof(ExampleStruct));
+    ASSERT(ExampleStruct_fmt.packed_size == (sizeof(int) + sizeof(char *)));
+
+    if ((buffer = xmalloc(ExampleStruct_fmt.packed_size)) == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    packed_size = ExampleStruct_pack(&original, buffer);
+    ASSERT(packed_size == ExampleStruct_fmt.packed_size);
+
+    ExampleStruct_unpack(buffer, &restored);
+    ASSERT(restored.x == 1337);
+    ASSERT(strcmp(restored.str, "Metaprogramming logic") == 0);
+
+    STRUCT_PRINT(&original);
+
+    free(buffer);
+    return EXIT_SUCCESS;
 }
 
 #endif
