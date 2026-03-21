@@ -74,13 +74,11 @@ main(int argc, char **argv) {
     {
         char *str_ptr;
 
-        /* Standard Enum Tests */
         ASSERT_EQUAL(WEEK_DAY_str(WEEK_DAY_SUNDAY), "WEEK_DAY_SUNDAY");
         ASSERT_EQUAL(WEEK_DAY_str(WEEK_DAY_MONDAY), "WEEK_DAY_MONDAY");
         ASSERT_EQUAL(WEEK_DAY_str(WEEK_DAY_SATURDAY), "WEEK_DAY_SATURDAY");
         ASSERT_EQUAL(WEEK_DAY_str(999), "Unknown value");
 
-        /* Bitflag Enum Tests */
         if ((str_ptr = POWER_OF2_str(POWER_OF2_ONE))) {
             ASSERT_EQUAL(str_ptr, "POWER_OF2_ONE");
             free(str_ptr);
@@ -95,6 +93,8 @@ main(int argc, char **argv) {
     }
 
     {
+        size_t expected_small_size = sizeof(char *) + sizeof(NumberStruct);
+
         ASSERT_EQUAL(NumberStruct_fmt.num_members, 11);
         ASSERT_EQUAL(SmallStruct_fmt.num_members, 2);
         ASSERT_EQUAL(BigStruct_fmt.num_members, 2);
@@ -103,8 +103,6 @@ main(int argc, char **argv) {
         ASSERT_EQUAL(SmallStruct_fmt.names[0], "string");
         ASSERT_EQUAL(SmallStruct_fmt.types[0], "char *");
 
-        /* Check packed size against manual calculation */
-        size_t expected_small_size = sizeof(char *) + sizeof(NumberStruct);
         ASSERT_EQUAL(SmallStruct_fmt.packed_size, expected_small_size);
     }
 

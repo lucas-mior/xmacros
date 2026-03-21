@@ -28,9 +28,13 @@ if [ $CC = "clang" ]; then
     CFLAGS="$CFLAGS -Wno-implicit-int-enum-cast"
     CFLAGS="$CFLAGS -Wno-c++-keyword"
     CFLAGS="$CFLAGS -Wno-float-equal"
+
     # there is a portable (slower to compile)
     # callback when not using gcc nor clang, see generic.c
     CFLAGS="$CFLAGS -Wno-gnu-union-cast"
+
+    # this is needed to work with bit flags (enum values are powers of 2)
+    CFLAGS="$CFLAGS -Wno-assign-enum"
 fi
 
 $CC $CFLAGS main.c -o ./xmacros
