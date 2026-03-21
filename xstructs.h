@@ -223,8 +223,10 @@ CAT(STRUCT_NAME, _unpack)(uchar *buffer, STRUCT_NAME *structure) {
 
 #if TESTING_xstructs
 #include "assert.c"
+
 int main(void) {
     ASSERT(true);
     exit(EXIT_SUCCESS);
 }
+
 #endif
