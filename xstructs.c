@@ -99,7 +99,7 @@ print_primitive(void *pointer, char *type) {
     PRIMITIVE_PRINT(char *, "\"%s\"\n", char *)
     PRIMITIVE_PRINT(float, "%f\n", float)
     PRIMITIVE_PRINT(double, "%f\n", double)
-    PRIMITIVE_PRINT(long double, "%Lf\n", long double)
+    PRIMITIVE_PRINT(ldouble, "%Lf\n", long double)
     PRIMITIVE_PRINT(int8, "%d\n", int8)
     PRIMITIVE_PRINT(int16, "%d\n", int16)
     PRIMITIVE_PRINT(int32, "%d\n", int32)
