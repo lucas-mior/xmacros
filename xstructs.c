@@ -61,9 +61,12 @@ typedef long double ldouble;
 #if !defined(XSTRUCT_UTILS)
 #define XSTRUCT_UTILS
 
-#define GREEN "\x1b[32m"
+#if !defined(RED) || !defined(GREEN) || !defined(YELLOW) || !defined(RESET)
 #define RED   "\x1b[31m"
+#define GREEN "\x1b[32m"
+#define YELLOW "\x1b[33m"
 #define RESET "\x1b[0m"
+#endif
 
 typedef struct StructFormat {
     char *struct_name;
