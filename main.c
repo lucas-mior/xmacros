@@ -34,7 +34,7 @@
     X(uint, ui)                                                                \
     X(long, il)                                                                \
     X(ulong, ul)                                                               \
-    X(float, f)                                                                \
+    X(float, f, 10)                                                            \
     X(double, d)                                                               \
     X(long double, ld)
 #include "xstructs.c"
@@ -133,7 +133,7 @@ main(int argc, char **argv) {
             .ui = UINT_MAX,
             .il = LONG_MAX,
             .ul = ULONG_MAX,
-            .f = 0.5f,
+            .f = {0.0f, 1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f, 7.7f, 8.8f, 9.9f},
             .d = 0.5,
             .ld = 0.5
         };
@@ -162,6 +162,10 @@ main(int argc, char **argv) {
         ASSERT_EQUAL(original_num.ui, restored_num.ui);
         ASSERT_EQUAL(original_num.ld, restored_num.ld);
 
+        for (int32 i = 0; i < 10; i += 1) {
+            ASSERT_EQUAL(original_num.f[i], restored_num.f[i]);
+        }
+
         if ((s_buf = xmalloc(SmallStruct_fmt.packed_size)) == NULL) {
             free(n_buf);
             return EXIT_FAILURE;
@@ -172,8 +176,11 @@ main(int argc, char **argv) {
         ASSERT_EQUAL(original_small.string, restored_small.string);
         ASSERT_EQUAL(original_small.number_struct.ii,
                      restored_small.number_struct.ii);
-        ASSERT_EQUAL(original_small.number_struct.f,
-                     restored_small.number_struct.f);
+        
+        for (int32 i = 0; i < 10; i += 1) {
+            ASSERT_EQUAL(original_small.number_struct.f[i],
+                         restored_small.number_struct.f[i]);
+        }
 
         printf("--- Printing BigStruct (Includes Pointer to SmallStruct) ---\n");
         STRUCT_PRINT(&big_val);
@@ -186,6 +193,7 @@ main(int argc, char **argv) {
 
         free(n_buf);
         free(s_buf);
+        PRINT(original_num.f[0]);
     }
 
     printf("\nmain.c: All comprehensive tests passed.\n");

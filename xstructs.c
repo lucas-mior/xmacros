@@ -23,6 +23,10 @@
 
 #include "generic.c"
 
+#if !defined(LENGTH)
+#define LENGTH(X) (int64)(sizeof(X)/sizeof(*X))
+#endif
+
 #define xmalloc(x) malloc(x)
 #define memcpy64(a, b, c) memcpy(a, b, c)
 
@@ -92,6 +96,7 @@ typedef struct StructFormat {
     size_t packed_size;
     size_t *offsets;
     size_t *sizes;
+    size_t *array_lens;
     char **names;
     char **types;
     enum Type *type_ids;
@@ -147,13 +152,34 @@ print_primitive(void *pointer, int32 type_id) {
     X(uint, ui)                                                                \
     X(long, il)                                                                \
     X(ulong, ul)                                                               \
-    X(float, f)                                                                \
+    X(float, f, 10)                                                            \
     X(double, d)                                                               \
     X(long double, ld)
 #endif
 
+#define X_STRUCT_2(L, R)    L R;
+#define X_STRUCT_3(L, R, N) L R[N];
+
+#define X_OFF_2(L, R)     offsetof(STRUCT_NAME, R),
+#define X_OFF_3(L, R, N)  offsetof(STRUCT_NAME, R),
+
+#define X_SIZE_2(L, R)      sizeof(((STRUCT_NAME*)0)->R),
+#define X_SIZE_3(L, R, N)   sizeof(((STRUCT_NAME*)0)->R),
+
+#define X_ALEN_2(L, R)      0,
+#define X_ALEN_3(L, R, N)   N,
+
+#define X_NAME_2(L, R)      #R,
+#define X_NAME_3(L, R, N)   #R,
+
+#define X_TYPE_2(L, R)      #L,
+#define X_TYPE_3(L, R, N)   #L,
+
+#define X_TID_2(L, R)       TYPEID(((STRUCT_NAME*)0)->R),
+#define X_TID_3(L, R, N)    TYPEID(((STRUCT_NAME*)0)->R[0]),
+
 typedef struct STRUCT_NAME {
-    #define X(L, R) L R;
+    #define X(...) SELECT_ON_NUM_ARGS(X_STRUCT_, __VA_ARGS__)
     STRUCT_FIELDS
     #undef X
 } STRUCT_NAME;
@@ -161,40 +187,53 @@ typedef struct STRUCT_NAME {
 static StructFormat CAT(STRUCT_NAME, _fmt) = {
     .struct_name = QUOTE(STRUCT_NAME),
     .num_members = (
-    #define X(L, R) 1 +
+        #define X_C2(L, R) 1 +
+        #define X_C3(L, R, N) 1 +
+        #define X(...) SELECT_ON_NUM_ARGS(X_C, __VA_ARGS__)
         STRUCT_FIELDS 
-    #undef X
-    0),
+        #undef X
+        #undef X_C2
+        #undef X_C3
+        0),
     .struct_size = sizeof(STRUCT_NAME),
     .packed_size = (
-    #define X(L, R) sizeof(L) +
+        #define X_P2(L, R) sizeof(((STRUCT_NAME*)0)->R) +
+        #define X_P3(L, R, N) sizeof(((STRUCT_NAME*)0)->R) +
+        #define X(...) SELECT_ON_NUM_ARGS(X_P, __VA_ARGS__)
         STRUCT_FIELDS 
-    #undef X 
-    0),
+        #undef X
+        #undef X_P2
+        #undef X_P3
+        0),
     .offsets = (size_t[]){
-    #define X(L, R) offsetof(STRUCT_NAME, R),
-        STRUCT_FIELDS 
-    #undef X
+        #define X(...) SELECT_ON_NUM_ARGS(X_OFF_, __VA_ARGS__)
+        STRUCT_FIELDS
+        #undef X
     },
     .sizes = (size_t[]){
-    #define X(L, R) sizeof(L),
-        STRUCT_FIELDS 
-    #undef X
+        #define X(...) SELECT_ON_NUM_ARGS(X_SIZE_, __VA_ARGS__)
+        STRUCT_FIELDS
+        #undef X
+    },
+    .array_lens = (size_t[]){
+        #define X(...) SELECT_ON_NUM_ARGS(X_ALEN_, __VA_ARGS__)
+        STRUCT_FIELDS
+        #undef X
     },
     .names = (char *[]){
-    #define X(L, R) #R,
-        STRUCT_FIELDS 
-    #undef X
+        #define X(...) SELECT_ON_NUM_ARGS(X_NAME_, __VA_ARGS__)
+        STRUCT_FIELDS
+        #undef X
     },
     .types = (char *[]){
-    #define X(L, R) #L,
-        STRUCT_FIELDS 
-    #undef X
+        #define X(...) SELECT_ON_NUM_ARGS(X_TYPE_, __VA_ARGS__)
+        STRUCT_FIELDS
+        #undef X
     },
     .type_ids = (enum Type []){
-    #define X(L, R) TYPEID(((STRUCT_NAME*)0)->R),
+        #define X(...) SELECT_ON_NUM_ARGS(X_TID_, __VA_ARGS__)
         STRUCT_FIELDS
-    #undef X
+        #undef X
     },
 };
 
@@ -209,14 +248,29 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
     }
     printf("{\n");
 
-    #define X(L, R) \
-    for (int32 j = 0; j <= nested; j += 1) { \
-        printf("\t"); \
-    } \
-    printf(GREEN #L RESET " " #R " = "); \
-    dispatch_print(&structure->R, TYPEID(structure->R), #L, #R, nested + 1);
+    #define X_PR2(L, R) \
+        for (int32 j = 0; j <= nested; j += 1) { \
+            printf("\t"); \
+        } \
+        printf(GREEN #L RESET " " #R " = "); \
+        dispatch_print(&structure->R, TYPEID(structure->R), #L, #R, nested + 1);
+
+    #define X_PR3(L, R, N) \
+        for (int32 i = 0; i < N; i += 1) { \
+            for (int32 j = 0; j <= nested; j += 1) { \
+                printf("\t"); \
+            } \
+            char buf[128]; \
+            snprintf(buf, sizeof(buf), "%s[%d]", #R, i); \
+            printf(GREEN #L RESET " " #R "[%d] = ", i); \
+            dispatch_print(&structure->R[i], TYPEID(structure->R[0]), #L, buf, nested + 1); \
+        }
+
+    #define X(...) SELECT_ON_NUM_ARGS(X_PR, __VA_ARGS__)
     STRUCT_FIELDS
     #undef X
+    #undef X_PR2
+    #undef X_PR3
 
     for (int32 j = 0; j < nested; j += 1) {
         printf("\t");
@@ -232,22 +286,34 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
 static size_t
 CAT(STRUCT_NAME, _pack)(STRUCT_NAME *structure, uchar *buffer) {
     size_t pos = 0;
-    #define X(L, R) \
-    memcpy(buffer + pos, &structure->R, sizeof(L)); \
-    pos += sizeof(L);
+    #define X_PK2(L, R) \
+        memcpy64(buffer + pos, &structure->R, sizeof(structure->R)); \
+        pos += sizeof(structure->R);
+    #define X_PK3(L, R, N) \
+        memcpy64(buffer + pos, structure->R, sizeof(structure->R)); \
+        pos += sizeof(structure->R);
+    #define X(...) SELECT_ON_NUM_ARGS(X_PK, __VA_ARGS__)
     STRUCT_FIELDS
     #undef X
+    #undef X_PK2
+    #undef X_PK3
     return pos;
 }
 
 static size_t
 CAT(STRUCT_NAME, _unpack)(uchar *buffer, STRUCT_NAME *structure) {
     size_t pos = 0;
-    #define X(L, R) \
-    memcpy(&structure->R, buffer + pos, sizeof(L)); \
-    pos += sizeof(L);
+    #define X_UP2(L, R) \
+        memcpy64(&structure->R, buffer + pos, sizeof(structure->R)); \
+        pos += sizeof(structure->R);
+    #define X_UP3(L, R, N) \
+        memcpy64(structure->R, buffer + pos, sizeof(structure->R)); \
+        pos += sizeof(structure->R);
+    #define X(...) SELECT_ON_NUM_ARGS(X_UP, __VA_ARGS__)
     STRUCT_FIELDS
     #undef X
+    #undef X_UP2
+    #undef X_UP3
     return pos;
 }
 
@@ -274,38 +340,37 @@ int main(void) {
     original.ui = UINT_MAX;
     original.il = LONG_MAX;
     original.ul = ULONG_MAX;
-    original.f = 0.5f;
+    for (int32 i = 0; i < LENGTH(original.f); i += 1) {
+        original.f[i] = 0.5f;
+    }
     original.d = 0.5;
     original.ld = 0.5;
 
     ASSERT_EQUAL(ExampleStruct_fmt.struct_name, "ExampleStruct");
 
-    if ((buffer = malloc(ExampleStruct_fmt.packed_size)) == NULL) {
-        return EXIT_FAILURE;
+    if ((buffer = xmalloc(ExampleStruct_fmt.packed_size))) {
+        packed_size = ExampleStruct_pack(&original, buffer);
+        ASSERT(packed_size == ExampleStruct_fmt.packed_size);
+
+        ExampleStruct_unpack(buffer, &restored);
+
+        STRUCT_PRINT(&original);
+        STRUCT_PRINT(&restored);
+
+        ASSERT_EQUAL(original.ic, restored.ic);
+        ASSERT_EQUAL(original.uc, restored.uc);
+        ASSERT_EQUAL(original.is, restored.is);
+        ASSERT_EQUAL(original.us, restored.us);
+        ASSERT_EQUAL(original.ii, restored.ii);
+        ASSERT_EQUAL(original.ui, restored.ui);
+        ASSERT_EQUAL(original.il, restored.il);
+        ASSERT_EQUAL(original.ul, restored.ul);
+        ASSERT_EQUAL(original.d,  restored.d);
+        ASSERT_EQUAL(original.ld, restored.ld);
+
+        free(buffer);
     }
-
-    packed_size = ExampleStruct_pack(&original, buffer);
-    ASSERT(packed_size == ExampleStruct_fmt.packed_size);
-
-    ExampleStruct_unpack(buffer, &restored);
-
-    STRUCT_PRINT(&original);
-    STRUCT_PRINT(&restored);
-
-    ASSERT_EQUAL(original.ic, restored.ic);
-    ASSERT_EQUAL(original.uc, restored.uc);
-    ASSERT_EQUAL(original.is, restored.is);
-    ASSERT_EQUAL(original.us, restored.us);
-    ASSERT_EQUAL(original.ii, restored.ii);
-    ASSERT_EQUAL(original.ui, restored.ui);
-    ASSERT_EQUAL(original.il, restored.il);
-    ASSERT_EQUAL(original.ul, restored.ul);
-    ASSERT_EQUAL(original.f,  restored.f);
-    ASSERT_EQUAL(original.d,  restored.d);
-    ASSERT_EQUAL(original.ld, restored.ld);
-
-    free(buffer);
+    
     return EXIT_SUCCESS;
 }
-
 #endif
