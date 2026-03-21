@@ -54,12 +54,11 @@ dispatch_print(void *pointer,
 
 #define STRUCT(TYPE) TYPE *: CAT(TYPE, _print)((TYPE *)_v, _n, 0),
 
-#define STRUCT_PRINT(VAR) \
-    do { \
-        void *_v = (VAR); \
-        char *_n = #VAR; \
-        _Generic((VAR), \
-            EXPAND_STRUCTS \
-            default: (void)0 \
-        ); \
-    } while (0)
+#define STRUCT_PRINT(VAR) do { \
+    void *_v = (VAR); \
+    char *_n = #VAR; \
+    _Generic((VAR), \
+        EXPAND_STRUCTS \
+        default: (void)0 \
+    ); \
+} while (0)
