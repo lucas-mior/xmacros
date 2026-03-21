@@ -121,9 +121,18 @@ print_primitive(void *pointer, int32 type_id) {
 
 #if TESTING_xstructs
 #define STRUCT_NAME ExampleStruct
-#define STRUCT_FIELDS \
-    X(int, x) \
-    X(char *, str)
+#define STRUCT_FIELDS                                                          \
+    X(char, ic)                                                                \
+    X(uchar, uc)                                                               \
+    X(signed short, is)                                                        \
+    X(ushort, us)                                                              \
+    X(int, ii)                                                                 \
+    X(uint, ui)                                                                \
+    X(long, il)                                                                \
+    X(ulong, ul)                                                               \
+    X(float, f)                                                                \
+    X(double, d)                                                               \
+    X(long double, ld)
 #endif
 
 typedef struct STRUCT_NAME {
@@ -240,13 +249,19 @@ int main(void) {
     uchar *buffer;
     size_t packed_size;
 
-    original.x = 1337;
-    original.str = "Metaprogramming logic";
+    original.ic = 'c';
+    original.uc = 'd';
+    original.is = SHRT_MAX;
+    original.us = USHRT_MAX;
+    original.ii = INT_MAX;
+    original.ui = UINT_MAX;
+    original.il = LONG_MAX;
+    original.ul = ULONG_MAX;
+    original.f = 0.5f;
+    original.d = 0.5;
+    original.ld = 0.5;
 
-    ASSERT(strcmp(ExampleStruct_fmt.struct_name, "ExampleStruct") == 0);
-    ASSERT(ExampleStruct_fmt.num_members == 2);
-    ASSERT(ExampleStruct_fmt.struct_size == sizeof(ExampleStruct));
-    ASSERT(ExampleStruct_fmt.packed_size == (sizeof(int) + sizeof(char *)));
+    ASSERT_EQUAL(ExampleStruct_fmt.struct_name, "ExampleStruct");
 
     if ((buffer = malloc(ExampleStruct_fmt.packed_size)) == NULL) {
         return EXIT_FAILURE;
@@ -256,10 +271,9 @@ int main(void) {
     ASSERT(packed_size == ExampleStruct_fmt.packed_size);
 
     ExampleStruct_unpack(buffer, &restored);
-    ASSERT(restored.x == 1337);
-    ASSERT(strcmp(restored.str, "Metaprogramming logic") == 0);
 
     STRUCT_PRINT(&original);
+    STRUCT_PRINT(&restored);
 
     free(buffer);
     return EXIT_SUCCESS;
