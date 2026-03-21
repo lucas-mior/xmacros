@@ -21,7 +21,7 @@
 #error "xenums.h requires ENUM_NAME, ENUM_PREFIX_, and ENUM_FIELDS defined."
 #endif
 
-typedef enum ENUM_NAME {
+enum ENUM_NAME {
 #if !defined(ENUM_IS_FLAGS)
     #define XENUM_DEF_1(e)    CAT(ENUM_PREFIX_, e),
 #endif
@@ -34,7 +34,7 @@ typedef enum ENUM_NAME {
     #undef XENUM_DEF_1
     #undef XENUM_DEF_2
     CAT(ENUM_PREFIX_, LAST)
-} ENUM_NAME;
+};
 
 static char *
 CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
