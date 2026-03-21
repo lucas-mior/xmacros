@@ -27,6 +27,10 @@ if [ $CC = "clang" ]; then
     CFLAGS="$CFLAGS -Wno-covered-switch-default"
     CFLAGS="$CFLAGS -Wno-implicit-int-enum-cast"
     CFLAGS="$CFLAGS -Wno-c++-keyword"
+    CFLAGS="$CFLAGS -Wno-float-equal"
+    # there is a portable (slower to compile)
+    # callback when not using gcc nor clang, see generic.c
+    CFLAGS="$CFLAGS -Wno-gnu-union-cast"
 fi
 
 $CC $CFLAGS main.c -o ./xmacros
