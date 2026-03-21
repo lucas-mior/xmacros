@@ -349,19 +349,19 @@ _Generic((x), \
 #endif
 
 #define PRINT_SIGNED(VAR, TYPE) \
-  fprintf(stderr, "[%s%lld]%s = %lld ", \
+  fprintf(stderr, "["GREEN"%s%lld"RESET"]%s = %lld ", \
                   typename(TYPE), typebits(TYPE), #VAR, (llong)(VAR))
 
 #define PRINT_UNSIGNED(VAR, TYPE) \
-  fprintf(stderr, "[%s%lld]%s = %llu ", \
+  fprintf(stderr, "["GREEN"%s%lld"RESET"]%s = %llu ", \
                   typename(TYPE), typebits(TYPE), #VAR, (ullong)(VAR))
 
 #define PRINT_LDOUBLE(VAR, TYPE) \
-  fprintf(stderr, "[%s%lld]%s = %Lf ", \
+  fprintf(stderr, "["GREEN"%s%lld"RESET"]%s = %Lf ", \
                   typename(TYPE), typebits(TYPE), #VAR, LDOUBLE_GET2(VAR, TYPE))
 
 #define PRINT_OTHER(VAR, TYPE, FORMAT, CAST) \
-  fprintf(stderr, "[%s%lld]%s = "FORMAT" ", \
+  fprintf(stderr, "["GREEN"%s%lld"RESET"]%s = "FORMAT" ", \
                   typename(TYPE), typebits(TYPE), #VAR, (CAST)(uintptr_t)(VAR))
 
 #define PRINT(VAR) \
