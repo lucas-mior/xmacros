@@ -118,12 +118,12 @@ static StructFormat CAT(STRUCT_NAME, _fmt) = {
     #define X(L, R) offsetof(STRUCT_NAME, R),
         STRUCT_FIELDS 
     #undef X
-},
+    },
     .sizes = (size_t[]){
     #define X(L, R) sizeof(L),
         STRUCT_FIELDS 
     #undef X
-},
+    },
     .names = (char *[]){
     #define X(L, R) #R,
         STRUCT_FIELDS 
