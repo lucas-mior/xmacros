@@ -120,9 +120,9 @@ main(int argc, char **argv) {
         }
     }
 
-    for (enum PowerOfTwo x = 0; x < POWER_OF2_LAST; x += 1) {
+    for (enum PowerOfTwo x = POWER_OF2_ONE; x < POWER_OF2_LAST; x += 1) {
         char *value_name = POWER_OF2_str(x);
-        printf("enum[%d] = %s\n", x, value_name);
+        printf("enum[%u] = %s\n", x, value_name);
     }
     exit(0);
 
