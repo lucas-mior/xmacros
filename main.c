@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <limits.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 static char *program;
 
@@ -54,7 +55,6 @@ static char *program;
     X(THURSDAY)       \
     X(FRIDAY, 5)      \
     X(SATURDAY, 20)
-
 #include "xenums.h"
 
 int
@@ -72,15 +72,14 @@ main(int argc, char **argv) {
                          .ld = 0.5};
     SmallStruct small = {.string = "superstring", .number_struct = mine};
     BigStruct big = {.l = 100, .small_struct = &small};
-
     BigStruct *pbig = &big;
-
-    for (enum WeekDay day = 0u; day < WEEK_DAY_LAST; day += 1) {
-        printf("day[%u] = %s\n", day, WEEK_DAY_str(day));
-    }
 
     (void)argc;
     program = argv[0];
+
+    for (enum WeekDay day = WEEK_DAY_SUNDAY; day < WEEK_DAY_LAST; day += 1) {
+        printf("day[%u] = %s\n", day, WEEK_DAY_str(day));
+    }
 
     STRUCT_PRINT(&small);
     STRUCT_PRINT(&mine);
@@ -90,21 +89,24 @@ main(int argc, char **argv) {
     {
         SmallStruct small_struct_from_buffer;
         NumberStruct number_struct_from_buffer;
-
         uchar *small_struct_buffer;
         uchar *number_struct_buffer;
 
-        small_struct_buffer = malloc(SmallStruct_fmt.packed_size);
-        number_struct_buffer = malloc(NumberStruct_fmt.packed_size);
+        if ((small_struct_buffer = malloc(SmallStruct_fmt.packed_size)) == NULL) {
+            exit(EXIT_FAILURE);
+        }
+        if ((number_struct_buffer = malloc(NumberStruct_fmt.packed_size)) == NULL) {
+            exit(EXIT_FAILURE);
+        }
 
         struct_pack(&SmallStruct_fmt, &small, small_struct_buffer);
         printf("t packed:\n\t");
-        print_buffer(small_struct_buffer, sizeof(small_struct_buffer));
+        print_buffer(small_struct_buffer, SmallStruct_fmt.packed_size);
         printf("\n");
 
         struct_pack(&NumberStruct_fmt, &mine, number_struct_buffer);
         printf("s packed:\n\t");
-        print_buffer(number_struct_buffer, sizeof(small_struct_buffer));
+        print_buffer(number_struct_buffer, NumberStruct_fmt.packed_size);
         printf("\n");
 
         struct_unpack(&SmallStruct_fmt, small_struct_buffer,
