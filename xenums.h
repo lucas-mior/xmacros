@@ -98,7 +98,7 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
     #define XENUM(e) \
         if (val & CAT(ENUM_PREFIX_, e)) { \
             char *name = QUOTE(ENUM_PREFIX_) #e; \
-            int32 len = (int32)strlen32(name); \
+            int32 len = (int32)strlen(name); \
             if (is_first == 0) { \
                 if (buffer_ptr < (buffer_end - 1)) { \
                     *buffer_ptr = '|'; \
@@ -129,7 +129,7 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
 
     *buffer_ptr = '\0';
     final_len = (int64)(buffer_ptr - buffer) + 1;
-    copy = (char *)xmalloc((size_t)final_len);
+    copy = (char *)malloc((size_t)final_len);
     memcpy(copy, buffer, (size_t)final_len);
 
     return copy;
