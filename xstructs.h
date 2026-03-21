@@ -95,11 +95,6 @@ print_primitive(void *pointer, char *type) {
   #endif
 #endif
 
-#define STR_EXPAND(A) #A
-#define STR(A) STR_EXPAND(A)
-#define CAT_EXPAND(A, B) A ## B
-#define CAT(A, B) CAT_EXPAND(A, B)
-
 typedef struct STRUCT_NAME {
     #define X(L, R) L R;
     STRUCT_FIELDS
@@ -107,7 +102,7 @@ typedef struct STRUCT_NAME {
 } STRUCT_NAME;
 
 static StructFormat CAT(STRUCT_NAME, _fmt) = {
-    .struct_name = STR(STRUCT_NAME),
+    .struct_name = QUOTE(STRUCT_NAME),
     .num_members = (
     #define X(L, R) 1 +
         STRUCT_FIELDS 
@@ -148,7 +143,7 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
         return;
     }
     if (nested == 0) {
-        printf(GREEN STR(STRUCT_NAME) RESET " %s = ", name);
+        printf(GREEN QUOTE(STRUCT_NAME) RESET " %s = ", name);
     }
     printf("{\n");
 
@@ -196,7 +191,3 @@ CAT(STRUCT_NAME, _unpack)(uchar *buffer, STRUCT_NAME *structure) {
 
 #undef STRUCT_FIELDS
 #undef STRUCT_NAME
-#undef STR_EXPAND
-#undef STR
-#undef CAT_EXPAND
-#undef CAT
