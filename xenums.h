@@ -34,11 +34,29 @@
   #endif
 #endif
 
+#if defined(ENUM_IS_FLAGS)
+enum CAT(ENUM_NAME, _BitIndices) {
+    #define X_IDX_1(e)    CAT3(ENUM_PREFIX_, e, _BIT_IDX),
+    #define X_IDX_2(e, v) CAT3(ENUM_PREFIX_, e, _BIT_IDX),
+    #define X(...)        SELECT_ON_NUM_ARGS(X_IDX_, __VA_ARGS__)
+
+    ENUM_FIELDS
+
+    #undef X
+    #undef X_IDX_1
+    #undef X_IDX_2
+    CAT(ENUM_PREFIX_, BIT_COUNT)
+};
+#endif
+
 enum ENUM_NAME {
 #if !defined(ENUM_IS_FLAGS)
     #define XENUM_DEF_1(e)    CAT(ENUM_PREFIX_, e),
-#endif
     #define XENUM_DEF_2(e, v) CAT(ENUM_PREFIX_, e) = v,
+#else
+    #define XENUM_DEF_1(e)    CAT(ENUM_PREFIX_, e) = 1 << CAT3(ENUM_PREFIX_, e, _BIT_IDX),
+    #define XENUM_DEF_2(e, v) CAT(ENUM_PREFIX_, e) = v,
+#endif
     #define X(...)            SELECT_ON_NUM_ARGS(XENUM_DEF_, __VA_ARGS__)
     
     ENUM_FIELDS
@@ -77,8 +95,7 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
     int64 final_len;
     char *copy;
 
-    #define XENUM_FL_1(e)
-    #define XENUM_FL_2(e, v) \
+    #define XENUM(e) \
         if (val & CAT(ENUM_PREFIX_, e)) { \
             char *name = QUOTE(ENUM_PREFIX_) #e; \
             int32 len = (int32)strlen32(name); \
@@ -92,13 +109,14 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
             } \
             is_first = 0; \
         }
-    #define X(...) SELECT_ON_NUM_ARGS(XENUM_FL_, __VA_ARGS__)
+
+    #define XENUM_FL_1(e)    XENUM(e)
+    #define X(...)           SELECT_ON_NUM_ARGS(XENUM_FL_, __VA_ARGS__)
 
     ENUM_FIELDS
 
     #undef X
-    #undef XENUM_FL_1
-    #undef XENUM_FL_2
+    #undef XENUM
 
     if (buffer_ptr == buffer) {
         return "NONE";

@@ -68,6 +68,19 @@
     X(SATURDAY, 20)
 #include "xenums.h"
 
+#define ENUM_NAME PowerOfTwo
+#define ENUM_PREFIX_ POWER_OF2_
+#define ENUM_FIELDS \
+    X(ONE,     1 << 0)             \
+    X(TWO,     1 << 1)             \
+    X(FOUR,    1 << 2)             \
+    X(EIGHT,   1 << 3)             \
+    X(SIXTEEN, 1 << 4)             \
+    X(THIRTY2, 1 << 5)             \
+    X(SIXTY4,  1 << 6)             \
+
+#include "xenums.h"
+
 int
 main(int argc, char **argv) {
     NumberStruct mine = {
@@ -105,6 +118,12 @@ main(int argc, char **argv) {
             printf("day[%u] = %s\n", day, s);
         }
     }
+
+    for (enum PowerOfTwo x = 0; x < POWER_OF2_LAST; x += 1) {
+        char *value_name = POWER_OF2_str(x);
+        printf("enum[%d] = %s\n", x, value_name);
+    }
+    exit(0);
 
     STRUCT_PRINT(&small);
     STRUCT_PRINT(&mine);
