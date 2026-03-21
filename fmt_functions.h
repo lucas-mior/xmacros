@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#if !defined(error2)
 #define error(...) fprintf(stderr, __VA_ARGS__)
+#endif
 
 #if __INCLUDE_LEVEL__ == 0
 #define EXPAND_STRUCTS STRUCT(SmallStruct)
@@ -11,7 +13,6 @@
     X(int, i)
 #include "xstructs.h"
 #endif
-
 
 #if !defined(EXPAND_STRUCTS)
 #error "EXPAND_STRUCTS is undefined"
@@ -46,15 +47,17 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
         continue;  \
     }
 
-    if (!nested)
+    if (!nested) {
         printf(GREEN"%s"RESET" %s = ", fmt->struct_name, name);
+    }
     printf("{\n");
 
     for (size_t i = 0; i < fmt->num_members; i += 1) {
         const char *type = fmt->types[i];
         void *pointer = ((unsigned char*)structure)+fmt->offsets[i];
-        for (int j = 0; j < nested; j += 1)
+        for (int j = 0; j < nested; j += 1) {
             printf("\t");
+        }
         printf("\t "GREEN"%s"RESET" %s = ", fmt->types[i], fmt->names[i]);
 
         PRIMITIVE(char, "%c\n")
@@ -87,11 +90,12 @@ struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nest
 
 #undef PRIMITIVE
 #undef STRUCT
-        /* print_buffer(((unsigned char*)structure)+fmt->offsets[i], fmt->sizes[i]); */
     }
-    for (int j = 0; j < nested; j += 1)
+    for (int j = 0; j < nested; j += 1) {
         printf("\t");
+    }
     printf("}\n");
+    return;
 }
 
 static void
@@ -99,6 +103,7 @@ print_buffer(unsigned char *buffer, size_t size) {
     for (size_t j = 0; j < size; j += 1) {
         printf(" %02x", buffer[j]);
     }
+    return;
 }
 
 static size_t
