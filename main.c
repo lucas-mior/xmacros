@@ -40,7 +40,7 @@
 #define ENUM_NAME WeekDay
 #define ENUM_PREFIX_ WEEK_DAY_
 #define ENUM_BITFLAGS 0
-#define ENUM_FIELDS       \
+#define ENUM_FIELDS   \
     X(SUNDAY, 0)      \
     X(MONDAY)         \
     X(TUESDAY, 10)    \
@@ -54,13 +54,13 @@
 #define ENUM_PREFIX_ POWER_OF2_
 #define ENUM_BITFLAGS 1
 #define ENUM_FIELDS \
-    X(ONE) \
-    X(TWO)             \
-    X(FOUR)             \
-    X(EIGHT)             \
-    X(SIXTEEN)             \
-    X(THIRTY2)             \
-    X(SIXTY4)             \
+    X(ONE)          \
+    X(TWO)          \
+    X(FOUR)         \
+    X(EIGHT)        \
+    X(SIXTEEN)      \
+    X(THIRTY2)      \
+    X(SIXTY4)       \
 
 #include "xenums.h"
 
