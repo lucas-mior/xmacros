@@ -22,8 +22,16 @@
 
 #endif
 
-#if !defined(ENUM_NAME) || !defined(ENUM_PREFIX_) || !defined(ENUM_FIELDS)
-#error "xenums.h requires ENUM_NAME, ENUM_PREFIX_, and ENUM_FIELDS defined."
+#if !defined(__INCLUDE_LEVEL__) || (__INCLUDE_LEVEL__ >= 1)
+  #if !defined(ENUM_NAME)
+    #error "ENUM_NAME is not defined"
+  #endif
+  #if !defined(ENUM_PREFIX_) 
+    #error "ENUM_PREFIX_ is not defined"
+  #endif
+  #if !defined(ENUM_FIELDS)
+    #error "ENUM_FIELDS is not defined"
+  #endif
 #endif
 
 enum ENUM_NAME {
