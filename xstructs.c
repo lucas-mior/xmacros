@@ -252,7 +252,7 @@ int main(void) {
     ASSERT(ExampleStruct_fmt.struct_size == sizeof(ExampleStruct));
     ASSERT(ExampleStruct_fmt.packed_size == (sizeof(int) + sizeof(char *)));
 
-    if ((buffer = xmalloc(ExampleStruct_fmt.packed_size)) == NULL) {
+    if ((buffer = malloc(ExampleStruct_fmt.packed_size)) == NULL) {
         return EXIT_FAILURE;
     }
 
