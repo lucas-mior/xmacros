@@ -146,15 +146,24 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
         printf(GREEN STR(STRUCT_NAME) RESET " %s = ", name);
     }
     printf("{\n");
+
     #define X(L, R) \
-    for (int32 j = 0; j <= nested; j += 1) { printf("\t"); } \
+    for (int32 j = 0; j <= nested; j += 1) { \
+        printf("\t"); \
+    } \
     printf(GREEN #L RESET " " #R " = "); \
     dispatch_print(&structure->R, #L, #R, nested + 1);
     STRUCT_FIELDS
     #undef X
-    for (int32 j = 0; j < nested; j += 1) { printf("\t"); }
+
+    for (int32 j = 0; j < nested; j += 1) {
+        printf("\t");
+    }
     printf("}\n");
-    if (nested == 0) { printf("\n"); }
+
+    if (nested == 0) {
+        printf("\n");
+    }
     return;
 }
 
