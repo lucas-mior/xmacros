@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "generic.c"
+
 #if !defined(CAT) || !defined(CAT3)
   #define CAT_(a, b)     a##b
   #define CAT3_(a, b, c) a##b##c

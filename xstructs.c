@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "generic.c"
+
 #if !defined(error2)
 #define error2(...) fprintf(stderr, __VA_ARGS__)
 #endif
