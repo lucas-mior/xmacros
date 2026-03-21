@@ -4,6 +4,16 @@
 #include <stdint.h>
 #include <string.h>
 
+#if !defined(error2)
+#define error2(...) fprintf(stderr, __VA_ARGS__)
+#endif
+
+#if defined(__INCLUDE_LEVEL__) && (__INCLUDE_LEVEL__ == 0)
+#define TESTING_xstructs 1
+#elif !defined(TESTING_xstructs)
+#define TESTING_xstructs 0
+#endif
+
 #if !defined(INTEGERS)
 #define INTEGERS
 typedef unsigned char uchar;
@@ -210,3 +220,11 @@ CAT(STRUCT_NAME, _unpack)(uchar *buffer, STRUCT_NAME *structure) {
 
 #undef STRUCT_FIELDS
 #undef STRUCT_NAME
+
+#if TESTING_xstructs
+#include "assert.c"
+int main(void) {
+    ASSERT(true);
+    exit(EXIT_SUCCESS);
+}
+#endif
