@@ -7,7 +7,7 @@
 #include "generic.c"
 
 #define xmalloc(x) malloc(x)
-#define memcpy64(a,b,c) memcpy(x)
+#define memcpy64(a, b, c) memcpy(a, b, c)
 
 #if !defined(error2)
 #define error2(...) fprintf(stderr, __VA_ARGS__)
@@ -26,20 +26,16 @@ typedef unsigned short ushort;
 typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef unsigned long long ulonglong;
-
 typedef long long llong;
 typedef unsigned long long ullong;
-
 typedef int8_t int8;
 typedef int16_t int16;
 typedef int32_t int32;
 typedef int64_t int64;
-
 typedef uint8_t uint8;
 typedef uint16_t uint16;
 typedef uint32_t uint32;
 typedef uint64_t uint64;
-
 typedef long double ldouble;
 #endif
 
@@ -69,6 +65,9 @@ typedef long double ldouble;
 #define RED   "\x1b[31m"
 #define RESET "\x1b[0m"
 
+/* 0 indicates the member is a custom struct, not a primitive defined in generic.c */
+#define TYPE_STRUCT 0
+
 typedef struct StructFormat {
     char *struct_name;
     size_t num_members;
@@ -78,6 +77,7 @@ typedef struct StructFormat {
     size_t *sizes;
     char **names;
     char **types;
+    int32 *type_ids; /* Stores enum Type or TYPE_STRUCT */
 } StructFormat;
 
 static void
@@ -89,40 +89,33 @@ print_buffer(uchar *buffer, size_t size) {
 }
 
 static void
-dispatch_print(void *pointer, char *type, char *name, int32 nested);
-
-#define PRIMITIVE_PRINT(TYPE, FMT) \
-    if (strcmp(type, #TYPE) == 0 || strcmp(type, "signed " #TYPE) == 0) { \
-        printf(FMT, *(TYPE *)pointer); \
-        return; \
-    }
+dispatch_print(void *pointer, int32 type_id, char *type_name, char *name, int32 nested);
 
 static void
-print_primitive(void *pointer, char *type) {
-    PRIMITIVE_PRINT(char,    "'%c'\n")
-    PRIMITIVE_PRINT(uchar,   "%c\n")
-    PRIMITIVE_PRINT(short,   "%d\n")
-    PRIMITIVE_PRINT(ushort,  "%u\n")
-    PRIMITIVE_PRINT(int,     "%d\n")
-    PRIMITIVE_PRINT(uint,    "%u\n")
-    PRIMITIVE_PRINT(long,    "%ld\n")
-    PRIMITIVE_PRINT(ulong,   "%lu\n")
-    PRIMITIVE_PRINT(char *,  "\"%s\"\n")
-    PRIMITIVE_PRINT(float,   "%f\n")
-    PRIMITIVE_PRINT(double,  "%f\n")
-    PRIMITIVE_PRINT(long double, "%Lf\n")
-    PRIMITIVE_PRINT(int8,    "%d\n")
-    PRIMITIVE_PRINT(int16,   "%d\n")
-    PRIMITIVE_PRINT(int32,   "%d\n")
-    PRIMITIVE_PRINT(int64,   "%ld\n")
-    PRIMITIVE_PRINT(uint8,   "%u\n")
-    PRIMITIVE_PRINT(uint16,  "%u\n")
-    PRIMITIVE_PRINT(uint32,  "%u\n")
-    PRIMITIVE_PRINT(uint64,  "%lu\n")
-    PRIMITIVE_PRINT(void *,  "%p\n")
-
-    fprintf(stderr, "Missing printf for type " RED "%s" RESET ".\n", type);
-    exit(EXIT_FAILURE);
+print_primitive(void *pointer, int32 type_id) {
+    switch (type_id) {
+        case TYPE_BOOL:    printf("%s\n", *(bool *)pointer ? "true" : "false"); break;
+        case TYPE_CHAR:    printf("'%c'\n", *(char *)pointer); break;
+        case TYPE_SCHAR:   printf("%d\n", *(schar *)pointer); break;
+        case TYPE_UCHAR:   printf("%u\n", *(uchar *)pointer); break;
+        case TYPE_SHORT:   printf("%d\n", *(short *)pointer); break;
+        case TYPE_USHORT:  printf("%u\n", *(ushort *)pointer); break;
+        case TYPE_INT:     printf("%d\n", *(int *)pointer); break;
+        case TYPE_UINT:    printf("%u\n", *(uint *)pointer); break;
+        case TYPE_LONG:    printf("%ld\n", *(long *)pointer); break;
+        case TYPE_ULONG:   printf("%lu\n", *(ulong *)pointer); break;
+        case TYPE_LLONG:   printf("%lld\n", *(llong *)pointer); break;
+        case TYPE_ULLONG:  printf("%llu\n", *(ullong *)pointer); break;
+        case TYPE_FLOAT:   printf("%f\n", (double)*(float *)pointer); break;
+        case TYPE_DOUBLE:  printf("%f\n", *(double *)pointer); break;
+        case TYPE_LDOUBLE: printf("%Lf\n", *(ldouble *)pointer); break;
+        case TYPE_CHARP:   printf("\"%s\"\n", *(char **)pointer); break;
+        case TYPE_VOIDP:   printf("%p\n", *(void **)pointer); break;
+        default:
+            fprintf(stderr, "Unhandled primitive type ID: %d\n", type_id);
+            exit(EXIT_FAILURE);
+    }
+    return;
 }
 #endif
 
@@ -133,20 +126,22 @@ print_primitive(void *pointer, char *type) {
     X(char *, str)
 #endif
 
-#if !defined(__INCLUDE_LEVEL__) || (__INCLUDE_LEVEL__ >= 1)
-  #if !defined(STRUCT_NAME)
-    #error "STRUCT_NAME is not defined."
-  #endif
-  #if !defined(STRUCT_FIELDS)
-    #error "STRUCT_FIELDS is not defined."
-  #endif
-#endif
-
 typedef struct STRUCT_NAME {
     #define X(L, R) L R;
     STRUCT_FIELDS
     #undef X
 } STRUCT_NAME;
+
+/* Helper macro to safely get TYPEID or return TYPE_STRUCT for non-primitives */
+#define GET_TYPEID(VAR) _Generic((VAR), \
+    void*: TYPE_VOIDP, char*: TYPE_CHARP, bool: TYPE_BOOL, \
+    char: TYPE_CHAR, schar: TYPE_SCHAR, short: TYPE_SHORT, \
+    int: TYPE_INT, long: TYPE_LONG, llong: TYPE_LLONG, \
+    uchar: TYPE_UCHAR, ushort: TYPE_USHORT, uint: TYPE_UINT, \
+    ulong: TYPE_ULONG, ullong: TYPE_ULLONG, float: TYPE_FLOAT, \
+    double: TYPE_DOUBLE, ldouble: TYPE_LDOUBLE, \
+    default: TYPE_STRUCT \
+)
 
 static StructFormat CAT(STRUCT_NAME, _fmt) = {
     .struct_name = QUOTE(STRUCT_NAME),
@@ -157,10 +152,10 @@ static StructFormat CAT(STRUCT_NAME, _fmt) = {
     0),
     .struct_size = sizeof(STRUCT_NAME),
     .packed_size = (
-     #define X(L, R) sizeof(L) +
-         STRUCT_FIELDS 
-     #undef X 
-     0),
+    #define X(L, R) sizeof(L) +
+        STRUCT_FIELDS 
+    #undef X 
+    0),
     .offsets = (size_t[]){
     #define X(L, R) offsetof(STRUCT_NAME, R),
         STRUCT_FIELDS 
@@ -181,6 +176,11 @@ static StructFormat CAT(STRUCT_NAME, _fmt) = {
         STRUCT_FIELDS 
     #undef X
     },
+    .type_ids = (int32[]){
+    #define X(L, R) GET_TYPEID(((STRUCT_NAME*)0)->R),
+        STRUCT_FIELDS
+    #undef X
+    },
 };
 
 static void
@@ -199,7 +199,7 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
         printf("\t"); \
     } \
     printf(GREEN #L RESET " " #R " = "); \
-    dispatch_print(&structure->R, #L, #R, nested + 1);
+    dispatch_print(&structure->R, GET_TYPEID(structure->R), #L, #R, nested + 1);
     STRUCT_FIELDS
     #undef X
 
@@ -217,26 +217,22 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
 static size_t
 CAT(STRUCT_NAME, _pack)(STRUCT_NAME *structure, uchar *buffer) {
     size_t pos = 0;
-
     #define X(L, R) \
     memcpy(buffer + pos, &structure->R, sizeof(L)); \
     pos += sizeof(L);
     STRUCT_FIELDS
     #undef X
-
     return pos;
 }
 
 static size_t
 CAT(STRUCT_NAME, _unpack)(uchar *buffer, STRUCT_NAME *structure) {
     size_t pos = 0;
-
     #define X(L, R) \
     memcpy(&structure->R, buffer + pos, sizeof(L)); \
     pos += sizeof(L);
     STRUCT_FIELDS
     #undef X
-
     return pos;
 }
 
