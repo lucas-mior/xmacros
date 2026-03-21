@@ -44,6 +44,19 @@ static char *program;
         NumberStruct *: struct_print(&NumberStruct_fmt, #NAME, NAME, 0),       \
         SmallStruct *: struct_print(&SmallStruct_fmt, #NAME, NAME, 0))
 
+#define ENUM_NAME WeekDay
+#define ENUM_PREFIX_ WEEK_DAY_
+#define ENUM_FIELDS       \
+    X(SUNDAY, 0)      \
+    X(MONDAY)         \
+    X(TUESDAY, 10)    \
+    X(WEDNESDAY)      \
+    X(THURSDAY)       \
+    X(FRIDAY, 5)      \
+    X(SATURDAY, 20)
+
+#include "xenums.h"
+
 int
 main(int argc, char **argv) {
     NumberStruct mine = {.ic = 'c',
@@ -61,6 +74,10 @@ main(int argc, char **argv) {
     BigStruct big = {.l = 100, .small_struct = &small};
 
     BigStruct *pbig = &big;
+
+    for (enum WeekDay day = 0; day < WEEK_DAY_LAST; day += 1) {
+        printf("day[%u] = %s\n", day, WEEK_DAY_str(day));
+    }
 
     (void)argc;
     program = argv[0];
