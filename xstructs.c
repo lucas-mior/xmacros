@@ -96,7 +96,7 @@ print_primitive(void *pointer, char *type) {
     PRIMITIVE_PRINT(uint, "%u\n", uint)
     PRIMITIVE_PRINT(long, "%ld\n", long)
     PRIMITIVE_PRINT(ulong, "%lu\n", ulong)
-    PRIMITIVE_PRINT(char *, "%s\n", char *)
+    PRIMITIVE_PRINT(char *, "\"%s\"\n", char *)
     PRIMITIVE_PRINT(float, "%f\n", float)
     PRIMITIVE_PRINT(double, "%f\n", double)
     PRIMITIVE_PRINT(long double, "%Lf\n", long double)
