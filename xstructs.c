@@ -91,12 +91,12 @@ typedef long double ldouble;
 
 typedef struct StructFormat {
     char *struct_name;
-    int64 num_members;
-    int64 struct_size;
-    int64 packed_size;
-    int64 *offsets;
-    int64 *sizes;
-    int64 *array_lens;
+    int32 num_members;
+    int32 struct_size;
+    int32 packed_size;
+    int32 *offsets;
+    int32 *sizes;
+    int32 *array_lens;
     char **names;
     char **types;
     enum Type *type_ids;
@@ -205,17 +205,17 @@ static StructFormat CAT(STRUCT_NAME, _fmt) = {
         #undef X_P2
         #undef X_P3
         0),
-    .offsets = (int64[]){
+    .offsets = (int32[]){
         #define X(...) SELECT_ON_NUM_ARGS(X_OFF_, __VA_ARGS__)
         STRUCT_FIELDS
         #undef X
     },
-    .sizes = (int64[]){
+    .sizes = (int32[]){
         #define X(...) SELECT_ON_NUM_ARGS(X_SIZE_, __VA_ARGS__)
         STRUCT_FIELDS
         #undef X
     },
-    .array_lens = (int64[]){
+    .array_lens = (int32[]){
         #define X(...) SELECT_ON_NUM_ARGS(X_ALEN_, __VA_ARGS__)
         STRUCT_FIELDS
         #undef X
