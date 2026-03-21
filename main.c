@@ -57,19 +57,30 @@
 
 int
 main(int argc, char **argv) {
-    NumberStruct mine = {.ic = 'c',
-                         .uc = 'd',
-                         .is = SHRT_MAX,
-                         .us = USHRT_MAX,
-                         .ii = INT_MAX,
-                         .ui = UINT_MAX,
-                         .il = LONG_MAX,
-                         .ul = ULONG_MAX,
-                         .f = 0.5f,
-                         .d = 0.5,
-                         .ld = 0.5};
-    SmallStruct small = {.string = "superstring", .number_struct = mine};
-    BigStruct big = {.l = 100, .small_struct = &small};
+    NumberStruct mine = {
+        .ic = 'c',
+        .uc = 'd',
+        .is = SHRT_MAX,
+        .us = USHRT_MAX,
+        .ii = INT_MAX,
+        .ui = UINT_MAX,
+        .il = LONG_MAX,
+        .ul = ULONG_MAX,
+        .f = 0.5f,
+        .d = 0.5,
+        .ld = 0.5
+    };
+
+    SmallStruct small = {
+        .string = "superstring",
+        .number_struct = mine
+    };
+
+    BigStruct big = {
+        .l = 100,
+        .small_struct = &small
+    };
+
     BigStruct *pbig = &big;
 
     (void)argc;
