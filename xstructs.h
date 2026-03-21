@@ -210,11 +210,13 @@ CAT(STRUCT_NAME, _pack)(STRUCT_NAME *structure, uchar *buffer) {
 static size_t
 CAT(STRUCT_NAME, _unpack)(uchar *buffer, STRUCT_NAME *structure) {
     size_t pos = 0;
+
     #define X(L, R) \
     memcpy(&structure->R, buffer + pos, sizeof(L)); \
     pos += sizeof(L);
     STRUCT_FIELDS
     #undef X
+
     return pos;
 }
 
