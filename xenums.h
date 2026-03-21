@@ -32,9 +32,12 @@
   #if !defined(ENUM_FIELDS)
     #error "ENUM_FIELDS is not defined"
   #endif
+  #if !defined(ENUM_BITFLAGS)
+    #error "ENUM_BITFLAGS is not defined"
+  #endif
 #endif
 
-#if defined(ENUM_IS_FLAGS)
+#if ENUM_BITFLAGS
 enum CAT(ENUM_NAME, _BitIndices) {
     #define X_IDX_1(e)    CAT3(ENUM_PREFIX_, e, _BIT_IDX),
     #define X_IDX_2(e, v) CAT3(ENUM_PREFIX_, e, _BIT_IDX),
@@ -50,7 +53,7 @@ enum CAT(ENUM_NAME, _BitIndices) {
 #endif
 
 enum ENUM_NAME {
-#if !defined(ENUM_IS_FLAGS)
+#if ENUM_BITFLAGS == 0
     #define XENUM_DEF_1(e)    CAT(ENUM_PREFIX_, e),
     #define XENUM_DEF_2(e, v) CAT(ENUM_PREFIX_, e) = v,
 #else
@@ -69,7 +72,7 @@ enum ENUM_NAME {
 
 static char *
 CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
-#if !defined(ENUM_IS_FLAGS)
+#if !defined(ENUM_BITFLAGS)
     switch (val) {
         #define XENUM_ST_1(e)    case CAT(ENUM_PREFIX_, e): \
                                      return QUOTE(ENUM_PREFIX_) #e;
@@ -139,4 +142,4 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
 #undef ENUM_NAME
 #undef ENUM_PREFIX_
 #undef ENUM_FIELDS
-#undef ENUM_IS_FLAGS
+#undef ENUM_BITFLAGS

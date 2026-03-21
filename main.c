@@ -39,6 +39,7 @@
 
 #define ENUM_NAME WeekDay
 #define ENUM_PREFIX_ WEEK_DAY_
+#define ENUM_BITFLAGS 0
 #define ENUM_FIELDS       \
     X(SUNDAY, 0)      \
     X(MONDAY)         \
@@ -51,7 +52,7 @@
 
 #define ENUM_NAME PowerOfTwo
 #define ENUM_PREFIX_ POWER_OF2_
-#define ENUM_IS_FLAGS 1
+#define ENUM_BITFLAGS 1
 #define ENUM_FIELDS \
     X(ONE,     1 << 0)             \
     X(TWO,     1 << 1)             \
