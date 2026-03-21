@@ -83,12 +83,16 @@ print_primitive(void *pointer, char *type) {
 
     fprintf(stderr, "Missing printf for type " RED "%s" RESET ".\n", type);
     exit(EXIT_FAILURE);
-    return;
 }
 #endif
 
-#if !defined(STRUCT_NAME) || !defined(STRUCT_FIELDS)
-#error "STRUCT_NAME and STRUCT_FIELDS must be defined before including xstructs.h"
+#if !defined(__INCLUDE_LEVEL__) || (__INCLUDE_LEVEL__ >= 1)
+  #if !defined(STRUCT_NAME)
+    #error "STRUCT_NAME is not defined."
+  #endif
+  #if !defined(STRUCT_FIELDS)
+    #error "STRUCT_FIELDS is not defined."
+  #endif
 #endif
 
 #define STR_EXPAND(A) #A
