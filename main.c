@@ -124,7 +124,6 @@ main(int argc, char **argv) {
         char *value_name = POWER_OF2_str(x);
         printf("enum[%u] = %s\n", x, value_name);
     }
-    exit(0);
 
     STRUCT_PRINT(&small);
     STRUCT_PRINT(&mine);
