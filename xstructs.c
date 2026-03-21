@@ -6,6 +6,9 @@
 
 #include "generic.c"
 
+#define xmalloc(x) malloc(x)
+#define memcpy64(a,b,c) memcpy(x)
+
 #if !defined(error2)
 #define error2(...) fprintf(stderr, __VA_ARGS__)
 #endif
