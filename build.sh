@@ -11,6 +11,7 @@ CFLAGS="$CFLAGS -Wall -Wextra"
 CFLAGS="$CFLAGS -Wfatal-errors"
 CFLAGS="$CFLAGS -Wno-unused-function"
 CFLAGS="$CFLAGS -Wno-unused-variable"
+CFLAGS="$CFLAGS -Wno-unused-macros"
 CFLAGS="$CFLAGS -Werror"
 
 if [ $CC = "clang" ]; then

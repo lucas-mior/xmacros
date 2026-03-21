@@ -24,7 +24,6 @@
 
 static void
 dispatch_print(void *pointer, char *type, char *name, int32 nested) {
-#undef STRUCT
 #define STRUCT(TYPE) \
     if (strcmp(type, #TYPE) == 0) { \
         CAT(TYPE, _print)((TYPE *)pointer, name, nested); \
