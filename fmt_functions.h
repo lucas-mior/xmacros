@@ -25,7 +25,9 @@
 #endif
 
 static void
-dispatch_print(void *pointer, int32 type_id, char *type_name, char *field_name, int32 nested) {
+dispatch_print(void *pointer,
+               int32 type_id, char *type_name,
+               char *field_name, int32 nested) {
     if (type_id != TYPE_OTHER) {
         print_primitive(pointer, type_id);
         return;
