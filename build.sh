@@ -26,6 +26,7 @@ if [ $CC = "clang" ]; then
     CFLAGS="$CFLAGS -Wno-implicit-void-ptr-cast"
     CFLAGS="$CFLAGS -Wno-covered-switch-default"
     CFLAGS="$CFLAGS -Wno-implicit-int-enum-cast"
+    CFLAGS="$CFLAGS -Wno-c++-keyword"
 fi
 
 $CC $CFLAGS main.c -o ./xmacros
