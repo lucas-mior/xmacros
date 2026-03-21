@@ -104,38 +104,36 @@ typedef struct STRUCT_NAME {
 static struct struct_fmt CAT(STRUCT_NAME, _fmt) = {
     .struct_name = STR(STRUCT_NAME),
     .num_members = (
-#define X(L, R) 1 +
-                    STRUCT_FIELDS 
-#undef X
-                    0
-                    ),
+    #define X(L, R) 1 +
+        STRUCT_FIELDS 
+    #undef X
+    0),
     .struct_size = sizeof(STRUCT_NAME),
     .packed_size = (
-#define X(L, R) sizeof(L) +
-                    STRUCT_FIELDS 
-#undef X 
-                    0
-                    ),
+     #define X(L, R) sizeof(L) +
+         STRUCT_FIELDS 
+     #undef X 
+     0),
     .offsets = (size_t[]){
-#define X(L, R) offsetof(STRUCT_NAME, R),
-                          STRUCT_FIELDS 
-#undef X
+    #define X(L, R) offsetof(STRUCT_NAME, R),
+        STRUCT_FIELDS 
+    #undef X
 },
     .sizes = (size_t[]){
-#define X(L, R) sizeof(L),
-                        STRUCT_FIELDS 
-#undef X
+    #define X(L, R) sizeof(L),
+        STRUCT_FIELDS 
+    #undef X
 },
     .names = (char *[]){
-#define X(L, R) #R,
-                        STRUCT_FIELDS 
-#undef X
-},
+    #define X(L, R) #R,
+        STRUCT_FIELDS 
+    #undef X
+    },
     .types = (char *[]){
-#define X(L, R) #L,
-                        STRUCT_FIELDS 
-#undef X
-},
+    #define X(L, R) #L,
+        STRUCT_FIELDS 
+    #undef X
+    },
 };
 
 static void
