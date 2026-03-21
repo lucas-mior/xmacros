@@ -28,7 +28,7 @@ typedef uint64_t uint64;
 #define RED   "\x1b[31m"
 #define RESET "\x1b[0m"
 
-struct struct_fmt {
+typedef struct StructFormat {
     char *struct_name;
     size_t num_members;
     size_t struct_size;
@@ -37,7 +37,7 @@ struct struct_fmt {
     size_t *sizes;
     char **names;
     char **types;
-};
+} StructFormat;
 
 static void
 print_buffer(uchar *buffer, size_t size) {
@@ -101,7 +101,7 @@ typedef struct STRUCT_NAME {
     #undef X
 } STRUCT_NAME;
 
-static struct struct_fmt CAT(STRUCT_NAME, _fmt) = {
+static StructFormat CAT(STRUCT_NAME, _fmt) = {
     .struct_name = STR(STRUCT_NAME),
     .num_members = (
     #define X(L, R) 1 +
