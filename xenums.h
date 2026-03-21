@@ -8,7 +8,7 @@
   #define CAT3(a, b, c)  CAT3_(a, b, c)
 #endif
 
-#ifndef QUOTE
+#if !defined(QUOTE)
   #define QUOTE_(x) #x
   #define QUOTE(x)  QUOTE_(x)
 #endif
