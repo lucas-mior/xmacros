@@ -1,6 +1,15 @@
 #ifndef XENUM_UTILS
 #define XENUM_UTILS
 
+#include <string.h>
+#include <stdlib.h>
+#include "generic.c"
+
+#if !defined(xmalloc)
+#define xmalloc(x) malloc(x)
+#define memcpy64(a, b, c) memcpy(a, b, c)
+#endif
+
 #if !defined(CAT) || !defined(CAT3)
   #define CAT_(a, b)     a##b
   #define CAT3_(a, b, c) a##b##c
@@ -22,11 +31,27 @@
 
 #endif
 
-#if !defined(__INCLUDE_LEVEL__) || (__INCLUDE_LEVEL__ >= 1)
+#if defined(__INCLUDE_LEVEL__) && (__INCLUDE_LEVEL__ == 0)
+  #define TESTING_xenums 1
+#elif !defined(TESTING_xenums)
+  #define TESTING_xenums 0
+#endif
+
+#if TESTING_xenums
+#define ENUM_NAME TestFlags
+#define ENUM_PREFIX_ TEST_FLAGS_
+#define ENUM_BITFLAGS 1
+#define ENUM_FIELDS \
+    X(READ) \
+    X(WRITE) \
+    X(EXEC)
+#endif
+
+#if !defined(__INCLUDE_LEVEL__) || (__INCLUDE_LEVEL__ >= 1) || (TESTING_xenums == 0)
   #if !defined(ENUM_NAME)
     #error "ENUM_NAME is not defined"
   #endif
-  #if !defined(ENUM_PREFIX_) 
+  #if !defined(ENUM_PREFIX_)
     #error "ENUM_PREFIX_ is not defined"
   #endif
   #if !defined(ENUM_FIELDS)
@@ -61,7 +86,7 @@ enum ENUM_NAME {
     #define XENUM_DEF_2(e, v) CAT(ENUM_PREFIX_, e) = v,
 #endif
     #define X(...)            SELECT_ON_NUM_ARGS(XENUM_DEF_, __VA_ARGS__)
-    
+
     ENUM_FIELDS
 
     #undef X
@@ -72,14 +97,14 @@ enum ENUM_NAME {
 
 static char *
 CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
-#if !defined(ENUM_BITFLAGS)
+#if ENUM_BITFLAGS == 0
     switch (val) {
         #define XENUM_ST_1(e)    case CAT(ENUM_PREFIX_, e): \
                                      return QUOTE(ENUM_PREFIX_) #e;
         #define XENUM_ST_2(e, v) case CAT(ENUM_PREFIX_, e): \
                                      return QUOTE(ENUM_PREFIX_) #e;
         #define X(...)           SELECT_ON_NUM_ARGS(XENUM_ST_, __VA_ARGS__)
-        
+
         ENUM_FIELDS
 
         #undef X
@@ -109,7 +134,7 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
                 } \
             } \
             if (buffer_ptr + len < (buffer_end - 1)) { \
-                memcpy(buffer_ptr, name, (size_t)len); \
+                memcpy64(buffer_ptr, name, (size_t)len); \
                 buffer_ptr += len; \
             } \
             is_first = 0; \
@@ -132,8 +157,10 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
 
     *buffer_ptr = '\0';
     final_len = (int64)(buffer_ptr - buffer) + 1;
-    copy = (char *)malloc((size_t)final_len);
-    memcpy(copy, buffer, (size_t)final_len);
+
+    if ((copy = xmalloc((size_t)final_len))) {
+        memcpy64(copy, buffer, (size_t)final_len);
+    }
 
     return copy;
 #endif
@@ -143,3 +170,39 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
 #undef ENUM_PREFIX_
 #undef ENUM_FIELDS
 #undef ENUM_BITFLAGS
+
+#if TESTING_xenums
+#include "assert.c"
+
+int
+main(void) {
+    ASSERT_EQUAL(TEST_FLAGS_READ_BIT_IDX, 0);
+    ASSERT_EQUAL(TEST_FLAGS_READ, 1 << 0);
+    ASSERT_EQUAL(TEST_FLAGS_WRITE, 1 << 1);
+    ASSERT_EQUAL(TEST_FLAGS_EXEC, 1 << 2);
+
+    {
+        char *s;
+
+        if ((s = TEST_FLAGS_str(TEST_FLAGS_READ))) {
+            ASSERT_EQUAL(s, "TEST_FLAGS_READ");
+            free(s);
+        }
+
+        if ((s = TEST_FLAGS_str(TEST_FLAGS_READ | TEST_FLAGS_EXEC))) {
+            ASSERT_EQUAL(s, "TEST_FLAGS_READ|TEST_FLAGS_EXEC");
+            free(s);
+        }
+
+        if ((s = TEST_FLAGS_str(TEST_FLAGS_READ | TEST_FLAGS_WRITE | TEST_FLAGS_EXEC))) {
+            ASSERT_EQUAL(s, "TEST_FLAGS_READ|TEST_FLAGS_WRITE|TEST_FLAGS_EXEC");
+            free(s);
+        }
+
+        ASSERT_EQUAL(TEST_FLAGS_str(0), "NONE");
+    }
+
+    printf("xenums.c: All tests passed successfully.\n");
+    return EXIT_SUCCESS;
+}
+#endif
