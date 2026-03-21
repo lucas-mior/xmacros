@@ -77,7 +77,7 @@ typedef struct StructFormat {
     size_t *sizes;
     char **names;
     char **types;
-    int32 *type_ids;
+    enum Type *type_ids;
 } StructFormat;
 
 static void
@@ -174,7 +174,7 @@ static StructFormat CAT(STRUCT_NAME, _fmt) = {
         STRUCT_FIELDS 
     #undef X
     },
-    .type_ids = (int32[]){
+    .type_ids = (enum Type []){
     #define X(L, R) TYPEID(((STRUCT_NAME*)0)->R),
         STRUCT_FIELDS
     #undef X
