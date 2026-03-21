@@ -80,35 +80,35 @@ print_buffer(uchar *buffer, size_t size) {
 static void
 dispatch_print(void *pointer, char *type, char *name, int32 nested);
 
-#define PRIMITIVE_PRINT(TYPE, FMT, CAST) \
+#define PRIMITIVE_PRINT(TYPE, FMT) \
     if (strcmp(type, #TYPE) == 0 || strcmp(type, "signed " #TYPE) == 0) { \
-        printf(FMT, *(CAST *)pointer); \
+        printf(FMT, *(TYPE *)pointer); \
         return; \
     }
 
 static void
 print_primitive(void *pointer, char *type) {
-    PRIMITIVE_PRINT(char,    "'%c'\n",   char)
-    PRIMITIVE_PRINT(uchar,   "%c\n",     uchar)
-    PRIMITIVE_PRINT(short,   "%d\n",     short)
-    PRIMITIVE_PRINT(ushort,  "%u\n",     ushort)
-    PRIMITIVE_PRINT(int,     "%d\n",     int)
-    PRIMITIVE_PRINT(uint,    "%u\n",     uint)
-    PRIMITIVE_PRINT(long,    "%ld\n",    long)
-    PRIMITIVE_PRINT(ulong,   "%lu\n",    ulong)
-    PRIMITIVE_PRINT(char *,  "\"%s\"\n", char *)
-    PRIMITIVE_PRINT(float,   "%f\n",     float)
-    PRIMITIVE_PRINT(double,  "%f\n",     double)
-    PRIMITIVE_PRINT(ldouble, "%Lf\n",    long double)
-    PRIMITIVE_PRINT(int8,    "%d\n",     int8)
-    PRIMITIVE_PRINT(int16,   "%d\n",     int16)
-    PRIMITIVE_PRINT(int32,   "%d\n",     int32)
-    PRIMITIVE_PRINT(int64,   "%ld\n",    int64)
-    PRIMITIVE_PRINT(uint8,   "%u\n",     uint8)
-    PRIMITIVE_PRINT(uint16,  "%u\n",     uint16)
-    PRIMITIVE_PRINT(uint32,  "%u\n",     uint32)
-    PRIMITIVE_PRINT(uint64,  "%lu\n",    uint64)
-    PRIMITIVE_PRINT(void *,  "%p\n",     void *)
+    PRIMITIVE_PRINT(char,    "'%c'\n")
+    PRIMITIVE_PRINT(uchar,   "%c\n")
+    PRIMITIVE_PRINT(short,   "%d\n")
+    PRIMITIVE_PRINT(ushort,  "%u\n")
+    PRIMITIVE_PRINT(int,     "%d\n")
+    PRIMITIVE_PRINT(uint,    "%u\n")
+    PRIMITIVE_PRINT(long,    "%ld\n")
+    PRIMITIVE_PRINT(ulong,   "%lu\n")
+    PRIMITIVE_PRINT(char *,  "\"%s\"\n")
+    PRIMITIVE_PRINT(float,   "%f\n")
+    PRIMITIVE_PRINT(double,  "%f\n")
+    PRIMITIVE_PRINT(long double, "%Lf\n")
+    PRIMITIVE_PRINT(int8,    "%d\n")
+    PRIMITIVE_PRINT(int16,   "%d\n")
+    PRIMITIVE_PRINT(int32,   "%d\n")
+    PRIMITIVE_PRINT(int64,   "%ld\n")
+    PRIMITIVE_PRINT(uint8,   "%u\n")
+    PRIMITIVE_PRINT(uint16,  "%u\n")
+    PRIMITIVE_PRINT(uint32,  "%u\n")
+    PRIMITIVE_PRINT(uint64,  "%lu\n")
+    PRIMITIVE_PRINT(void *,  "%p\n")
 
     fprintf(stderr, "Missing printf for type " RED "%s" RESET ".\n", type);
     exit(EXIT_FAILURE);
