@@ -9,6 +9,8 @@ CFLAGS="$CFLAGS -D_DEFAULT_SOURCE"
 
 CFLAGS="$CFLAGS -Wall -Wextra"
 CFLAGS="$CFLAGS -Wfatal-errors"
+CFLAGS="$CFLAGS -Wno-unused-function"
+CFLAGS="$CFLAGS -Wno-unused-variable"
 CFLAGS="$CFLAGS -Werror"
 
 if [ $CC = "clang" ]; then

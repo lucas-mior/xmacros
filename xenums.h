@@ -72,7 +72,7 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
                 buffer_ptr += 1; \
             } \
             if (buffer_ptr + len < (buffer_end - 1)) { \
-                memcpy64(buffer_ptr, name, len); \
+                memcpy(buffer_ptr, name, len); \
                 buffer_ptr += len; \
             } \
             is_first = 0; \
@@ -92,7 +92,7 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
     *buffer_ptr = '\0';
     final_len = (int64)(buffer_ptr - buffer) + 1;
     copy = xmalloc(final_len);
-    memcpy64(copy, buffer, final_len);
+    memcpy(copy, buffer, final_len);
 
     return copy;
 #endif

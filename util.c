@@ -1718,7 +1718,7 @@ shell_escape(char *path) {
 
     for (int64 i = 0; i < len; i += 1) {
         if (path[i] == '\'') {
-            memcpy64(write_ptr, "'\\''", 4);
+            memcpy(write_ptr, "'\\''", 4);
             write_ptr += 4;
         } else {
             *write_ptr = path[i];

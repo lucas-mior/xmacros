@@ -39,9 +39,9 @@
 
 #define STRUCT_PRINT(VAR)                                                      \
     _Generic((VAR),                                                            \
-        BigStruct *:    BigStruct_print(VAR, #VAR, 0),                         \
-        NumberStruct *: NumberStruct_print(VAR, #VAR, 0),                      \
-        SmallStruct *:  SmallStruct_print(VAR, #VAR, 0))
+        BigStruct *:    BigStruct_print((BigStruct *)(VAR), #VAR, 0),          \
+        NumberStruct *: NumberStruct_print((NumberStruct *)(VAR), #VAR, 0),    \
+        SmallStruct *:  SmallStruct_print((SmallStruct *)(VAR), #VAR, 0))
 
 #define ENUM_NAME WeekDay
 #define ENUM_PREFIX_ WEEK_DAY_
@@ -93,10 +93,10 @@ main(int argc, char **argv) {
         uchar *s_buf;
         uchar *n_buf;
 
-        if ((s_buf = xmalloc(SmallStruct_fmt.packed_size)) == NULL) {
+        if ((s_buf = malloc(SmallStruct_fmt.packed_size)) == NULL) {
             return EXIT_FAILURE;
         }
-        if ((n_buf = xmalloc(NumberStruct_fmt.packed_size)) == NULL) {
+        if ((n_buf = malloc(NumberStruct_fmt.packed_size)) == NULL) {
             return EXIT_FAILURE;
         }
 
