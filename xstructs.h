@@ -115,6 +115,13 @@ print_primitive(void *pointer, char *type) {
 }
 #endif
 
+#if TESTING_xstructs
+#define STRUCT_NAME ExampleStruct
+#define STRUCT_FIELDS \
+    X(int, x) \
+    X(char *, str)
+#endif
+
 #if !defined(__INCLUDE_LEVEL__) || (__INCLUDE_LEVEL__ >= 1)
   #if !defined(STRUCT_NAME)
     #error "STRUCT_NAME is not defined."
@@ -227,6 +234,9 @@ CAT(STRUCT_NAME, _unpack)(uchar *buffer, STRUCT_NAME *structure) {
 
 #if TESTING_xstructs
 #include "assert.c"
+#define EXPAND_STRUCTS \
+    STRUCT(ExampleStruct)
+#include "fmt_functions.h"
 
 int main(void) {
     ASSERT(true);
