@@ -93,6 +93,7 @@ a_strings_##MODE(char *file, uint line, \
                name1, var1, var2, name2); \
         TRAP(); \
     } \
+    return; \
 }
 
 GENERATE_ASSERT_STRINGS(less,       <)
@@ -115,6 +116,7 @@ a_pointers_##MODE(char *file, uint line, \
                name1, var1, var2, name2); \
         TRAP(); \
     } \
+    return; \
 }
 
 GENERATE_ASSERT_POINTERS(less,       <)
@@ -137,6 +139,7 @@ a_both_##TYPE##_##MODE(char *file, uint line, \
                type1, bits1, name1, var1, var2, name2, type2, bits2); \
         TRAP(); \
     } \
+    return; \
 }
 
 GENERATE_ASSERT_INTEGERS_SAME_SIGN(signed,   "%lld", ==, equal)
@@ -188,6 +191,7 @@ a_signed_unsigned##MODE(char *file, uint line, \
                type1, bits1, name1, var1, var2, name2, type2, bits2); \
         TRAP(); \
     } \
+    return; \
 }
 
 GENERATE_ASSERT_SIGNED_UNSIGNED(equal,      ==)
@@ -212,6 +216,7 @@ a_unsigned_signed_##MODE(char *file, uint line, \
                type1, bits1, name1, var1, var2, name2, type2, bits2); \
         TRAP(); \
     } \
+    return; \
 }
 
 GENERATE_ASSERT_UNSIGNED_SIGNED(equal,      ==)
@@ -236,6 +241,7 @@ a_ldouble_##MODE(char *file, uint line, \
                type1, bits1, name1, var1, var2, name2, type2, bits2); \
         TRAP(); \
     } \
+    return; \
 }
 
 GENERATE_ASSERT_LDOUBLE(equal,      ==)
@@ -261,8 +267,29 @@ GENERATE_ASSERT_LDOUBLE(more_equal, >=)
                             typebits(TYPE1), typebits(TYPE2), \
                             (llong)(VAR1), (ullong)(VAR2))
 
+#if CHAR_MIN < 0
+#define A_CHAR_SECOND_FOR_SIGNED(MODE, VAR1, VAR2, TYPE1) \
+    A_BOTH_SIGNED(MODE, VAR1, VAR2, TYPE1, TYPE_CHAR)
+
+#define A_CHAR_SECOND_FOR_UNSIGNED(MODE, VAR1, VAR2, TYPE1) \
+    A_UNSIGNED_SIGNED(MODE, VAR1, VAR2, TYPE1, TYPE_CHAR)
+
+#define A_FIRST_CHAR(MODE, VAR1, VAR2) \
+    A_FIRST_SIGNED(MODE, VAR1, VAR2, TYPE_CHAR)
+#else
+#define A_CHAR_SECOND_FOR_SIGNED(MODE, VAR1, VAR2, TYPE1) \
+    A_SIGNED_UNSIGNED(MODE, VAR1, VAR2, TYPE1, TYPE_CHAR)
+
+#define A_CHAR_SECOND_FOR_UNSIGNED(MODE, VAR1, VAR2, TYPE1) \
+    A_BOTH_UNSIGNED(MODE, VAR1, VAR2, TYPE1, TYPE_CHAR)
+
+#define A_FIRST_CHAR(MODE, VAR1, VAR2) \
+    A_FIRST_UNSIGNED(MODE, VAR1, VAR2, TYPE_CHAR)
+#endif
+
 #define A_FIRST_SIGNED(MODE, VAR1, VAR2, TYPE1) \
 _Generic((VAR2), \
+    char:    A_CHAR_SECOND_FOR_SIGNED(MODE, VAR1, VAR2, TYPE1), \
     schar:   A_BOTH_SIGNED(MODE,     VAR1, VAR2, TYPE1, TYPE_SCHAR  ), \
     short:   A_BOTH_SIGNED(MODE,     VAR1, VAR2, TYPE1, TYPE_SHORT  ), \
     int:     A_BOTH_SIGNED(MODE,     VAR1, VAR2, TYPE1, TYPE_INT    ), \
@@ -296,6 +323,7 @@ void UNSUPPORTED_TYPE_FOR_GENERIC_A_FIRST_SIGNED(void);
 
 #define A_FIRST_UNSIGNED(MODE, VAR1, VAR2, TYPE1) \
 _Generic((VAR2), \
+    char:    A_CHAR_SECOND_FOR_UNSIGNED(MODE, VAR1, VAR2, TYPE1), \
     schar:   A_UNSIGNED_SIGNED(MODE, VAR1, VAR2, TYPE1, TYPE_SCHAR  ), \
     short:   A_UNSIGNED_SIGNED(MODE, VAR1, VAR2, TYPE1, TYPE_SHORT  ), \
     int:     A_UNSIGNED_SIGNED(MODE, VAR1, VAR2, TYPE1, TYPE_INT    ), \
@@ -322,6 +350,7 @@ void UNSUPPORTED_TYPE_FOR_GENERIC_A_FIRST_UNSIGNED(void);
 
 #define A_FIRST_LDOUBLE(MODE, VAR1, VAR2, TYPE1) \
 _Generic((VAR2), \
+    char:    A_BOTH_LDOUBLE(MODE, VAR1, VAR2, TYPE1, TYPE_CHAR  ), \
     schar:   A_BOTH_LDOUBLE(MODE, VAR1, VAR2, TYPE1, TYPE_SCHAR  ), \
     short:   A_BOTH_LDOUBLE(MODE, VAR1, VAR2, TYPE1, TYPE_SHORT  ), \
     int:     A_BOTH_LDOUBLE(MODE, VAR1, VAR2, TYPE1, TYPE_INT    ), \
@@ -361,6 +390,7 @@ _Generic((VAR1), \
                                  (char *)(uintptr_t)(VAR2)), \
         default: UNSUPPORTED_TYPE_FOR_GENERIC_ASSERT_COMPARE_CHARP() \
     ), \
+    char:    A_FIRST_CHAR(MODE,     VAR1, VAR2),               \
     schar:   A_FIRST_SIGNED(MODE,   VAR1, VAR2, TYPE_SCHAR  ), \
     short:   A_FIRST_SIGNED(MODE,   VAR1, VAR2, TYPE_SHORT  ), \
     int:     A_FIRST_SIGNED(MODE,   VAR1, VAR2, TYPE_INT    ), \

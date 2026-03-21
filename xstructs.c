@@ -275,6 +275,18 @@ int main(void) {
     STRUCT_PRINT(&original);
     STRUCT_PRINT(&restored);
 
+    ASSERT_EQUAL(original.ic, restored.ic);
+    ASSERT_EQUAL(original.uc, restored.uc);
+    ASSERT_EQUAL(original.is, restored.is);
+    ASSERT_EQUAL(original.us, restored.us);
+    ASSERT_EQUAL(original.ii, restored.ii);
+    ASSERT_EQUAL(original.ui, restored.ui);
+    ASSERT_EQUAL(original.il, restored.il);
+    ASSERT_EQUAL(original.ul, restored.ul);
+    ASSERT_EQUAL(original.f,  restored.f);
+    ASSERT_EQUAL(original.d,  restored.d);
+    ASSERT_EQUAL(original.ld, restored.ld);
+
     free(buffer);
     return EXIT_SUCCESS;
 }
