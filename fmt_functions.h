@@ -9,7 +9,7 @@
 #define STRUCT_FIELDS \
     X(char *, string) \
     X(int, i)
-#include "fmtgen.h"
+#include "xstructs.h"
 #endif
 
 

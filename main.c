@@ -18,19 +18,19 @@ static char *program;
     X(float, f)                                                                \
     X(double, d)                                                               \
     X(long double, ld)
-#include "fmtgen.h"
+#include "xstructs.h"
 
 #define STRUCT_NAME SmallStruct
 #define STRUCT_FIELDS                                                          \
     X(char *, string)                                                          \
     X(NumberStruct, number_struct)
-#include "fmtgen.h"
+#include "xstructs.h"
 
 #define STRUCT_NAME BigStruct
 #define STRUCT_FIELDS                                                          \
     X(long, l)                                                                 \
     X(SmallStruct *, small_struct)
-#include "fmtgen.h"
+#include "xstructs.h"
 
 #define EXPAND_STRUCTS                                                         \
     STRUCT(SmallStruct);                                                       \
