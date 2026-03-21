@@ -28,6 +28,7 @@ if [ $CC = "clang" ]; then
     CFLAGS="$CFLAGS -Wno-implicit-int-enum-cast"
     CFLAGS="$CFLAGS -Wno-c++-keyword"
     CFLAGS="$CFLAGS -Wno-float-equal"
+    CFLAGS="$CFLAGS -Wno-declaration-after-statement"
 
     # there is a portable (slower to compile)
     # callback when not using gcc nor clang, see generic.c

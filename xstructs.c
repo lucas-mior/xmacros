@@ -27,7 +27,7 @@
 #define LENGTH(X) (int64)(sizeof(X)/sizeof(*X))
 #endif
 
-#define xmalloc(x) malloc(x)
+#define xmalloc(x) malloc((size_t)x)
 #define memcpy64(a, b, c) memcpy(a, b, c)
 
 #if !defined(error2)
@@ -91,20 +91,20 @@ typedef long double ldouble;
 
 typedef struct StructFormat {
     char *struct_name;
-    size_t num_members;
-    size_t struct_size;
-    size_t packed_size;
-    size_t *offsets;
-    size_t *sizes;
-    size_t *array_lens;
+    int64 num_members;
+    int64 struct_size;
+    int64 packed_size;
+    int64 *offsets;
+    int64 *sizes;
+    int64 *array_lens;
     char **names;
     char **types;
     enum Type *type_ids;
 } StructFormat;
 
 static void
-print_buffer(uchar *buffer, size_t size) {
-    for (size_t j = 0; j < size; j += 1) {
+print_buffer(uchar *buffer, int64 size) {
+    for (int64 j = 0; j < size; j += 1) {
         printf(" %02x", buffer[j]);
     }
     return;
@@ -205,17 +205,17 @@ static StructFormat CAT(STRUCT_NAME, _fmt) = {
         #undef X_P2
         #undef X_P3
         0),
-    .offsets = (size_t[]){
+    .offsets = (int64[]){
         #define X(...) SELECT_ON_NUM_ARGS(X_OFF_, __VA_ARGS__)
         STRUCT_FIELDS
         #undef X
     },
-    .sizes = (size_t[]){
+    .sizes = (int64[]){
         #define X(...) SELECT_ON_NUM_ARGS(X_SIZE_, __VA_ARGS__)
         STRUCT_FIELDS
         #undef X
     },
-    .array_lens = (size_t[]){
+    .array_lens = (int64[]){
         #define X(...) SELECT_ON_NUM_ARGS(X_ALEN_, __VA_ARGS__)
         STRUCT_FIELDS
         #undef X
@@ -283,9 +283,9 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
     return;
 }
 
-static size_t
+static int64
 CAT(STRUCT_NAME, _pack)(STRUCT_NAME *structure, uchar *buffer) {
-    size_t pos = 0;
+    int64 pos = 0;
     #define X_PK2(L, R) \
         memcpy64(buffer + pos, &structure->R, sizeof(structure->R)); \
         pos += sizeof(structure->R);
@@ -300,9 +300,9 @@ CAT(STRUCT_NAME, _pack)(STRUCT_NAME *structure, uchar *buffer) {
     return pos;
 }
 
-static size_t
+static int64
 CAT(STRUCT_NAME, _unpack)(uchar *buffer, STRUCT_NAME *structure) {
-    size_t pos = 0;
+    int64 pos = 0;
     #define X_UP2(L, R) \
         memcpy64(&structure->R, buffer + pos, sizeof(structure->R)); \
         pos += sizeof(structure->R);
@@ -330,7 +330,7 @@ int main(void) {
     ExampleStruct original;
     ExampleStruct restored;
     uchar *buffer;
-    size_t packed_size;
+    int64 packed_size;
 
     original.ic = 'c';
     original.uc = 'd';
