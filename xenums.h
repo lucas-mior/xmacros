@@ -100,22 +100,27 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
             char *name = QUOTE(ENUM_PREFIX_) #e; \
             int32 len = (int32)strlen32(name); \
             if (is_first == 0) { \
-                *buffer_ptr = '|'; \
-                buffer_ptr += 1; \
+                if (buffer_ptr < (buffer_end - 1)) { \
+                    *buffer_ptr = '|'; \
+                    buffer_ptr += 1; \
+                } \
             } \
             if (buffer_ptr + len < (buffer_end - 1)) { \
-                memcpy(buffer_ptr, name, len); \
+                memcpy(buffer_ptr, name, (size_t)len); \
                 buffer_ptr += len; \
             } \
             is_first = 0; \
         }
 
     #define XENUM_FL_1(e)    XENUM(e)
+    #define XENUM_FL_2(e, v) XENUM(e)
     #define X(...)           SELECT_ON_NUM_ARGS(XENUM_FL_, __VA_ARGS__)
 
     ENUM_FIELDS
 
     #undef X
+    #undef XENUM_FL_1
+    #undef XENUM_FL_2
     #undef XENUM
 
     if (buffer_ptr == buffer) {
@@ -124,8 +129,8 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
 
     *buffer_ptr = '\0';
     final_len = (int64)(buffer_ptr - buffer) + 1;
-    copy = xmalloc(final_len);
-    memcpy(copy, buffer, final_len);
+    copy = (char *)xmalloc((size_t)final_len);
+    memcpy(copy, buffer, (size_t)final_len);
 
     return copy;
 #endif
