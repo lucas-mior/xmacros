@@ -4,8 +4,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-static char *program;
-
 #define STRUCT_NAME NumberStruct
 #define STRUCT_FIELDS                                                          \
     X(char, ic)                                                                \
@@ -34,16 +32,16 @@ static char *program;
 #include "xstructs.h"
 
 #define EXPAND_STRUCTS                                                         \
-    STRUCT(SmallStruct);                                                       \
-    STRUCT(NumberStruct);                                                      \
-    STRUCT(BigStruct);
+    STRUCT(SmallStruct)                                                        \
+    STRUCT(NumberStruct)                                                       \
+    STRUCT(BigStruct)
 #include "fmt_functions.h"
 
-#define STRUCT_PRINT(NAME)                                                     \
-    _Generic((NAME),                                                           \
-        BigStruct *: struct_print(&BigStruct_fmt, #NAME, NAME, 0),             \
-        NumberStruct *: struct_print(&NumberStruct_fmt, #NAME, NAME, 0),       \
-        SmallStruct *: struct_print(&SmallStruct_fmt, #NAME, NAME, 0))
+#define STRUCT_PRINT(VAR)                                                      \
+    _Generic((VAR),                                                            \
+        BigStruct *:    BigStruct_print(VAR, #VAR, 0),                         \
+        NumberStruct *: NumberStruct_print(VAR, #VAR, 0),                      \
+        SmallStruct *:  SmallStruct_print(VAR, #VAR, 0))
 
 #define ENUM_NAME WeekDay
 #define ENUM_PREFIX_ WEEK_DAY_
@@ -75,10 +73,13 @@ main(int argc, char **argv) {
     BigStruct *pbig = &big;
 
     (void)argc;
-    program = argv[0];
+    (void)argv;
 
     for (enum WeekDay day = WEEK_DAY_SUNDAY; day < WEEK_DAY_LAST; day += 1) {
-        printf("day[%u] = %s\n", day, WEEK_DAY_str(day));
+        char *s = WEEK_DAY_str(day);
+        if (strcmp(s, "Unknown value") != 0) {
+            printf("day[%u] = %s\n", day, s);
+        }
     }
 
     STRUCT_PRINT(&small);
@@ -87,36 +88,34 @@ main(int argc, char **argv) {
     STRUCT_PRINT(pbig);
 
     {
-        SmallStruct small_struct_from_buffer;
-        NumberStruct number_struct_from_buffer;
-        uchar *small_struct_buffer;
-        uchar *number_struct_buffer;
+        SmallStruct small_from_buf;
+        NumberStruct num_from_buf;
+        uchar *s_buf;
+        uchar *n_buf;
 
-        if ((small_struct_buffer = malloc(SmallStruct_fmt.packed_size)) == NULL) {
-            exit(EXIT_FAILURE);
+        if ((s_buf = xmalloc(SmallStruct_fmt.packed_size)) == NULL) {
+            return EXIT_FAILURE;
         }
-        if ((number_struct_buffer = malloc(NumberStruct_fmt.packed_size)) == NULL) {
-            exit(EXIT_FAILURE);
+        if ((n_buf = xmalloc(NumberStruct_fmt.packed_size)) == NULL) {
+            return EXIT_FAILURE;
         }
 
-        struct_pack(&SmallStruct_fmt, &small, small_struct_buffer);
-        printf("t packed:\n\t");
-        print_buffer(small_struct_buffer, SmallStruct_fmt.packed_size);
+        SmallStruct_pack(&small, s_buf);
+        printf("SmallStruct packed:\n\t");
+        print_buffer(s_buf, SmallStruct_fmt.packed_size);
         printf("\n");
 
-        struct_pack(&NumberStruct_fmt, &mine, number_struct_buffer);
-        printf("s packed:\n\t");
-        print_buffer(number_struct_buffer, NumberStruct_fmt.packed_size);
+        NumberStruct_pack(&mine, n_buf);
+        printf("NumberStruct packed:\n\t");
+        print_buffer(n_buf, NumberStruct_fmt.packed_size);
         printf("\n");
 
-        struct_unpack(&SmallStruct_fmt, small_struct_buffer,
-                      &small_struct_from_buffer);
-        struct_unpack(&NumberStruct_fmt, number_struct_buffer,
-                      &number_struct_from_buffer);
+        SmallStruct_unpack(s_buf, &small_from_buf);
+        NumberStruct_unpack(n_buf, &num_from_buf);
 
-        STRUCT_PRINT(&small_struct_from_buffer);
-        STRUCT_PRINT(&number_struct_from_buffer);
+        STRUCT_PRINT(&small_from_buf);
+        STRUCT_PRINT(&num_from_buf);
     }
 
-    exit(EXIT_SUCCESS);
+    return EXIT_SUCCESS;
 }

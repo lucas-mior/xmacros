@@ -1,131 +1,43 @@
 #include <stdio.h>
 #include <string.h>
 
-#if !defined(error2)
-#define error(...) fprintf(stderr, __VA_ARGS__)
+#if !defined(CAT) || !defined(CAT3)
+  #define CAT_(a, b)     a##b
+  #define CAT3_(a, b, c) a##b##c
+  #define CAT(a, b)      CAT_(a, b)
+  #define CAT3(a, b, c)  CAT3_(a, b, c)
 #endif
 
-#if __INCLUDE_LEVEL__ == 0
-#define EXPAND_STRUCTS STRUCT(SmallStruct)
-#define STRUCT_NAME SmallStruct
-#define STRUCT_FIELDS \
-    X(char *, string) \
-    X(int, i)
-#include "xstructs.h"
+#define NUM_ARGS_(_1, _2, _3, _4, _5, _6, _7, _8, n, ...) n
+#define NUM_ARGS(...) NUM_ARGS_(__VA_ARGS__, 8, 7, 6, 5, 4, 3, 2, 1, x)
+#define SELECT_ON_NUM_ARGS(macro, ...) \
+    CAT(macro, NUM_ARGS(__VA_ARGS__))(__VA_ARGS__)
+
+#if !defined(QUOTE)
+#define QUOTE_(x) #x
+#define QUOTE(x) QUOTE_(x)
 #endif
 
 #if !defined(EXPAND_STRUCTS)
 #error "EXPAND_STRUCTS is undefined"
 #endif
 
-#define GREEN "\x1b[32m"
-#define RED "\x1b[31m"
-#define RESET "\x1b[0m"
-
 static void
-struct_print(struct struct_fmt *fmt, const char *name, void *structure, int nested) {
-
-#define PRIMITIVE(TYPE, fmt) \
-    if (!strcmp(type, #TYPE) || !strcmp(type, "signed "#TYPE)) {  \
-        printf(fmt, *(TYPE *) pointer);  \
-        continue;  \
+dispatch_print(void *pointer, char *type, char *name, int32 nested) {
+    #define STRUCT(TYPE) \
+    if (strcmp(type, #TYPE) == 0) { \
+        CAT(TYPE, _print)((TYPE *)pointer, name, nested); \
+        return; \
+    } \
+    if (strcmp(type, #TYPE " *") == 0) { \
+        TYPE **ptr = (TYPE **)pointer; \
+        CAT(TYPE, _print)(*ptr, name, nested); \
+        return; \
     }
-#define STRUCT(TYPE) \
-    if (!strcmp(type, #TYPE)) {  \
-        struct_print(&TYPE##_fmt, fmt->names[i], pointer, ++nested);  \
-        if (nested) { \
-            nested -= 1;  \
-        } \
-        continue;  \
-    }  \
-    if(!strcmp(type, #TYPE " *")) {  \
-        TYPE **tmp = pointer;  \
-        struct_print(&TYPE##_fmt, fmt->names[i], *tmp, ++nested);  \
-        if (nested) { \
-            nested -= 1;  \
-        } \
-        continue;  \
-    }
+    
+    EXPAND_STRUCTS
+    #undef STRUCT
 
-    if (!nested) {
-        printf(GREEN"%s"RESET" %s = ", fmt->struct_name, name);
-    }
-    printf("{\n");
-
-    for (size_t i = 0; i < fmt->num_members; i += 1) {
-        const char *type = fmt->types[i];
-        void *pointer = ((unsigned char*)structure)+fmt->offsets[i];
-        for (int j = 0; j < nested; j += 1) {
-            printf("\t");
-        }
-        printf("\t "GREEN"%s"RESET" %s = ", fmt->types[i], fmt->names[i]);
-
-        PRIMITIVE(char, "%c\n")
-        PRIMITIVE(uchar, "%c\n")
-        PRIMITIVE(short, "%d\n")
-        PRIMITIVE(ushort, "%u\n")
-        PRIMITIVE(int, "%d\n")
-        PRIMITIVE(uint, "%u\n")
-        PRIMITIVE(long, "%ld\n")
-        PRIMITIVE(ulong, "%lu\n")
-        PRIMITIVE(char *, "%s\n")
-        PRIMITIVE(float, "%f\n")
-        PRIMITIVE(double, "%f\n")
-        PRIMITIVE(long double, "%Lf\n")
-        PRIMITIVE(int8, "%d\n")
-        PRIMITIVE(int16, "%d\n")
-        PRIMITIVE(int32, "%d\n")
-        PRIMITIVE(int64, "%ld\n")
-        PRIMITIVE(uint8, "%u\n")
-        PRIMITIVE(uint16, "%u\n")
-        PRIMITIVE(uint32, "%u\n")
-        PRIMITIVE(uint64, "%lu\n")
-        PRIMITIVE(void *, "%p\n")
-
-        EXPAND_STRUCTS
-
-        printf("\n");
-        error("Missing printf for type "RED"%s"RESET".\n", type);
-        exit(EXIT_FAILURE);
-
-#undef PRIMITIVE
-#undef STRUCT
-    }
-    for (int j = 0; j < nested; j += 1) {
-        printf("\t");
-    }
-    printf("}\n");
+    print_primitive(pointer, type);
     return;
-}
-
-static void
-print_buffer(unsigned char *buffer, size_t size) {
-    for (size_t j = 0; j < size; j += 1) {
-        printf(" %02x", buffer[j]);
-    }
-    return;
-}
-
-static size_t
-struct_pack(struct struct_fmt *fmt, void *structure, unsigned char *buffer) {
-    size_t pos = 0;
-
-    for (size_t i = 0; i < fmt->num_members; i += 1) {
-        memcpy(buffer+pos, ((unsigned char*)structure)+fmt->offsets[i], fmt->sizes[i]);
-        pos += fmt->sizes[i];
-    }
-
-    return pos;
-}
-
-static size_t
-struct_unpack(struct struct_fmt *fmt, unsigned char *buffer, void *structure) {
-    size_t pos = 0;
-
-    for (size_t i = 0; i < fmt->num_members; i += 1) {
-        memcpy(((unsigned char*)structure)+fmt->offsets[i], buffer+pos, fmt->sizes[i]);
-        pos += fmt->sizes[i];
-    }
-
-    return pos;
 }

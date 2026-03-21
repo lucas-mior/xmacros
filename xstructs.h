@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 
 #if !defined(INTEGERS)
 #define INTEGERS
@@ -9,9 +10,7 @@ typedef unsigned short ushort;
 typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef unsigned long long ulonglong;
-
 typedef long long llong;
-
 typedef int8_t int8;
 typedef int16_t int16;
 typedef int32_t int32;
@@ -22,40 +21,79 @@ typedef uint32_t uint32;
 typedef uint64_t uint64;
 #endif
 
-#if __INCLUDE_LEVEL__ && !defined(STRUCT_FMT_DEF)
-#define STRUCT_FMT_DEF
+#if !defined(XSTRUCT_UTILS)
+#define XSTRUCT_UTILS
+
+#define GREEN "\x1b[32m"
+#define RED   "\x1b[31m"
+#define RESET "\x1b[0m"
+
 struct struct_fmt {
-    char const *struct_name;
+    char *struct_name;
     size_t num_members;
     size_t struct_size;
     size_t packed_size;
     size_t *offsets;
     size_t *sizes;
-    char const **names;
-    char const **types;
+    char **names;
+    char **types;
 };
+
+static void
+print_buffer(uchar *buffer, size_t size) {
+    for (size_t j = 0; j < size; j += 1) {
+        printf(" %02x", buffer[j]);
+    }
+    return;
+}
+
+static void
+dispatch_print(void *pointer, char *type, char *name, int32 nested);
+
+#define PRIMITIVE_PRINT(TYPE, FMT, CAST) \
+    if (strcmp(type, #TYPE) == 0 || strcmp(type, "signed " #TYPE) == 0) { \
+        printf(FMT, *(CAST *)pointer); \
+        return; \
+    }
+
+static void
+print_primitive(void *pointer, char *type) {
+    PRIMITIVE_PRINT(char, "%c\n", char)
+    PRIMITIVE_PRINT(uchar, "%c\n", uchar)
+    PRIMITIVE_PRINT(short, "%d\n", short)
+    PRIMITIVE_PRINT(ushort, "%u\n", ushort)
+    PRIMITIVE_PRINT(int, "%d\n", int)
+    PRIMITIVE_PRINT(uint, "%u\n", uint)
+    PRIMITIVE_PRINT(long, "%ld\n", long)
+    PRIMITIVE_PRINT(ulong, "%lu\n", ulong)
+    PRIMITIVE_PRINT(char *, "%s\n", char *)
+    PRIMITIVE_PRINT(float, "%f\n", float)
+    PRIMITIVE_PRINT(double, "%f\n", double)
+    PRIMITIVE_PRINT(long double, "%Lf\n", long double)
+    PRIMITIVE_PRINT(int8, "%d\n", int8)
+    PRIMITIVE_PRINT(int16, "%d\n", int16)
+    PRIMITIVE_PRINT(int32, "%d\n", int32)
+    PRIMITIVE_PRINT(int64, "%ld\n", int64)
+    PRIMITIVE_PRINT(uint8, "%u\n", uint8)
+    PRIMITIVE_PRINT(uint16, "%u\n", uint16)
+    PRIMITIVE_PRINT(uint32, "%u\n", uint32)
+    PRIMITIVE_PRINT(uint64, "%lu\n", uint64)
+    PRIMITIVE_PRINT(void *, "%p\n", void *)
+
+    fprintf(stderr, "Missing printf for type " RED "%s" RESET ".\n", type);
+    exit(EXIT_FAILURE);
+    return;
+}
 #endif
 
-#if __INCLUDE_LEVEL__ == 0
-#define STRUCT_NAME SmallStruct
-#define STRUCT_FIELDS \
-    X(char *, string) \
-    X(int, i)
+#if !defined(STRUCT_NAME) || !defined(STRUCT_FIELDS)
+#error "STRUCT_NAME and STRUCT_FIELDS must be defined before including xstructs.h"
 #endif
 
-#if !defined(STRUCT_NAME)
-    #error "Did not define STRUCT_NAME before including fmtgen.h"
-#endif
-
-#if !defined(STRUCT_FIELDS)
-    #error "Did not define STRUCT_FIELDS before including fmtgen.h"
-#endif
-
-#define STR_NOEXPAND(A) #A
-#define STR(A) STR_NOEXPAND(A)
-
-#define CAT_NOEXPAND(A, B) A ## B
-#define CAT(A, B) CAT_NOEXPAND(A, B)
+#define STR_EXPAND(A) #A
+#define STR(A) STR_EXPAND(A)
+#define CAT_EXPAND(A, B) A ## B
+#define CAT(A, B) CAT_EXPAND(A, B)
 
 typedef struct STRUCT_NAME {
     #define X(L, R) L R;
@@ -64,51 +102,88 @@ typedef struct STRUCT_NAME {
 } STRUCT_NAME;
 
 static struct struct_fmt CAT(STRUCT_NAME, _fmt) = {
-
     .struct_name = STR(STRUCT_NAME),
-
     .num_members = (
-        #define X(L, R) 1 +
-        STRUCT_FIELDS
-        #undef X
-    0),
-
-    .struct_size = sizeof(struct STRUCT_NAME),
-
+#define X(L, R) 1 +
+                    STRUCT_FIELDS
+#undef X 
+                    0
+                    ),
+    .struct_size = sizeof(STRUCT_NAME),
     .packed_size = (
-        #define X(L, R) sizeof(L) +
-        STRUCT_FIELDS
-        #undef X
-    0),
-
+#define X(L, R) sizeof(L) +
+                    STRUCT_FIELDS
+#undef X
+                    0),
     .offsets = (size_t[]){
-        #define X(L, R) offsetof(struct STRUCT_NAME, R),
-        STRUCT_FIELDS
-        #undef X
+#define X(L, R) offsetof(STRUCT_NAME, R),
+                          STRUCT_FIELDS
+#undef X
     },
-
-    .sizes = (size_t []){
-        #define X(L, R) sizeof(L),
-        STRUCT_FIELDS
-        #undef X
+    .sizes = (size_t[]){
+#define X(L, R) sizeof(L),
+                        STRUCT_FIELDS
+#undef X
     },
-
-    .names = (char const *[]){
-        #define X(L, R) #R,
-        STRUCT_FIELDS
-        #undef X
+    .names = (char *[]){
+#define X(L, R) #R,
+                        STRUCT_FIELDS 
+#undef X
     },
-
-    .types = (char const *[]){
-        #define X(L, R) #L,
-        STRUCT_FIELDS
-        #undef X
+    .types = (char *[]){
+#define X(L, R) #L,
+                        STRUCT_FIELDS 
+#undef X
     },
 };
 
+static void
+CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
+    if (structure == NULL) {
+        printf("NULL\n");
+        return;
+    }
+    if (nested == 0) {
+        printf(GREEN STR(STRUCT_NAME) RESET " %s = ", name);
+    }
+    printf("{\n");
+    #define X(L, R) \
+    for (int32 j = 0; j <= nested; j += 1) { printf("\t"); } \
+    printf(GREEN #L RESET " " #R " = "); \
+    dispatch_print(&structure->R, #L, #R, nested + 1);
+    STRUCT_FIELDS
+    #undef X
+    for (int32 j = 0; j < nested; j += 1) { printf("\t"); }
+    printf("}\n");
+    if (nested == 0) { printf("\n"); }
+    return;
+}
+
+static size_t
+CAT(STRUCT_NAME, _pack)(STRUCT_NAME *structure, uchar *buffer) {
+    size_t pos = 0;
+    #define X(L, R) \
+    memcpy(buffer + pos, &structure->R, sizeof(L)); \
+    pos += sizeof(L);
+    STRUCT_FIELDS
+    #undef X
+    return pos;
+}
+
+static size_t
+CAT(STRUCT_NAME, _unpack)(uchar *buffer, STRUCT_NAME *structure) {
+    size_t pos = 0;
+    #define X(L, R) \
+    memcpy(&structure->R, buffer + pos, sizeof(L)); \
+    pos += sizeof(L);
+    STRUCT_FIELDS
+    #undef X
+    return pos;
+}
+
 #undef STRUCT_FIELDS
 #undef STRUCT_NAME
-#undef STR_NOEXPAND
+#undef STR_EXPAND
 #undef STR
-#undef CAT_NOEXPAND
+#undef CAT_EXPAND
 #undef CAT
