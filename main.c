@@ -138,14 +138,14 @@ main(int argc, char **argv) {
             .ld = 0.5
         };
         NumberStruct restored_num;
-        SmallStruct small_val = {
+        SmallStruct original_small = {
             .string = "reflection test",
             .number_struct = original_num
         };
         SmallStruct restored_small;
         BigStruct big_val = {
             .l = 123456789,
-            .small_struct = &small_val
+            .small_struct = &original_small
         };
         BigStruct *p_big = &big_val;
         uchar *n_buf;
@@ -166,12 +166,12 @@ main(int argc, char **argv) {
             free(n_buf);
             return EXIT_FAILURE;
         }
-        SmallStruct_pack(&small_val, s_buf);
+        SmallStruct_pack(&original_small, s_buf);
         SmallStruct_unpack(s_buf, &restored_small);
 
-        ASSERT_EQUAL(small_val.string, restored_small.string);
-        ASSERT_EQUAL(small_val.number_struct.ii, restored_small.number_struct.ii);
-        ASSERT_EQUAL(small_val.number_struct.f, restored_small.number_struct.f);
+        ASSERT_EQUAL(original_small.string, restored_small.string);
+        ASSERT_EQUAL(original_small.number_struct.ii, restored_small.number_struct.ii);
+        ASSERT_EQUAL(original_small.number_struct.f, restored_small.number_struct.f);
 
         printf("--- Printing BigStruct (Includes Pointer to SmallStruct) ---\n");
         STRUCT_PRINT(&big_val);
