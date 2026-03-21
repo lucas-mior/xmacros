@@ -170,8 +170,10 @@ main(int argc, char **argv) {
         SmallStruct_unpack(s_buf, &restored_small);
 
         ASSERT_EQUAL(original_small.string, restored_small.string);
-        ASSERT_EQUAL(original_small.number_struct.ii, restored_small.number_struct.ii);
-        ASSERT_EQUAL(original_small.number_struct.f, restored_small.number_struct.f);
+        ASSERT_EQUAL(original_small.number_struct.ii,
+                     restored_small.number_struct.ii);
+        ASSERT_EQUAL(original_small.number_struct.f,
+                     restored_small.number_struct.f);
 
         printf("--- Printing BigStruct (Includes Pointer to SmallStruct) ---\n");
         STRUCT_PRINT(&big_val);
