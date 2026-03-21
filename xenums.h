@@ -18,7 +18,7 @@
 #endif
 
 #if !defined(ENUM_NAME) || !defined(ENUM_PREFIX_) || !defined(ENUM_FIELDS)
-#error "xenums.h requires ENUM_NAME, ENUM_PREFIX_, and ENUM_FIELDS to be defined."
+#error "xenums.h requires ENUM_NAME, ENUM_PREFIX_, and ENUM_FIELDS defined."
 #endif
 
 typedef enum ENUM_NAME {
