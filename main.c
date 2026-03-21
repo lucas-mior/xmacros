@@ -75,7 +75,7 @@ main(int argc, char **argv) {
 
     BigStruct *pbig = &big;
 
-    for (enum WeekDay day = 0; day < WEEK_DAY_LAST; day += 1) {
+    for (enum WeekDay day = 0u; day < WEEK_DAY_LAST; day += 1) {
         printf("day[%u] = %s\n", day, WEEK_DAY_str(day));
     }
 
