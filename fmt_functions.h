@@ -8,7 +8,7 @@
 static void
 dispatch_print(void *pointer, int32 type_id, char *type_name, char *field_name, int32 nested) {
     /* If it is a primitive, use the tagged printer instead of string guessing */
-    if (type_id != TYPE_STRUCT) {
+    if (type_id != TYPE_OTHER) {
         print_primitive(pointer, type_id);
         return;
     }

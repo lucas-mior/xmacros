@@ -65,9 +65,6 @@ typedef long double ldouble;
 #define RED   "\x1b[31m"
 #define RESET "\x1b[0m"
 
-/* 0 indicates the member is a custom struct, not a primitive defined in generic.c */
-#define TYPE_STRUCT 0
-
 typedef struct StructFormat {
     char *struct_name;
     size_t num_members;
@@ -132,17 +129,6 @@ typedef struct STRUCT_NAME {
     #undef X
 } STRUCT_NAME;
 
-/* Helper macro to safely get TYPEID or return TYPE_STRUCT for non-primitives */
-#define GET_TYPEID(VAR) _Generic((VAR), \
-    void*: TYPE_VOIDP, char*: TYPE_CHARP, bool: TYPE_BOOL, \
-    char: TYPE_CHAR, schar: TYPE_SCHAR, short: TYPE_SHORT, \
-    int: TYPE_INT, long: TYPE_LONG, llong: TYPE_LLONG, \
-    uchar: TYPE_UCHAR, ushort: TYPE_USHORT, uint: TYPE_UINT, \
-    ulong: TYPE_ULONG, ullong: TYPE_ULLONG, float: TYPE_FLOAT, \
-    double: TYPE_DOUBLE, ldouble: TYPE_LDOUBLE, \
-    default: TYPE_STRUCT \
-)
-
 static StructFormat CAT(STRUCT_NAME, _fmt) = {
     .struct_name = QUOTE(STRUCT_NAME),
     .num_members = (
@@ -177,7 +163,7 @@ static StructFormat CAT(STRUCT_NAME, _fmt) = {
     #undef X
     },
     .type_ids = (int32[]){
-    #define X(L, R) GET_TYPEID(((STRUCT_NAME*)0)->R),
+    #define X(L, R) TYPEID(((STRUCT_NAME*)0)->R),
         STRUCT_FIELDS
     #undef X
     },
@@ -199,7 +185,7 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
         printf("\t"); \
     } \
     printf(GREEN #L RESET " " #R " = "); \
-    dispatch_print(&structure->R, GET_TYPEID(structure->R), #L, #R, nested + 1);
+    dispatch_print(&structure->R, TYPEID(structure->R), #L, #R, nested + 1);
     STRUCT_FIELDS
     #undef X
 
