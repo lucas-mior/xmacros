@@ -150,12 +150,15 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
                     buffer_ptr += 1; \
                 } else { \
                     error2("Error: enum name is too long.\n"); \
-                    fatal(EXIT_FAILURE); \
+                    TRAP(); \
                 } \
             } \
             if (buffer_ptr + len < (buffer_end - 1)) { \
                 memcpy64(buffer_ptr, name, (size_t)len); \
                 buffer_ptr += len; \
+            } else { \
+                error2("Error: enum name is too long.\n"); \
+                TRAP(); \
             } \
             is_first = 0; \
         }
