@@ -148,6 +148,9 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
                 if (buffer_ptr < (buffer_end - 1)) { \
                     *buffer_ptr = '|'; \
                     buffer_ptr += 1; \
+                } else { \
+                    error2("Error: enum name is too long.\n"); \
+                    fatal(EXIT_FAILURE); \
                 } \
             } \
             if (buffer_ptr + len < (buffer_end - 1)) { \
