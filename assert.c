@@ -87,6 +87,16 @@ static void \
 a_strings_##MODE(char *file, uint line, \
                  char *name1, char *name2, \
                  char *var1, char *var2) { \
+    if (var1 == NULL) { \
+        error2("\n%s: Error in assertion at %s:%u\n", __func__, file, line); \
+        error2("%s is NULL\n", name1); \
+        TRAP(); \
+    } \
+    if (var2 == NULL) { \
+        error2("\n%s: Error in assertion at %s:%u\n", __func__, file, line); \
+        error2("%s is NULL\n", name2); \
+        TRAP(); \
+    } \
     if (!(strcmp(var1, var2) SYMBOL 0)) { \
         error2("\n%s: Assertion failed at %s:%u\n", __func__, file, line); \
         error2("%s = %s " #SYMBOL " %s = %s\n", \
