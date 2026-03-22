@@ -83,10 +83,27 @@
     X(SIXTY4)
 #include "xenums.c"
 
+#define ENUM_NAME Flags
+#define ENUM_PREFIX_ FLAG_
+#define ENUM_BITFLAGS 1
+#define ENUM_FIELDS \
+    X(READ) \
+    X(WRITE) \
+    X(EXEC) \
+    X(READ_WRITE, FLAG_READ|FLAG_WRITE) \
+    X(READ_EXEC)
+#include "xenums.c"
+
 int
 main(int argc, char **argv) {
     (void)argc;
     (void)argv;
+    {
+        enum Flags flag = FLAG_READ_WRITE;
+        ASSERT_EQUAL(FLAG_str(flag), "FLAG_READ|FLAG_WRITE|FLAG_READ_WRITE");
+        ASSERT_EQUAL(FLAG_str(FLAG_READ_EXEC), "FLAG_READ_EXEC");
+        ASSERT_EQUAL(FLAG_READ_EXEC, 1 << 4);
+    }
 
     {
         char *str_ptr;
