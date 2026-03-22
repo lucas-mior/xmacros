@@ -414,6 +414,14 @@ _Generic((VAR1), \
 #define ASSERT_MORE(VAR1, VAR2)       ASSERT_COMPARE(more,       VAR1, VAR2)
 #define ASSERT_MORE_EQUAL(VAR1, VAR2) ASSERT_COMPARE(more_equal, VAR1, VAR2)
 
+#define ASSERT_NULL(VAR1) do { \
+    if ((void *)VAR1 != NULL) { \
+        error2("\n%s: Assertion failed at %s:%u\n", __func__, __FILE__, __LINE__); \
+        error2("%s = %p == NULL\n", #VAR1, (void *)VAR1); \
+        TRAP(); \
+    } \
+} while (0)
+
 // clang-format on
 
 #if TESTING_assert
@@ -439,6 +447,7 @@ main(void) {
         char *string = NULL;
         void *pointer = NULL;
         ASSERT_EQUAL(string, pointer);
+        ASSERT_NULL(string);
     }
     {
         int a = 1;
