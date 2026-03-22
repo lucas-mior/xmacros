@@ -133,7 +133,7 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
             return "Unknown value";
     }
 #else
-    char buffer[CAT(ENUM_PREFIX_, LAST)*256 + 1];
+    char buffer[CAT(ENUM_PREFIX_, BIT_COUNT)*256 + 1];
     char *buffer_ptr = buffer;
     char *buffer_end = buffer + sizeof(buffer);
     int32 is_first = 1;
