@@ -95,9 +95,7 @@
 #include "xenums.c"
 
 int
-main(int argc, char **argv) {
-    (void)argc;
-    (void)argv;
+main(void) {
     {
         enum Flags flag = FLAG_READ_WRITE;
         ASSERT_EQUAL(FLAG_str(flag), "FLAG_READ|FLAG_WRITE|FLAG_READ_WRITE");
