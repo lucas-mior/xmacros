@@ -392,6 +392,7 @@ _Generic((VAR), \
 } while (0)
 
 #if TESTING_generic
+
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
@@ -499,6 +500,8 @@ main(void) {
         float var_float = FLT_MAX;
         double var_double = DBL_MAX;
         long double var_longdouble = (ldouble)DBL_MAX;
+
+        PRINTLN(&var_double);
 
         PRINTLN(var_voidptr);
         PRINTLN(var_string);
