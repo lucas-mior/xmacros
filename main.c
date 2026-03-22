@@ -116,7 +116,9 @@ main(void) {
             free(str_ptr);
         }
 
-        if ((str_ptr = POWER_OF2_str(POWER_OF2_ONE | POWER_OF2_FOUR | POWER_OF2_SIXTY4))) {
+        if ((str_ptr = POWER_OF2_str(POWER_OF2_ONE
+                                     | POWER_OF2_FOUR
+                                     | POWER_OF2_SIXTY4))) {
             ASSERT_EQUAL(str_ptr, "POWER_OF2_ONE|POWER_OF2_FOUR|POWER_OF2_SIXTY4");
             free(str_ptr);
         }
