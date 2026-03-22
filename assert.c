@@ -388,6 +388,7 @@ _Generic((VAR1), \
                                  #VAR1, #VAR2, \
                                  (char *)(uintptr_t)(VAR1), \
                                  (char *)(uintptr_t)(VAR2)), \
+        void *: A_POINTERS(MODE, VAR1, VAR2), \
         default: UNSUPPORTED_TYPE_FOR_GENERIC_ASSERT_COMPARE_CHARP() \
     ), \
     char:    A_FIRST_CHAR(MODE,     VAR1, VAR2),               \
@@ -434,6 +435,11 @@ handler_failed_assertion(int unused) {
 // clang-format off
 int
 main(void) {
+    {
+        char *string = NULL;
+        void *pointer = NULL;
+        ASSERT_EQUAL(string, pointer);
+    }
     {
         int a = 1;
         int b = 1;
