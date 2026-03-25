@@ -15,17 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef XENUM_UTILS
-#define XENUM_UTILS
-
 #include <string.h>
 #include <stdlib.h>
-#include "generic.c"
+#include <stdio.h>
 
-#if !defined(xmalloc)
-#define xmalloc(x) malloc(x)
-#define memcpy64(a, b, c) memcpy(a, b, c)
-#endif
+#include "generic.c"
+#include "util.c"
 
 #if !defined(CAT) || !defined(CAT3)
   #define CAT_(a, b)     a##b
@@ -46,7 +41,14 @@
       CAT(macro, NUM_ARGS(__VA_ARGS__))(__VA_ARGS__)
 #endif
 
-#endif
+/* #if !defined(ENUM_UNDERLYING_TYPE) */
+/*   #if __clang__ */
+/*     #define ENUM_UNDERLYING_TYPE : int32 */
+/*   #else */
+/*     #define ENUM_UNDERLYING_TYPE */
+/*   #endif */
+/* #endif */
+#define ENUM_UNDERLYING_TYPE
 
 #if defined(__INCLUDE_LEVEL__) && (__INCLUDE_LEVEL__ == 0)
   #define TESTING_xenums 1
@@ -80,7 +82,7 @@
 #endif
 
 #if ENUM_BITFLAGS
-enum CAT(ENUM_NAME, _BitIndices) {
+enum CAT(ENUM_NAME, _BitIndices) ENUM_UNDERLYING_TYPE {
     #define X_IDX_1(e)    CAT3(ENUM_PREFIX_, e, _BIT_IDX),
     #define X_IDX_2(e, v) CAT3(ENUM_PREFIX_, e, _BIT_IDX),
     #define X(...)        SELECT_ON_NUM_ARGS(X_IDX_, __VA_ARGS__)
@@ -94,7 +96,7 @@ enum CAT(ENUM_NAME, _BitIndices) {
 };
 #endif
 
-enum ENUM_NAME {
+enum ENUM_NAME ENUM_UNDERLYING_TYPE {
 #if ENUM_BITFLAGS == 0
     #define XENUM_DEF_1(e)    CAT(ENUM_PREFIX_, e),
     #define XENUM_DEF_2(e, v) CAT(ENUM_PREFIX_, e) = v,
@@ -154,7 +156,7 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
                 } \
             } \
             if (buffer_ptr + len < (buffer_end - 1)) { \
-                memcpy64(buffer_ptr, name, (size_t)len); \
+                memcpy64(buffer_ptr, name, len); \
                 buffer_ptr += len; \
             } else { \
                 error2("Error: enum name is too long.\n"); \
@@ -181,13 +183,21 @@ CAT(ENUM_PREFIX_, str)(enum ENUM_NAME val) {
     *buffer_ptr = '\0';
     final_len = (int64)(buffer_ptr - buffer) + 1;
 
-    if ((copy = xmalloc((size_t)final_len))) {
-        memcpy64(copy, buffer, (size_t)final_len);
+    if ((copy = xmalloc(final_len))) {
+        memcpy64(copy, buffer, final_len);
     }
 
     return copy;
 #endif
 }
+
+#if 0 == TESTING_xenums
+static inline void
+CAT(ENUM_PREFIX_, functions_sink)(void) {
+    (void)CAT(ENUM_PREFIX_, str);
+    return;
+}
+#endif
 
 #undef ENUM_NAME
 #undef ENUM_PREFIX_

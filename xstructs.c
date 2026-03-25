@@ -22,13 +22,11 @@
 #include <string.h>
 
 #include "generic.c"
+#include "util.c"
 
 #if !defined(LENGTH)
 #define LENGTH(X) (int64)(sizeof(X)/sizeof(*X))
 #endif
-
-#define xmalloc(x) malloc((size_t)x)
-#define memcpy64(a, b, c) memcpy(a, b, c)
 
 #if !defined(error2)
 #define error2(...) fprintf(stderr, __VA_ARGS__)
