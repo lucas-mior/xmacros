@@ -1,5 +1,9 @@
 #!/bin/sh
 
+dir="$(readlink -f "$(dirname "$0")")"
+cbase="cbase"
+CPPFLAGS="$CPPFLAGS -I "$dir/$cbase""
+
 ctags --kinds-C=+l+d ./*.h ./*.c 2> /dev/null || true
 vtags.sed tags > .tags.vim 2> /dev/null || true
 
@@ -38,4 +42,4 @@ if [ $CC = "clang" ]; then
     CFLAGS="$CFLAGS -Wno-assign-enum"
 fi
 
-$CC $CFLAGS main.c -o ./xmacros
+$CC $CPPFLAGS $CFLAGS main.c -o ./xmacros

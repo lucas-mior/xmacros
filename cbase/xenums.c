@@ -41,14 +41,13 @@
       CAT(macro, NUM_ARGS(__VA_ARGS__))(__VA_ARGS__)
 #endif
 
-/* #if !defined(ENUM_UNDERLYING_TYPE) */
-/*   #if __clang__ */
-/*     #define ENUM_UNDERLYING_TYPE : int32 */
-/*   #else */
-/*     #define ENUM_UNDERLYING_TYPE */
-/*   #endif */
-/* #endif */
-#define ENUM_UNDERLYING_TYPE
+#if !defined(ENUM_UNDERLYING_TYPE)
+  #if __clang__
+    #define ENUM_UNDERLYING_TYPE : uint32
+  #else
+    #define ENUM_UNDERLYING_TYPE
+  #endif
+#endif
 
 #if defined(__INCLUDE_LEVEL__) && (__INCLUDE_LEVEL__ == 0)
   #define TESTING_xenums 1
@@ -219,17 +218,17 @@ main(void) {
 
         if ((s = TEST_FLAGS_str(TEST_FLAGS_READ))) {
             ASSERT_EQUAL(s, "TEST_FLAGS_READ");
-            free(s);
+            free(s, strlen32(s) + 1);
         }
 
         if ((s = TEST_FLAGS_str(TEST_FLAGS_READ | TEST_FLAGS_EXEC))) {
             ASSERT_EQUAL(s, "TEST_FLAGS_READ|TEST_FLAGS_EXEC");
-            free(s);
+            free(s, strlen32(s) + 1);
         }
 
         if ((s = TEST_FLAGS_str(TEST_FLAGS_READ | TEST_FLAGS_WRITE | TEST_FLAGS_EXEC))) {
             ASSERT_EQUAL(s, "TEST_FLAGS_READ|TEST_FLAGS_WRITE|TEST_FLAGS_EXEC");
-            free(s);
+            free(s, strlen32(s) + 1);
         }
 
         ASSERT_EQUAL(TEST_FLAGS_str(0), "NONE");
@@ -238,4 +237,5 @@ main(void) {
     printf("xenums.c: All tests passed successfully.\n");
     return EXIT_SUCCESS;
 }
-#endif
+
+#endif /* TESTING_xenums */
