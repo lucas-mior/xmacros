@@ -113,14 +113,14 @@ main(void) {
 
         if ((str_ptr = POWER_OF2_str(POWER_OF2_ONE))) {
             ASSERT_EQUAL(str_ptr, "POWER_OF2_ONE");
-            free(str_ptr, strlen(str_ptr) + 1);
+            free(str_ptr, strlen32(str_ptr) + 1);
         }
 
         if ((str_ptr = POWER_OF2_str(POWER_OF2_ONE
                                      | POWER_OF2_FOUR
                                      | POWER_OF2_SIXTY4))) {
             ASSERT_EQUAL(str_ptr, "POWER_OF2_ONE|POWER_OF2_FOUR|POWER_OF2_SIXTY4");
-            free(str_ptr, strlen(str_ptr) + 1);
+            free(str_ptr, strlen32(str_ptr) + 1);
         }
 
         ASSERT_EQUAL(POWER_OF2_str(0), "NONE");
@@ -193,7 +193,7 @@ main(void) {
         ASSERT_EQUAL(original_small.string, restored_small.string);
         ASSERT_EQUAL(original_small.number_struct.ii,
                      restored_small.number_struct.ii);
-        
+
         for (int32 i = 0; i < 10; i += 1) {
             ASSERT_EQUAL(original_small.number_struct.f[i],
                          restored_small.number_struct.f[i]);

@@ -80,13 +80,6 @@ typedef long double ldouble;
 #if !defined(XSTRUCT_UTILS)
 #define XSTRUCT_UTILS
 
-#if !defined(RED) || !defined(GREEN) || !defined(YELLOW) || !defined(RESET)
-#define RED   "\x1b[31m"
-#define GREEN "\x1b[32m"
-#define YELLOW "\x1b[33m"
-#define RESET "\x1b[0m"
-#endif
-
 typedef struct StructFormat {
     char *struct_name;
     int32 num_members;
@@ -188,7 +181,7 @@ static StructFormat CAT(STRUCT_NAME, _fmt) = {
         #define X_C2(L, R) 1 +
         #define X_C3(L, R, N) 1 +
         #define X(...) SELECT_ON_NUM_ARGS(X_C, __VA_ARGS__)
-        STRUCT_FIELDS 
+        STRUCT_FIELDS
         #undef X
         #undef X_C2
         #undef X_C3
@@ -198,7 +191,7 @@ static StructFormat CAT(STRUCT_NAME, _fmt) = {
         #define X_P2(L, R) sizeof(((STRUCT_NAME*)0)->R) +
         #define X_P3(L, R, N) sizeof(((STRUCT_NAME*)0)->R) +
         #define X(...) SELECT_ON_NUM_ARGS(X_P, __VA_ARGS__)
-        STRUCT_FIELDS 
+        STRUCT_FIELDS
         #undef X
         #undef X_P2
         #undef X_P3
@@ -242,7 +235,7 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
         return;
     }
     if (nested == 0) {
-        printf(GREEN QUOTE(STRUCT_NAME) RESET " %s = ", name);
+        printf(GREEN(QUOTE(STRUCT_NAME))" %s = ", name);
     }
     printf("{\n");
 
@@ -250,7 +243,7 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
         for (int32 j = 0; j <= nested; j += 1) { \
             printf("\t"); \
         } \
-        printf(GREEN #L RESET " " #R " = "); \
+        printf(GREEN(#L)" " #R " = "); \
         dispatch_print(&structure->R, TYPEID(structure->R), #L, #R, nested + 1);
 
     #define X_PR3(L, R, N) \
@@ -260,7 +253,7 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
             } \
             char buf[128]; \
             snprintf(buf, sizeof(buf), "%s[%d]", #R, i); \
-            printf(GREEN #L RESET " " #R "[%d] = ", i); \
+            printf(GREEN(#L)" " #R "[%d] = ", i); \
             dispatch_print(&structure->R[i], TYPEID(structure->R[0]), #L, buf, nested + 1); \
         }
 
@@ -368,7 +361,7 @@ int main(void) {
 
         free(buffer);
     }
-    
+
     return EXIT_SUCCESS;
 }
 #endif

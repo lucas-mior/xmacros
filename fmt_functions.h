@@ -44,7 +44,7 @@ dispatch_print(void *pointer,
         CAT(TYPE, _print)(*ptr, field_name, nested); \
         return; \
     }
-    
+
     EXPAND_STRUCTS
 #undef STRUCT
 
