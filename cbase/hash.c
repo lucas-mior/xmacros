@@ -59,10 +59,10 @@
 #define ALIGNMENT 16
 #endif
 
-uint64 hash_function(void *key, int32 key_length);
-uint32 hash_normal(void *map, uint64 hash);
-uint32 hash_capacity(void *map);
-uint32 hash_length(void *map);
+INLINE uint64 hash_function(void *key, int32 key_length);
+INLINE uint32 hash_normal(void *map, uint64 hash);
+INLINE uint32 hash_capacity(void *map);
+INLINE uint32 hash_length(void *map);
 uint32 hash_expected_collisions(void *map);
 
 #if !defined(INTEGERS)
@@ -101,14 +101,14 @@ typedef uint64_t uint64;
 
 struct CommonBucket;
 
-struct CommonMap {
+typedef struct CommonMap {
     int64 size;
     uint32 capacity;
     uint32 bitmask;
     uint32 length;
     uint32 occupied;
     struct CommonBucket *array;
-};
+} CommonMap;
 
 #endif /* HASH_H */
 
@@ -136,6 +136,7 @@ typedef struct Bucket {
 #if HASH_KEY_FIXED_LEN
     HASH_KEY_TYPE key;
     int8 slot_state;
+    uint8 padding2[3];
 #else
     HASH_KEY_TYPE *key;
     int32 key_len;
@@ -148,6 +149,8 @@ typedef struct Bucket {
 #endif
 } Bucket;
 
+// TODO: Struct `Map` is not typedef'd. Per your codebase rules ("do typedef
+// structs"), define it as `typedef struct Map { ... } Map;`.
 struct Map {
     int64 size;
     uint32 capacity;
@@ -158,7 +161,7 @@ struct Map {
 };
 
 #define CHECK_COMMON_MAP(FIELD) \
-    _Static_assert(offsetof(struct Map, FIELD) == offsetof(struct CommonMap, FIELD), \
+    _Static_assert(offsetof(struct Map, FIELD) == offsetof(CommonMap, FIELD), \
                    "CommonMap and new Map must have the same offset for " #FIELD)
 
 CHECK_COMMON_MAP(size);
@@ -244,6 +247,8 @@ CAT(hash_resize_, HASH_TYPE)(struct Map *map) {
 
     for (uint32 j = 0; j < old_capacity; j += 1) {
         Bucket *iterator = &old_array[j];
+        // TODO: Initialize `rehash_base` and `rehash_probe` at declaration
+        // below to reduce uninitialized state branching.
         uint32 rehash_base;
         uint32 rehash_probe;
         uint32 rehash_step = 0;
@@ -334,7 +339,11 @@ CAT(hash_probe_, HASH_TYPE)(struct Map *map, HASH_KEY_TYPE *key
 #endif
 
         if (state == HASH_SLOT_FREE) {
-            *out_idx = (first_tombstone >= 0) ? (uint32)first_tombstone : probe;
+            if (first_tombstone >= 0) {
+                *out_idx = (uint32)first_tombstone;
+            } else {
+                *out_idx = probe;
+            }
             return false;
         } else if (state == HASH_SLOT_DELETED) {
             if (first_tombstone < 0) {
@@ -742,6 +751,7 @@ CAT(hash_functions_sink_, HASH_TYPE)(void) {
     (void)CAT(hash_print_summary_, HASH_TYPE);
     (void)CAT(hash_print_, HASH_TYPE);
     (void)CAT(hash_ndeleted_, HASH_TYPE);
+    return;
 }
 
 #undef HASH_VALUE_TYPE
@@ -756,35 +766,35 @@ CAT(hash_functions_sink_, HASH_TYPE)(void) {
 #if !defined(HASH_H2)
 #define HASH_H2
 
-uint64
+INLINE uint64
 hash_function(void *key, int32 key_length) {
     uint64 hash;
     hash = rapidhash(key, (size_t)key_length);
     return hash;
 }
 
-uint32
+INLINE uint32
 hash_normal(void *map, uint64 hash) {
-    struct CommonMap *map2 = map;
+    CommonMap *map2 = map;
     uint32 normal = hash & map2->bitmask;
     return normal;
 }
 
-uint32
+INLINE uint32
 hash_capacity(void *map) {
-    struct CommonMap *map2 = map;
+    CommonMap *map2 = map;
     return map2->capacity;
 }
 
-uint32
+INLINE uint32
 hash_length(void *map) {
-    struct CommonMap *map2 = map;
+    CommonMap *map2 = map;
     return map2->length;
 }
 
 uint32
 hash_expected_collisions(void *map) {
-    struct CommonMap *map2 = map;
+    CommonMap *map2 = map;
     long double n = map2->length;
     long double m = map2->capacity;
     long double result = n - m*(1 - powl((m - 1) / m, n));
@@ -840,8 +850,8 @@ random_string(Arena *arena, uint32 nbytes) {
     string.s = arena_push(arena, size);
 
     for (int32 i = 0; i < len; i += 1) {
-        int32 c = (int32)((size_t)rand() % (sizeof(characters) - 1));
-        string.s[i] = characters[c];
+        int32 ci = (int32)((size_t)rand() % (sizeof(characters) - 1));
+        string.s[i] = characters[ci];
     }
     string.s[len] = '\0';
     string.len = len;

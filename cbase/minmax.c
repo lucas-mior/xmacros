@@ -163,8 +163,8 @@ _Generic((VAR2), \
     uchar:   SIGNED_UNSIGNED(MODE, VAR1, VAR2, TYPE1, TYPE_UCHAR  ), \
     ushort:  SIGNED_UNSIGNED(MODE, VAR1, VAR2, TYPE1, TYPE_USHORT ), \
     uint:    SIGNED_UNSIGNED(MODE, VAR1, VAR2, TYPE1, TYPE_UINT   ), \
-    ulong:   BOTH_LDOUBLE(MODE,    VAR1, VAR2, TYPE1, TYPE_ULONG  ), \
-    ullong:  BOTH_LDOUBLE(MODE,    VAR1, VAR2, TYPE1, TYPE_ULLONG ), \
+    ulong:   SIGNED_UNSIGNED(MODE, VAR1, VAR2, TYPE1, TYPE_ULONG  ), \
+    ullong:  SIGNED_UNSIGNED(MODE, VAR1, VAR2, TYPE1, TYPE_ULLONG ), \
     float:   BOTH_LDOUBLE(MODE,    VAR1, VAR2, TYPE1, TYPE_FLOAT  ), \
     double:  BOTH_LDOUBLE(MODE,    VAR1, VAR2, TYPE1, TYPE_DOUBLE ), \
     ldouble: BOTH_LDOUBLE(MODE,    VAR1, VAR2, TYPE1, TYPE_LDOUBLE), \
@@ -222,8 +222,8 @@ void UNSUPPORTED_TYPE_FOR_GENERIC_FIRST_LDOUBLE(void);
 #define POINTERS(MODE, VAR1, VAR2) \
     get_pointer_##MODE((void *)(uintptr_t)(VAR1), (void *)(uintptr_t)(VAR2))
 
-void UNSUPPORTED_TYPE_FOR_GENERIC_MINMAX_COMPARE_CHARP(void);
 void UNSUPPORTED_TYPE_FOR_GENERIC_MINMAX_COMPARE_VOIDP(void);
+
 #define MINMAX_COMPARE(MODE, VAR1, VAR2) \
 _Generic((VAR1), \
     void *: _Generic((VAR2), \
@@ -309,9 +309,9 @@ main(void) {
         long a = MINOF(a);
         ulong b = MAXOF(b);
         long double min = MIN(a, b);
-        long double max = MAX(a, b);
-        ASSERT_EQUAL(min, a);
-        ASSERT_EQUAL(max, (long double)b);
+        ullong max = (ullong)MAX(a, b);
+        ASSERT_EQUAL((long)min, a);
+        ASSERT_EQUAL(max, b);
     }{
         ulong a = MINOF(a);
         long b = MAXOF(b);

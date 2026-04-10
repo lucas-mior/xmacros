@@ -227,6 +227,7 @@ static void util_segv_handler(int32) __attribute__((noreturn));
 static int32 itoa2(char *, int32, llong);
 static long atoi2(char *);
 INLINE void *memchr64(void *pointer, int32 value, int64 size);
+INLINE int memcmp64(void *left, void *right, int64 size);
 
 #if !defined(CAT) || !defined(CAT3)
   #define CAT_(a, b)     a##b
@@ -267,7 +268,7 @@ memmem(void *haystack, size_t hay_len, void *needle, size_t needle_len) {
             return NULL;
         }
 
-        if (memcmp(p, n, needle_len) == 0) {
+        if (memcmp64(p, n, (int64)needle_len) == 0) {
             return (void *)p;
         }
         h = p + 1;
@@ -474,6 +475,27 @@ X64(read, size_t)
 #endif
 
 #undef X64
+
+static void
+write_all(int fd, char *buffer, int64 left) {
+    int64 written = 0;
+    int64 w;
+
+    while (left > 0) {
+#if OS_WINDOWS
+        if ((w = write(fd, buffer + written, (uint)left)) <= 0)
+#else
+        if ((w = write(fd, buffer + written, (size_t)left)) <= 0)
+#endif
+        {
+            fprintf(stderr, "Error writing: %s.\n", strerror(errno));
+            fatal(EXIT_FAILURE);
+        }
+        left -= w;
+        written += w;
+    }
+    return;
+}
 
 #define X64(func) \
 INLINE int64 \
@@ -686,6 +708,7 @@ free2(void *pointer, int64 size) {
     if (pointer) {
         free(pointer);
     }
+    return;
 }
 
 #if DEBUGGING_MEMORY
@@ -998,8 +1021,8 @@ util_filename_from(char *buffer, int64 size, int fd) {
         return -1;
     }
 
-    if (strncmp(buffer, "\\\\?\\", 4) == 0) {
-        memmove(buffer, buffer + 4, len - 3);
+    if (strncmp32(buffer, "\\\\?\\", 4) == 0) {
+        memmove64(buffer, buffer + 4, len - 3);
     }
 
     return 0;
@@ -1293,16 +1316,11 @@ error_impl(char *file, int32 line, char *format, ...) {
         p = 0;
     }
 
-#if OS_WINDOWS
     if (p) {
-        write(STDERR_FILENO, fileline, (uint)p);
+        write_all(STDERR_FILENO, fileline, p);
     }
-    write(STDERR_FILENO, pbuffer, (uint)n);
-#else
-    if (p) {
-        write(STDERR_FILENO, fileline, (uint)p);
-    }
-    write(STDERR_FILENO, pbuffer, (size_t)n);
+    write_all(STDERR_FILENO, pbuffer, n);
+#if OS_UNIX
     fsync(STDERR_FILENO);
     fsync(STDOUT_FILENO);
 #endif
@@ -1336,11 +1354,7 @@ error_impl(char *file, int32 line, char *format, ...) {
 static void
 error_async_safe(char *message) {
     int32 len = strlen32(message);
-#if OS_WINDOWS
-    write(STDERR_FILENO, message, (uint)len);
-#else
-    write(STDERR_FILENO, message, (size_t)len);
-#endif
+    write_all(STDERR_FILENO, message, len);
     return;
 }
 
@@ -1653,7 +1667,6 @@ util_equal_files(char *filename_a, char *filename_b) {
     char buffer_b[BUFSIZ];
     int64 total_r = 0;
     int64 ra;
-    int64 rb;
     struct stat stat_a;
     struct stat stat_b;
     bool equal = false;
@@ -1724,6 +1737,7 @@ util_equal_files(char *filename_a, char *filename_b) {
     } while (0);
 #endif
     while ((ra = read64(fd_a, buffer_a, sizeof(buffer_a))) > 0) {
+        int64 rb;
         if ((rb = read64(fd_b, buffer_b, sizeof(buffer_b))) != ra) {
             if (rb < 0) {
                 error("Error reading from %s: %s", filename_b, strerror(errno));
@@ -1752,13 +1766,13 @@ out:
 
 INLINE double
 rad2deg(double radians) {
-    const double RAD2DEG = 180.0 / 3.141592653589793;
+    double RAD2DEG = 180.0 / 3.141592653589793;
     return radians*RAD2DEG;
 }
 
 INLINE double
 deg2rad(double degrees) {
-    const double DEG2RAD = 3.141592653589793 / 180.0;
+    double DEG2RAD = 3.141592653589793 / 180.0;
     return degrees*DEG2RAD;
 }
 
@@ -2339,7 +2353,7 @@ main(int argc, char **argv) {
         string_from_strings(b, sizeof(b), "|", strs, 3);
         ASSERT_EQUAL(b, "one|two|three");
         string_from_doubles(b, sizeof(b), ",", dbls, 2);
-        ASSERT_NOT_EQUAL(strlen(b), 0);
+        ASSERT_NOT_EQUAL(strlen32(b), 0);
     }
 
     {
@@ -2445,7 +2459,7 @@ main(int argc, char **argv) {
     }
 
     {
-        const char characters[] = "abcdefghijklmnopqrstuvwxyz1234567890";
+        char characters[] = "abcdefghijklmnopqrstuvwxyz1234567890";
         char buffer2[4096];
         char name2[256];
         char buffer3[4096];
