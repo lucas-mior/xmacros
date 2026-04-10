@@ -339,28 +339,27 @@ int main(void) {
 
     ASSERT_EQUAL(ExampleStruct_fmt.struct_name, "ExampleStruct");
 
-    if ((buffer = xmalloc(ExampleStruct_fmt.packed_size))) {
-        packed_size = ExampleStruct_pack(&original, buffer);
-        ASSERT(packed_size == ExampleStruct_fmt.packed_size);
+    buffer = xmalloc(ExampleStruct_fmt.packed_size);
+    packed_size = ExampleStruct_pack(&original, buffer);
+    ASSERT(packed_size == ExampleStruct_fmt.packed_size);
 
-        ExampleStruct_unpack(buffer, &restored);
+    ExampleStruct_unpack(buffer, &restored);
 
-        STRUCT_PRINT(&original);
-        STRUCT_PRINT(&restored);
+    STRUCT_PRINT(&original);
+    STRUCT_PRINT(&restored);
 
-        ASSERT_EQUAL(original.ic, restored.ic);
-        ASSERT_EQUAL(original.uc, restored.uc);
-        ASSERT_EQUAL(original.is, restored.is);
-        ASSERT_EQUAL(original.us, restored.us);
-        ASSERT_EQUAL(original.ii, restored.ii);
-        ASSERT_EQUAL(original.ui, restored.ui);
-        ASSERT_EQUAL(original.il, restored.il);
-        ASSERT_EQUAL(original.ul, restored.ul);
-        ASSERT_EQUAL(original.d,  restored.d);
-        ASSERT_EQUAL(original.ld, restored.ld);
+    ASSERT_EQUAL(original.ic, restored.ic);
+    ASSERT_EQUAL(original.uc, restored.uc);
+    ASSERT_EQUAL(original.is, restored.is);
+    ASSERT_EQUAL(original.us, restored.us);
+    ASSERT_EQUAL(original.ii, restored.ii);
+    ASSERT_EQUAL(original.ui, restored.ui);
+    ASSERT_EQUAL(original.il, restored.il);
+    ASSERT_EQUAL(original.ul, restored.ul);
+    ASSERT_EQUAL(original.d,  restored.d);
+    ASSERT_EQUAL(original.ld, restored.ld);
 
-        free(buffer);
-    }
+    free(buffer, ExampleStruct_fmt.packed_size);
 
     return EXIT_SUCCESS;
 }
