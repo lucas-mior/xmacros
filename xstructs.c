@@ -134,17 +134,17 @@ print_primitive(void *pointer, int32 type_id) {
 
 #if TESTING_xstructs
 #define STRUCT_NAME ExampleStruct
-#define STRUCT_FIELDS                                                          \
-    X(char, ic)                                                                \
-    X(uchar, uc)                                                               \
-    X(signed short, is)                                                        \
-    X(ushort, us)                                                              \
-    X(int, ii)                                                                 \
-    X(uint, ui)                                                                \
-    X(long, il)                                                                \
-    X(ulong, ul)                                                               \
-    X(float, f, 10)                                                            \
-    X(double, d)                                                               \
+#define STRUCT_FIELDS         \
+    X(char, ic)               \
+    X(uchar, uc)              \
+    X(signed short, is)       \
+    X(ushort, us)             \
+    X(int, ii)                \
+    X(uint, ui)               \
+    X(long, il)               \
+    X(ulong, ul)              \
+    X(float, f, 10)           \
+    X(double, d)              \
     X(long double, ld)
 #endif
 
