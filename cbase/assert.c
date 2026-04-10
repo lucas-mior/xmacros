@@ -79,9 +79,6 @@ typedef uint16_t uint16;
 typedef uint32_t uint32;
 typedef uint64_t uint64;
 
-// Note: NEVER delete lines with // clang-format
-// clang-format off
-
 #define GENERATE_ASSERT_STRINGS(MODE, SYMBOL) \
 static void \
 a_strings_##MODE(char *file, uint line, \
@@ -167,8 +164,6 @@ GENERATE_ASSERT_INTEGERS_SAME_SIGN(unsigned, "%llu", >=, more_equal)
 
 #undef GENERATE_ASSERT_INTEGERS_SAME_SIGN
 
-// clang-format on
-
 static int
 compare_sign_with_unsign(llong s, ullong u) {
     ullong saux;
@@ -184,9 +179,6 @@ compare_sign_with_unsign(llong s, ullong u) {
         return +1;
     }
 }
-
-// Note: NEVER delete lines with // clang-format
-// clang-format off
 
 #define GENERATE_ASSERT_SIGNED_UNSIGNED(MODE, SYMBOL) \
 static void \
@@ -481,8 +473,6 @@ _Generic((VAR1), \
     } \
 } while (0)
 
-// clang-format on
-
 #if 0 == TESTING_assert
 static inline void
 assert_functions_sink(void) {
@@ -556,8 +546,6 @@ handler_failed_assertion(int unused) {
     siglongjmp(assert_env, 1);
 }
 
-// Note: NEVER delete lines with // clang-format
-// clang-format off
 int
 main(void) {
     {
@@ -780,7 +768,6 @@ main(void) {
     ASSERT(true);
     exit(EXIT_SUCCESS);
 }
-// clang-format on
 #endif
 
 #endif /* ASSERT_C */

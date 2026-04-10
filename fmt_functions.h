@@ -15,8 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdio.h>
-#include <string.h>
+#include "util.c"
 
 #if !defined(__INCLUDE_LEVEL__) || (__INCLUDE_LEVEL__ >= 1)
 #if !defined(EXPAND_STRUCTS)
