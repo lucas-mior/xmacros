@@ -277,6 +277,7 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
 static int64
 CAT(STRUCT_NAME, _pack)(STRUCT_NAME *structure, uchar *buffer) {
     int64 pos = 0;
+
     #define X_PK2(L, R) \
         memcpy64(buffer + pos, &structure->R, sizeof(structure->R)); \
         pos += sizeof(structure->R);
@@ -284,7 +285,9 @@ CAT(STRUCT_NAME, _pack)(STRUCT_NAME *structure, uchar *buffer) {
         memcpy64(buffer + pos, structure->R, sizeof(structure->R)); \
         pos += sizeof(structure->R);
     #define X(...) SELECT_ON_NUM_ARGS(X_PK, __VA_ARGS__)
+
     STRUCT_FIELDS
+
     #undef X
     #undef X_PK2
     #undef X_PK3
