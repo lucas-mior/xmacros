@@ -19,7 +19,6 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <string.h>
 
 #include "generic.c"
 #include "util.c"
