@@ -360,7 +360,7 @@ int main(void) {
     ASSERT_EQUAL(original.d,  restored.d);
     ASSERT_EQUAL(original.ld, restored.ld);
 
-    free(buffer, ExampleStruct_fmt.packed_size);
+    free2(buffer, ExampleStruct_fmt.packed_size);
 
     return EXIT_SUCCESS;
 }
