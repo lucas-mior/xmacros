@@ -23,10 +23,6 @@
 #include "generic.c"
 #include "util.c"
 
-#if !defined(LENGTH)
-#define LENGTH(X) (int64)(sizeof(X)/sizeof(*X))
-#endif
-
 #if !defined(error2)
 #define error2(...) fprintf(stderr, __VA_ARGS__)
 #endif

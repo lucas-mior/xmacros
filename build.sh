@@ -33,6 +33,8 @@ if [ $CC = "clang" ]; then
     CFLAGS="$CFLAGS -Wno-c++-keyword"
     CFLAGS="$CFLAGS -Wno-float-equal"
     CFLAGS="$CFLAGS -Wno-declaration-after-statement"
+    CFLAGS="$CFLAGS -Wno-cast-qual"
+    CFLAGS="$CFLAGS -Wno-c23-extensions"
 
     # there is a portable (slower to compile)
     # callback when not using gcc nor clang, see generic.c
