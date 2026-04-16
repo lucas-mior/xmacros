@@ -362,6 +362,6 @@ int main(void) {
 
     free2(buffer, ExampleStruct_fmt.packed_size);
 
-    return EXIT_SUCCESS;
+    exit(EXIT_SUCCESS);
 }
 #endif
