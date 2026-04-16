@@ -33,45 +33,6 @@
 #define TESTING_xstructs 0
 #endif
 
-#if !defined(INTEGERS)
-#define INTEGERS
-typedef unsigned char uchar;
-typedef unsigned short ushort;
-typedef unsigned int uint;
-typedef unsigned long ulong;
-typedef unsigned long long ulonglong;
-typedef long long llong;
-typedef unsigned long long ullong;
-typedef int8_t int8;
-typedef int16_t int16;
-typedef int32_t int32;
-typedef int64_t int64;
-typedef uint8_t uint8;
-typedef uint16_t uint16;
-typedef uint32_t uint32;
-typedef uint64_t uint64;
-typedef long double ldouble;
-#endif
-
-#if !defined(CAT) || !defined(CAT3)
-  #define CAT_(a, b)     a##b
-  #define CAT3_(a, b, c) a##b##c
-  #define CAT(a, b)      CAT_(a, b)
-  #define CAT3(a, b, c)  CAT3_(a, b, c)
-#endif
-
-#if !defined(QUOTE)
-  #define QUOTE_(x) #x
-  #define QUOTE(x)  QUOTE_(x)
-#endif
-
-#if !defined(SELECT_ON_NUM_ARGS)
-  #define NUM_ARGS_(_1, _2, _3, _4, _5, _6, _7, _8, n, ...) n
-  #define NUM_ARGS(...) NUM_ARGS_(__VA_ARGS__, 8, 7, 6, 5, 4, 3, 2, 1, x)
-  #define SELECT_ON_NUM_ARGS(macro, ...) \
-      CAT(macro, NUM_ARGS(__VA_ARGS__))(__VA_ARGS__)
-#endif
-
 #if !defined(XSTRUCT_UTILS)
 #define XSTRUCT_UTILS
 
