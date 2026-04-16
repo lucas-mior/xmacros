@@ -113,14 +113,14 @@ main(void) {
 
         if ((str_ptr = POWER_OF2_str(POWER_OF2_ONE))) {
             ASSERT_EQUAL(str_ptr, "POWER_OF2_ONE");
-            free(str_ptr, strlen32(str_ptr) + 1);
+            free2(str_ptr, strlen32(str_ptr) + 1);
         }
 
         if ((str_ptr = POWER_OF2_str(POWER_OF2_ONE
                                      | POWER_OF2_FOUR
                                      | POWER_OF2_SIXTY4))) {
             ASSERT_EQUAL(str_ptr, "POWER_OF2_ONE|POWER_OF2_FOUR|POWER_OF2_SIXTY4");
-            free(str_ptr, strlen32(str_ptr) + 1);
+            free2(str_ptr, strlen32(str_ptr) + 1);
         }
 
         ASSERT_EQUAL(POWER_OF2_str(0), "NONE");
@@ -184,7 +184,7 @@ main(void) {
         }
 
         if ((s_buf = xmalloc(SmallStruct_fmt.packed_size)) == NULL) {
-            free(n_buf, NumberStruct_fmt.packed_size);
+            free2(n_buf, NumberStruct_fmt.packed_size);
             return EXIT_FAILURE;
         }
         SmallStruct_pack(&original_small, s_buf);
@@ -208,8 +208,8 @@ main(void) {
         printf("--- Printing Restored NumberStruct ---\n");
         STRUCT_PRINT(&restored_num);
 
-        free(n_buf, NumberStruct_fmt.packed_size);
-        free(s_buf, NumberStruct_fmt.packed_size);
+        free2(n_buf, NumberStruct_fmt.packed_size);
+        free2(s_buf, NumberStruct_fmt.packed_size);
         PRINT(original_num.f[0]);
     }
 
