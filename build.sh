@@ -44,4 +44,14 @@ if [ $CC = "clang" ]; then
     CFLAGS="$CFLAGS -Wno-assign-enum"
 fi
 
-$CC $CPPFLAGS $CFLAGS main.c -o ./xmacros
+set -x
+target="${1:-build}"
+case $target in
+"build")
+    $CC $CPPFLAGS $CFLAGS main.c -o ./xmacros
+    ;;
+"check")
+    CC=gcc CFLAGS="-fanalyzer" ./build.sh
+    scan-build --view -analyze-headers --status-bugs ./build.sh
+    ;;
+esac

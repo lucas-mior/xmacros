@@ -23,6 +23,8 @@
 #endif
 #endif
 
+static void print_primitive(void *pointer, int32 type_id);
+
 static void
 dispatch_print(void *pointer,
                int32 type_id, char *type_name,
