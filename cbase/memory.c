@@ -88,12 +88,11 @@ memset64(void *buffer, int value, int64 size) {
     }
     if (DEBUGGING) {
         if (size < 0) {
-            error("Error in %s: Invalid size = %lld\n", __func__, (llong)size);
+            error("Error: Invalid size = %lld\n", (llong)size);
             fatal(EXIT_FAILURE);
         }
         if ((ullong)size >= (ullong)SIZE_MAX) {
-            error("Error in %s: Size (%lld) is bigger than SIZEMAX\n",
-                  __func__, (llong)size);
+            error("Error: Size (%lld) is bigger than SIZEMAX\n", (llong)size);
             fatal(EXIT_FAILURE);
         }
     }
@@ -183,8 +182,8 @@ malloc_debug(char *file, int32 line, char *func, int64 size) {
     }
     if ((ullong)size >= (ullong)SIZE_MAX) {
         error_impl(file, line, func,
-                   "Error in %s: Number (%lld) is bigger than SIZEMAX\n",
-                   __func__, (llong)size);
+                   "Error: Number (%lld) is bigger than SIZEMAX\n",
+                   (llong)size);
         fatal(EXIT_FAILURE);
     }
 
@@ -264,8 +263,8 @@ realloc_debug(char *file, int32 line, char *func,
     }
     if ((ullong)SIZE_MAX / (ullong)obj_size < (ullong)new_capacity) {
         error_impl(file, line, func,
-                   "Error in %s: Number (%lld) is bigger than SIZEMAX\n",
-                   __func__, (llong)obj_size);
+                   "Error: Number (%lld) is bigger than SIZEMAX\n",
+                   (llong)obj_size);
         fatal(EXIT_FAILURE);
     }
 
@@ -372,8 +371,7 @@ realloc_flex_debug(char *file, int32 line, char *func,
 
     if (new_capacity <= 0) {
         error_impl(file, line, func,
-                   "Error in %s: invalid object size = %lld.\n",
-                   __func__, (llong)new_capacity);
+                   "Error: invalid object size = %lld.\n", (llong)new_capacity);
         fatal(EXIT_FAILURE);
     }
 
