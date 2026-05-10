@@ -498,7 +498,7 @@ free_debug(char *file, int32 line, char *func,
             fatal(EXIT_FAILURE);
         }
         if (info.size != size) {
-            error_impl(file, line, 
+            error_impl(file, line, func,
                        "Error: size mismatch freeing %p. Expected %lld, got %lld.\n",
                        pointer, (llong)info.size, (llong)size);
             error_impl(info.file, info.line, info.func,

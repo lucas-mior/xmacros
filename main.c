@@ -209,10 +209,10 @@ main(void) {
         STRUCT_PRINT(&restored_num);
 
         free2(n_buf, NumberStruct_fmt.packed_size);
-        free2(s_buf, NumberStruct_fmt.packed_size);
+        free2(s_buf, SmallStruct_fmt.packed_size);
         PRINT(original_num.f[0]);
     }
 
-    printf("\nmain.c: All comprehensive tests passed.\n");
+    printf("\nmain.c: All tests passed.\n");
     return EXIT_SUCCESS;
 }
