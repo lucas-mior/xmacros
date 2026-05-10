@@ -48,7 +48,7 @@ set -x
 target="${1:-build}"
 case $target in
 "build")
-    $CC $CPPFLAGS $CFLAGS main.c -o ./xmacros
+    $CC $CPPFLAGS $CFLAGS main.c -lm -o ./xmacros
     ;;
 "check")
     CC=gcc CFLAGS="-fanalyzer" ./build.sh
