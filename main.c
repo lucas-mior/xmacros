@@ -168,7 +168,7 @@ main(void) {
         uchar *n_buf;
         uchar *s_buf;
 
-        if ((n_buf = xmalloc(NumberStruct_fmt.packed_size)) == NULL) {
+        if ((n_buf = malloc2(NumberStruct_fmt.packed_size)) == NULL) {
             return EXIT_FAILURE;
         }
         NumberStruct_pack(&original_num, n_buf);
@@ -183,7 +183,7 @@ main(void) {
             ASSERT_EQUAL(original_num.f[i], restored_num.f[i]);
         }
 
-        if ((s_buf = xmalloc(SmallStruct_fmt.packed_size)) == NULL) {
+        if ((s_buf = malloc2(SmallStruct_fmt.packed_size)) == NULL) {
             free2(n_buf, NumberStruct_fmt.packed_size);
             return EXIT_FAILURE;
         }
