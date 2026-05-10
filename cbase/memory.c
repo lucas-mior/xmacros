@@ -64,12 +64,11 @@ CAT(FUNC, 64)(void *dest, void *source, int64 n) { \
         return; \
     if (DEBUGGING) { \
         if (n < 0) { \
-            error("Error in %s: Invalid n = %lld\n", __func__, (llong)n); \
+            error("Error: Invalid n = %lld\n", (llong)n); \
             fatal(EXIT_FAILURE); \
         } \
         if ((ullong)n >= (ullong)SIZE_MAX) { \
-            error("Error in %s: n (%lld) is bigger than SIZEMAX\n", \
-                   __func__, (llong)n); \
+            error("Error: n (%lld) is bigger than SIZEMAX\n", (llong)n); \
             fatal(EXIT_FAILURE); \
         } \
     } \
