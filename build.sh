@@ -35,6 +35,7 @@ if [ $CC = "clang" ]; then
     CFLAGS="$CFLAGS -Wno-declaration-after-statement"
     CFLAGS="$CFLAGS -Wno-cast-qual"
     CFLAGS="$CFLAGS -Wno-c23-extensions"
+    CFLAGS="$CFLAGS -Wno-cast-function-type-strict"
 
     # there is a portable (slower to compile)
     # callback when not using gcc nor clang, see generic.c
