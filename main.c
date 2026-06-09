@@ -61,37 +61,37 @@
 #define ENUM_PREFIX_ WEEK_DAY_
 #define ENUM_BITFLAGS 0
 #define ENUM_FIELDS   \
-    X(SUNDAY, 0)      \
-    X(MONDAY)         \
-    X(TUESDAY, 10)    \
-    X(WEDNESDAY)      \
-    X(THURSDAY)       \
-    X(FRIDAY, 5)      \
-    X(SATURDAY, 20)
+    X(WEEK_DAY_SUNDAY, 0)      \
+    X(WEEK_DAY_MONDAY)         \
+    X(WEEK_DAY_TUESDAY, 10)    \
+    X(WEEK_DAY_WEDNESDAY)      \
+    X(WEEK_DAY_THURSDAY)       \
+    X(WEEK_DAY_FRIDAY, 5)      \
+    X(WEEK_DAY_SATURDAY, 20)
 #include "xenums.c"
 
 #define ENUM_NAME PowerOfTwo
 #define ENUM_PREFIX_ POWER_OF2_
 #define ENUM_BITFLAGS 1
 #define ENUM_FIELDS \
-    X(ONE)          \
-    X(TWO)          \
-    X(FOUR)         \
-    X(EIGHT)        \
-    X(SIXTEEN)      \
-    X(THIRTY2)      \
-    X(SIXTY4)
+    X(POWER_OF2_ONE)          \
+    X(POWER_OF2_TWO)          \
+    X(POWER_OF2_FOUR)         \
+    X(POWER_OF2_EIGHT)        \
+    X(POWER_OF2_SIXTEEN)      \
+    X(POWER_OF2_THIRTY2)      \
+    X(POWER_OF2_SIXTY4)
 #include "xenums.c"
 
 #define ENUM_NAME Flags
 #define ENUM_PREFIX_ FLAG_
 #define ENUM_BITFLAGS 1
 #define ENUM_FIELDS \
-    X(READ) \
-    X(WRITE) \
-    X(EXEC) \
-    X(READ_WRITE, FLAG_READ|FLAG_WRITE) \
-    X(READ_EXEC)
+    X(FLAG_READ) \
+    X(FLAG_WRITE) \
+    X(FLAG_EXEC) \
+    X(FLAG_READ_WRITE, FLAG_READ|FLAG_WRITE) \
+    X(FLAG_READ_EXEC)
 #include "xenums.c"
 
 int
