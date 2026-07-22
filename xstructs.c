@@ -77,7 +77,6 @@ print_primitive(void *pointer, int32 type_id) {
     case TYPE_ULLONG:  printf("%llu\n",   *(ullong *)pointer);                  break;
     case TYPE_FLOAT:   printf("%f\n",     (double)*(float *)pointer);           break;
     case TYPE_DOUBLE:  printf("%f\n",     *(double *)pointer);                  break;
-    case TYPE_LDOUBLE: printf("%Lf\n",    *(ldouble *)pointer);                 break;
     case TYPE_CHARP:   printf("\"%s\"\n", *(char **)pointer);                   break;
     case TYPE_VOIDP:   printf("%p\n",     *(void **)pointer);                   break;
     default:

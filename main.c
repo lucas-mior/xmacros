@@ -35,8 +35,7 @@
     X(long, il)                                                                \
     X(ulong, ul)                                                               \
     X(float, f, 10)                                                            \
-    X(double, d)                                                               \
-    X(long double, ld)
+    X(double, d)
 #include "xstructs.c"
 
 #define STRUCT_NAME SmallStruct
@@ -152,7 +151,6 @@ main(void) {
             .ul = ULONG_MAX,
             .f = {0.0f, 1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f, 7.7f, 8.8f, 9.9f},
             .d = 0.5,
-            .ld = 0.5
         };
         NumberStruct restored_num;
         SmallStruct original_small = {
@@ -177,7 +175,6 @@ main(void) {
         ASSERT_EQUAL(original_num.ic, restored_num.ic);
         ASSERT_EQUAL(original_num.is, restored_num.is);
         ASSERT_EQUAL(original_num.ui, restored_num.ui);
-        ASSERT_EQUAL(original_num.ld, restored_num.ld);
 
         for (int32 i = 0; i < 10; i += 1) {
             ASSERT_EQUAL(original_num.f[i], restored_num.f[i]);

@@ -9,7 +9,7 @@ vtags.sed tags > .tags.vim 2> /dev/null || true
 
 CC="${CC:-cc}"
 
-CFLAGS="$CFLAGS -D_DEFAULT_SOURCE"
+CFLAGS="$CFLAGS -D_DEFAULT_SOURCE -D_XOPEN_SOURCE=700"
 
 CFLAGS="$CFLAGS -Wall -Wextra"
 CFLAGS="$CFLAGS -Wfatal-errors"
