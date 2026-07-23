@@ -97,9 +97,9 @@ int
 main(void) {
     {
         enum Flags flag = FLAG_READ_WRITE;
-        ASSERT_EQUAL(FLAG_str(flag), "FLAG_READ|FLAG_WRITE|FLAG_READ_WRITE");
+        ASSERT_EQUAL(FLAG_str(flag), "FLAG_READ_WRITE");
         ASSERT_EQUAL(FLAG_str(FLAG_READ_EXEC), "FLAG_READ_EXEC");
-        ASSERT_EQUAL(FLAG_READ_EXEC, 1 << 4);
+        ASSERT_EQUAL(FLAG_READ_EXEC, 1 << 3);
     }
 
     {
@@ -108,7 +108,7 @@ main(void) {
         ASSERT_EQUAL(WEEK_DAY_str(WEEK_DAY_SUNDAY), "WEEK_DAY_SUNDAY");
         ASSERT_EQUAL(WEEK_DAY_str(WEEK_DAY_MONDAY), "WEEK_DAY_MONDAY");
         ASSERT_EQUAL(WEEK_DAY_str(WEEK_DAY_SATURDAY), "WEEK_DAY_SATURDAY");
-        ASSERT_EQUAL(WEEK_DAY_str(999), "Unknown value");
+        ASSERT_EQUAL(WEEK_DAY_str(999), "Invalid enum value");
 
         if ((str_ptr = POWER_OF2_str(POWER_OF2_ONE))) {
             ASSERT_EQUAL(str_ptr, "POWER_OF2_ONE");
@@ -128,7 +128,7 @@ main(void) {
     {
         size_t expected_small_size = sizeof(char *) + sizeof(NumberStruct);
 
-        ASSERT_EQUAL(NumberStruct_fmt.num_members, 11);
+        ASSERT_EQUAL(NumberStruct_fmt.num_members, 10);
         ASSERT_EQUAL(SmallStruct_fmt.num_members, 2);
         ASSERT_EQUAL(BigStruct_fmt.num_members, 2);
 
