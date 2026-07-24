@@ -15,14 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdio.h>
-#include <stddef.h>
-#include <limits.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "assert.c"
+#define CBASE_IMPLEMENT
+#include "cbase.h"
 
 #define STRUCT_NAME NumberStruct
 #define STRUCT_FIELDS                                                          \
