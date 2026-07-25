@@ -90,9 +90,12 @@
 int
 main(void) {
     {
+        char *s;
         enum Flags flag = FLAG_READ_WRITE;
-        ASSERT_EQUAL(FLAG_str(flag), "FLAG_READ_WRITE");
-        ASSERT_EQUAL(FLAG_str(FLAG_READ_EXEC), "FLAG_READ_EXEC");
+        ASSERT_EQUAL(s = FLAG_str(flag), "FLAG_READ_WRITE");
+        FLAG_str_free(s);
+        ASSERT_EQUAL(s = FLAG_str(FLAG_READ_EXEC), "FLAG_READ_EXEC");
+        FLAG_str_free(s);
         ASSERT_EQUAL(FLAG_READ_EXEC, 1 << 3);
     }
 
@@ -106,7 +109,7 @@ main(void) {
 
         if ((str_ptr = POWER_OF2_str(POWER_OF2_ONE))) {
             ASSERT_EQUAL(str_ptr, "POWER_OF2_ONE");
-            free2(str_ptr, strlen32(str_ptr) + 1);
+            POWER_OF2_str_free(str_ptr);
         }
 
         if ((str_ptr = POWER_OF2_str(POWER_OF2_ONE
