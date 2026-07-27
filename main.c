@@ -182,7 +182,10 @@ main(void) {
             return EXIT_FAILURE;
         }
         SmallStruct_pack(&original_small, s_buf);
+
         SmallStruct_unpack(s_buf, &restored_small);
+
+        print_buffer(s_buf, SmallStruct_fmt.packed_size);
 
         ASSERT_EQUAL(original_small.string, restored_small.string);
         ASSERT_EQUAL(original_small.number_struct.ii,

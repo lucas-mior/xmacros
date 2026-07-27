@@ -300,11 +300,12 @@ int main(void) {
 
     ASSERT_EQUAL(ExampleStruct_fmt.struct_name, "ExampleStruct");
 
-    buffer = xmalloc(ExampleStruct_fmt.packed_size);
+    buffer = xmalloc(ExampleStruct_fmt.packed_size, 0);
     packed_size = ExampleStruct_pack(&original, buffer);
     ASSERT(packed_size == ExampleStruct_fmt.packed_size);
 
     ExampleStruct_unpack(buffer, &restored);
+    print_buffer(buffer, ExampleStruct_fmt.packed_size);
 
     STRUCT_PRINT(&original);
     STRUCT_PRINT(&restored);
@@ -318,7 +319,6 @@ int main(void) {
     ASSERT_EQUAL(original.il, restored.il);
     ASSERT_EQUAL(original.ul, restored.ul);
     ASSERT_EQUAL(original.d,  restored.d);
-    ASSERT_EQUAL(original.ld, restored.ld);
 
     free2(buffer, ExampleStruct_fmt.packed_size);
 

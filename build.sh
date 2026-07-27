@@ -13,16 +13,15 @@ CFLAGS="$CFLAGS -D_DEFAULT_SOURCE -D_XOPEN_SOURCE=700"
 
 CFLAGS="$CFLAGS -Wall -Wextra"
 CFLAGS="$CFLAGS -Wfatal-errors"
-CFLAGS="$CFLAGS -Wno-unused-function"
 CFLAGS="$CFLAGS -Wno-unused-variable"
 CFLAGS="$CFLAGS -Wno-unused-macros"
+CFLAGS="$CFLAGS -Wno-unused-function"
 CFLAGS="$CFLAGS -Werror"
 
 if [ $CC = "clang" ]; then
     CFLAGS="$CFLAGS -Weverything"
     CFLAGS="$CFLAGS -Wno-unsafe-buffer-usage"
     CFLAGS="$CFLAGS -Wno-format-nonliteral"
-    CFLAGS="$CFLAGS -Wno-unused-function"
     CFLAGS="$CFLAGS -Wno-pre-c11-compat"
     CFLAGS="$CFLAGS -Wno-double-promotion"
     CFLAGS="$CFLAGS -Wno-constant-logical-operand"
