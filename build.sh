@@ -53,6 +53,8 @@ case $target in
 "debug")
     $CC $CPPFLAGS $CFLAGS -g3 -DDEBUGGING=1 main.c -lm -o ./xmacros
     ;;
+"test")
+    ;;
 "check")
     CC=gcc CFLAGS="-fanalyzer" ./build.sh
 
