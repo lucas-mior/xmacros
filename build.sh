@@ -1,67 +1,189 @@
-#!/bin/sh
+#!/bin/sh -e
 
-dir="$(readlink -f "$(dirname "$0")")"
-cbase="cbase"
-CPPFLAGS="$CPPFLAGS -I "$dir/$cbase""
+# shellcheck disable=SC2086
 
-ctags --kinds-C=+l+d ./*.h ./*.c 2> /dev/null || true
-vtags.sed tags > .tags.vim 2> /dev/null || true
+set -e
 
-CC="${CC:-cc}"
+error () {
+    >&2 printf "$@"
+    return
+}
 
-CFLAGS="$CFLAGS -D_DEFAULT_SOURCE -D_XOPEN_SOURCE=700"
+if [ -n "$BASH_VERSION" ]; then
+    # shellcheck disable=SC3044
+    shopt -s expand_aliases
+fi
 
-CFLAGS="$CFLAGS -Wall -Wextra"
+alias trace_on='set -x'
+alias trace_off='{ set +x; } 2>/dev/null'
+
+dir=$(dirname "$(readlink -f "$0")")
+CPPFLAGS="$CPPFLAGS -I$dir/cbase"
+cd "$dir" || exit
+program=$(basename "$(readlink -f "$(dirname "$0")")")
+script=$(basename "$0")
+target="${1:-build}"
+
+if [ "$target" = "test" ]; then
+    exit
+fi
+
+printf "
+${script} ${RED}${1:-} ${2:-}$RES
+"
+
+PREFIX="${PREFIX:-/usr/local}"
+DESTDIR="${DESTDIR:-/}"
+
+main="main.c"
+exe="bin/$program"
+mkdir -p "$(dirname "$exe")"
+
+CPPFLAGS="$CPPFLAGS -D_DEFAULT_SOURCE"
+CFLAGS="$CFLAGS -std=c11"
 CFLAGS="$CFLAGS -Wfatal-errors"
-CFLAGS="$CFLAGS -Wno-unused-variable"
-CFLAGS="$CFLAGS -Wno-unused-macros"
-CFLAGS="$CFLAGS -Wno-unused-function"
+CFLAGS="$CFLAGS -Wextra -Wall"
 CFLAGS="$CFLAGS -Werror"
+CFLAGS="$CFLAGS -Wno-format-pedantic"
+CFLAGS="$CFLAGS -Wno-unknown-warning-option"
+CFLAGS="$CFLAGS -Wno-gnu-union-cast"
+CFLAGS="$CFLAGS -Wno-unused-macros"
+CFLAGS="$CFLAGS -Wno-constant-logical-operand"
+CFLAGS="$CFLAGS -Wno-float-equal"
+CFLAGS="$CFLAGS -Wno-undefined-internal"
+CFLAGS="$CFLAGS -Wno-cast-qual"
+CFLAGS="$CFLAGS -Wno-unknown-pragmas"
+CPPFLAGS="$CPPFLAGS -D_XOPEN_SOURCE=700"
+CFLAGS="$CFLAGS -Wno-unused-variable"
+CFLAGS="$CFLAGS -Wno-unused-function"
+LDFLAGS="$LDFLAGS -lm"
 
-if [ $CC = "clang" ]; then
+OS=$(uname -a)
+GNUSOURCE=
+if echo "$OS" | grep -q "Linux"; then
+    if echo "$OS" | grep -q "GNU"; then
+        GNUSOURCE="-D_GNU_SOURCE"
+    fi
+fi
+
+if [ "$target" = "test" ] && [ -z "${CC:-}" ] && command -v tcc >/dev/null 2>&1; then
+    CC=tcc
+else
+    CC="${CC:-cc}"
+fi
+if [ "$CC" = "clang" ]; then
     CFLAGS="$CFLAGS -Weverything"
     CFLAGS="$CFLAGS -Wno-unsafe-buffer-usage"
     CFLAGS="$CFLAGS -Wno-format-nonliteral"
-    CFLAGS="$CFLAGS -Wno-pre-c11-compat"
-    CFLAGS="$CFLAGS -Wno-double-promotion"
-    CFLAGS="$CFLAGS -Wno-constant-logical-operand"
-    CFLAGS="$CFLAGS -Wno-padded"
-    CFLAGS="$CFLAGS -Wno-implicit-void-ptr-cast"
-    CFLAGS="$CFLAGS -Wno-covered-switch-default"
-    CFLAGS="$CFLAGS -Wno-implicit-int-enum-cast"
+    CFLAGS="$CFLAGS -Wno-disabled-macro-expansion"
     CFLAGS="$CFLAGS -Wno-c++-keyword"
-    CFLAGS="$CFLAGS -Wno-float-equal"
-    CFLAGS="$CFLAGS -Wno-declaration-after-statement"
-    CFLAGS="$CFLAGS -Wno-cast-qual"
-    CFLAGS="$CFLAGS -Wno-c23-extensions"
-    CFLAGS="$CFLAGS -Wno-cast-function-type-strict"
-
-    # there is a portable (slower to compile)
-    # callback when not using gcc nor clang, see generic.c
-    CFLAGS="$CFLAGS -Wno-gnu-union-cast"
-
-    # this is needed to work with bit flags (enum values are powers of 2)
+    CFLAGS="$CFLAGS -Wno-pre-c11-compat"
+    CFLAGS="$CFLAGS -Wno-implicit-void-ptr-cast"
+    CFLAGS="$CFLAGS -Wno-ignored-attributes"
+    CFLAGS="$CFLAGS -Wno-covered-switch-default"
+    CFLAGS="$CFLAGS -Wno-used-but-marked-unused"
+    CFLAGS="$CFLAGS -Wno-implicit-int-enum-cast"
     CFLAGS="$CFLAGS -Wno-assign-enum"
+    CFLAGS="$CFLAGS -Wno-cast-function-type-strict"
+    CFLAGS="$CFLAGS -Wno-bad-function-cast"
+fi
+if [ "$CC" = "clang" ]; then
+    CFLAGS="$CFLAGS -Wno-double-promotion"
+    CFLAGS="$CFLAGS -Wno-padded"
+    CFLAGS="$CFLAGS -Wno-declaration-after-statement"
+    CFLAGS="$CFLAGS -Wno-c23-extensions"
 fi
 
-set -x
-target="${1:-build}"
-case $target in
-"build")
-    $CC $CPPFLAGS $CFLAGS -O2 -flto main.c -lm -o ./xmacros
-    ;;
+case "$target" in
 "debug")
-    $CC $CPPFLAGS $CFLAGS -g3 -DDEBUGGING=1 main.c -lm -o ./xmacros
+    CFLAGS="$CFLAGS -g3 -O0"
+    CPPFLAGS="$CPPFLAGS $GNUSOURCE -DDEBUGGING=1"
+    exe="bin/${program}_debug"
+    ;;
+"build")
+    CFLAGS="$CFLAGS $GNUSOURCE -g3 -O2 -flto -march=native -ftree-vectorize"
+    ;;
+"fast_feedback")
+    CC=clang
+    CFLAGS="$CFLAGS $GNUSOURCE -Werror"
+    ;;
+"test"|"install"|"uninstall")
+    ;;
+*)
+    CFLAGS="$CFLAGS -O2"
+    ;;
+esac
+
+build_tags () {
+    if command -v ctags >/dev/null 2>&1; then
+        find . -iname "*.[ch]" -print0             | xargs -0 ctags --kinds-C=+l+d 2> /dev/null || true
+    fi
+
+    if [ -f tags ] && command -v vtags.sed >/dev/null 2>&1; then
+        vtags.sed tags | sort | uniq > .tags.vim 2> /dev/null || true
+    fi
+}
+
+install_opt () {
+    mode="$1"
+    file="$2"
+    dest="$3"
+
+    if [ -f "$file" ]; then
+        install "$mode" "$file" "$dest"
+    elif [ -d "$file" ]; then
+        install "$mode" "$dest"
+        cp -rp "$file/." "$dest/"
+    fi
+}
+
+uninstall_opt () {
+    file="$1"
+    dest="$2"
+
+    if [ -e "$file" ]; then
+        rm -rf "$dest"
+    fi
+}
+build_program () {
+    build_tags
+    trace_on
+    $CC $CPPFLAGS $CFLAGS -o "$exe" "$main" $LDFLAGS
+    trace_off
+}
+
+case "$target" in
+"fast_feedback")
+    build_program
+    LC_ALL=C "$exe"
     ;;
 "test")
+    exit
     ;;
 "check")
-    CC=gcc CFLAGS="-fanalyzer" ./build.sh
-
+    CC=gcc CFLAGS="-fanalyzer -fdiagnostics-color=never" "$0" build
     CFLAGS="--analyze -Xanalyzer -analyzer-output=text"
     CFLAGS="$CFLAGS -Xanalyzer -analyzer-werror"
     CFLAGS="$CFLAGS -Xanalyzer -analyzer-opt-analyze-headers"
     CFLAGS="$CFLAGS -Wno-unused-command-line-argument"
-    CC=clang CFLAGS="$CFLAGS" ./build.sh
+    CFLAGS="$CFLAGS -fno-color-diagnostics"
+    CC=clang CFLAGS="$CFLAGS" "$0" build
+    exit
+    ;;
+"uninstall")
+    trace_on
+    rm -f "${DESTDIR}${PREFIX}/bin/${program}"
+    trace_off
+    ;;
+"install")
+    if [ ! -f "$exe" ]; then
+        "$0" build
+    fi
+    trace_on
+    install -Dm755 "$exe" "${DESTDIR}${PREFIX}/bin/${program}"
+    trace_off
+    ;;
+*)
+    build_program
     ;;
 esac
