@@ -106,18 +106,18 @@ if [ "$CC" = "clang" ]; then
 fi
 
 case "$target" in
-"debug")
+debug)
     CFLAGS="$CFLAGS -g3 -O0"
     CPPFLAGS="$CPPFLAGS $GNUSOURCE -DDEBUGGING=1"
     exe="bin/${program}_debug"
     ;;
-"build")
+build)
     CFLAGS="$CFLAGS $GNUSOURCE -O2 -flto -march=native -ftree-vectorize"
     ;;
-"fast_feedback")
+fast_feedback)
     CFLAGS="$CFLAGS $GNUSOURCE -Werror"
     ;;
-"test"|"install"|"uninstall")
+test|install|uninstall)
     ;;
 *)
     CFLAGS="$CFLAGS -O2"
@@ -163,14 +163,14 @@ build_program () {
 }
 
 case "$target" in
-"fast_feedback")
+fast_feedback)
     build_program
     LC_ALL=C "$exe"
     ;;
-"test")
+test)
     exit
     ;;
-"check")
+check)
     CC=gcc CFLAGS="-fanalyzer -fdiagnostics-color=never" "$0" build
     CFLAGS="--analyze -Xanalyzer -analyzer-output=text"
     CFLAGS="$CFLAGS -Xanalyzer -analyzer-werror"
@@ -180,12 +180,12 @@ case "$target" in
     CC=clang CFLAGS="$CFLAGS" "$0" build
     exit
     ;;
-"uninstall")
+uninstall)
     trace_on
     rm -f "${DESTDIR}${PREFIX}/bin/${program}"
     trace_off
     ;;
-"install")
+install)
     if [ ! -f "$exe" ]; then
         "$0" build
     fi
