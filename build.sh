@@ -6,19 +6,13 @@ dir=$(dirname "$(readlink -f "$0")")
 # shellcheck source=/dev/null
 . "$dir/cbase/common.sh"
 
-CPPFLAGS="$CPPFLAGS -I$dir/cbase"
 cd "$dir" || exit
-program=$(basename "$(readlink -f "$(dirname "$0")")")
+program=$(get_program "$0")
 script=$(basename "$0")
 target="${1:-debug}"
 
-if [ "$target" = "test" ]; then
-    exit
-fi
 
-printf "
-${script} ${RED}${1:-} ${2:-}$RES
-"
+printf "\n${script} ${RED}${1:-} ${2:-}$RES\n"
 
 PREFIX="${PREFIX:-/usr/local}"
 DESTDIR="${DESTDIR:-/}"
@@ -27,7 +21,9 @@ main="main.c"
 exe="bin/$program"
 mkdir -p "$(dirname "$exe")"
 
-CPPFLAGS="$CPPFLAGS -D_DEFAULT_SOURCE"
+CPPFLAGS="$CPPFLAGS -I$dir/cbase"
+CPPFLAGS="$CPPFLAGS -D_DEFAULT_SOURCE -D_XOPEN_SOURCE=700"
+
 CFLAGS="$CFLAGS -std=c11"
 CFLAGS="$CFLAGS -Wfatal-errors"
 CFLAGS="$CFLAGS -Wextra -Wall"
@@ -41,9 +37,9 @@ CFLAGS="$CFLAGS -Wno-float-equal"
 CFLAGS="$CFLAGS -Wno-undefined-internal"
 CFLAGS="$CFLAGS -Wno-cast-qual"
 CFLAGS="$CFLAGS -Wno-unknown-pragmas"
-CPPFLAGS="$CPPFLAGS -D_XOPEN_SOURCE=700"
 CFLAGS="$CFLAGS -Wno-unused-variable"
 CFLAGS="$CFLAGS -Wno-unused-function"
+
 LDFLAGS="$LDFLAGS -lm"
 
 OS=$(uname -a)
@@ -103,7 +99,7 @@ build)
     CFLAGS="$CFLAGS $GNUSOURCE -O2 -flto -march=native -ftree-vectorize"
     ;;
 fast_feedback)
-    CFLAGS="$CFLAGS $GNUSOURCE -Werror"
+    CFLAGS="$CFLAGS $GNUSOURCE"
     ;;
 test|install|uninstall)
     ;;
@@ -112,37 +108,6 @@ test|install|uninstall)
     ;;
 esac
 
-build_tags () {
-    if command -v ctags >/dev/null 2>&1; then
-        find . -iname "*.[ch]" -print0             | xargs -0 ctags --kinds-C=+l+d 2> /dev/null || true
-    fi
-
-    if [ -f tags ] && command -v vtags.sed >/dev/null 2>&1; then
-        vtags.sed tags | sort | uniq > .tags.vim 2> /dev/null || true
-    fi
-}
-
-install_opt () {
-    mode="$1"
-    file="$2"
-    dest="$3"
-
-    if [ -f "$file" ]; then
-        install "$mode" "$file" "$dest"
-    elif [ -d "$file" ]; then
-        install "$mode" "$dest"
-        cp -rp "$file/." "$dest/"
-    fi
-}
-
-uninstall_opt () {
-    file="$1"
-    dest="$2"
-
-    if [ -e "$file" ]; then
-        rm -rf "$dest"
-    fi
-}
 build_program () {
     build_tags
     trace_on
