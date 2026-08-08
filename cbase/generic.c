@@ -550,9 +550,9 @@ _Generic((VAR), \
     uint:    PRINT_UNSIGNED(VAR, TYPE_UINT),                           \
     ulong:   PRINT_UNSIGNED(VAR, TYPE_ULONG),                          \
     ullong:  PRINT_UNSIGNED(VAR, TYPE_ULLONG),                         \
-    float:   PRINT_DOUBLE(VAR,  TYPE_FLOAT),                          \
-    double:  PRINT_DOUBLE(VAR,  TYPE_DOUBLE),                         \
-    default: 0                                                        \
+    float:   PRINT_DOUBLE(VAR,   TYPE_FLOAT),                          \
+    double:  PRINT_DOUBLE(VAR,   TYPE_DOUBLE),                         \
+    default: 0                                                         \
 )
 
 #define PRINTLN(VAR) do { \
