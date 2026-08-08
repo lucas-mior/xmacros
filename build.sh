@@ -70,10 +70,8 @@ if [ "$CC" = "clang" ]; then
     CFLAGS="$CFLAGS -Wno-assign-enum"
     CFLAGS="$CFLAGS -Wno-bad-function-cast"
 
-    CFLAGS="$CFLAGS -Wno-double-promotion"
     CFLAGS="$CFLAGS -Wno-padded"
     CFLAGS="$CFLAGS -Wno-declaration-after-statement"
-    CFLAGS="$CFLAGS -Wno-c23-extensions"
 fi
 
 LDFLAGS="$LDFLAGS -lm"
