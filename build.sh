@@ -29,16 +29,14 @@ CFLAGS="$CFLAGS -Wfatal-errors"
 CFLAGS="$CFLAGS -Wextra -Wall"
 CFLAGS="$CFLAGS -Werror=all -Werror=extra"
 CFLAGS="$CFLAGS -Werror"  # Only uncomment occasionally, keep this line
-CFLAGS="$CFLAGS -Wno-cast-qual"
-CFLAGS="$CFLAGS -Wno-constant-logical-operand"
 CFLAGS="$CFLAGS -Wno-unused-function"
-CFLAGS="$CFLAGS -Wno-unused-macros"
-CFLAGS="$CFLAGS -Wno-unused-variable"
 
 if [ "$CC" = "clang" ]; then
     CFLAGS="$CFLAGS -Weverything"
     CFLAGS="$CFLAGS -Wno-assign-enum"
     CFLAGS="$CFLAGS -Wno-c++-keyword"
+    CFLAGS="$CFLAGS -Wno-cast-qual"
+    CFLAGS="$CFLAGS -Wno-constant-logical-operand"
     CFLAGS="$CFLAGS -Wno-covered-switch-default"
     CFLAGS="$CFLAGS -Wno-declaration-after-statement"
     CFLAGS="$CFLAGS -Wno-disabled-macro-expansion"
@@ -49,6 +47,8 @@ if [ "$CC" = "clang" ]; then
     CFLAGS="$CFLAGS -Wno-padded"
     CFLAGS="$CFLAGS -Wno-pre-c11-compat"
     CFLAGS="$CFLAGS -Wno-unsafe-buffer-usage"
+    CFLAGS="$CFLAGS -Wno-unused-macros"
+    CFLAGS="$CFLAGS -Wno-unused-variable"
     CFLAGS="$CFLAGS -Wno-used-but-marked-unused"
 fi
 
