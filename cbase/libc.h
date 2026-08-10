@@ -3,8 +3,37 @@
 
 // Note: all libc or main platform headers must be included here.
 // other files include them by `#include "cbase.h"` or `#include "libc.h"`
+// Avoid including system headers in other files.
+
+#if !defined(LIBC_H)
+#define LIBC_H
 
 #include "platform_detection.h"
+
+#if CC_CLANG
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wreserved-identifier"
+#endif
+
+#if OS_UNIX && !defined(_XOPEN_SOURCE)
+  #define _XOPEN_SOURCE 700
+#endif
+
+#if OS_UNIX && !defined(_DEFAULT_SOURCE)
+  #define _DEFAULT_SOURCE
+#endif
+
+#if OS_LINUX && !defined(_GNU_SOURCE)
+  #define _GNU_SOURCE
+#endif
+
+#if OS_NETBSD && !defined(_NETBSD_SOURCE)
+  #define _NETBSD_SOURCE
+#endif
+
+#if CC_CLANG
+  #pragma clang diagnostic pop
+#endif
 
 #include <assert.h>
 #include <ctype.h>
@@ -43,20 +72,17 @@
 #endif
 
 #if OS_UNIX
-#include <pthread.h>
-#include <utime.h>
-#endif
-
-#if OS_UNIX
-#include <sys/ioctl.h>
-#include <sys/select.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <poll.h>
+#include <pthread.h>
+#include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <sys/select.h>
 #include <sys/socket.h>
-#include <sys/wait.h>
 #include <sys/un.h>
+#include <sys/wait.h>
+#include <utime.h>
 #endif
 
 #if !defined(CBASE_HAS_FTS)
@@ -83,6 +109,7 @@
 
 #if OS_MAC || OS_BSD
 #include <sys/param.h>
+#include <sys/sysctl.h>
 #endif
 
 #if OS_LINUX
@@ -137,3 +164,5 @@
 #define MAP_ANON 0
 #define MAP_ANONYMOUS 0
 #endif
+
+#endif /* LIBC_H */

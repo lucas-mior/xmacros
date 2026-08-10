@@ -268,7 +268,8 @@ CAT(STRUCT_NAME, _unpack)(uchar *buffer, STRUCT_NAME *structure) {
 #undef STRUCT_NAME
 
 #if TESTING_xstructs
-#include "assert.c"
+#define CBASE_IMPLEMENT
+#include "cbase.h"
 #define EXPAND_STRUCTS \
     STRUCT(ExampleStruct)
 #include "fmt_functions.h"
