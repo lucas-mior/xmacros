@@ -94,6 +94,7 @@ fast_feedback)
     LC_ALL=C "$exe"
     ;;
 test)
+    TEST_EXCLUDE_PATTERN='(^|/)cbase/' test "$2"
     exit
     ;;
 check)
