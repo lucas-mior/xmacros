@@ -15,13 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stddef.h>
-#include <stdint.h>
-
-#include "generic.c"
-#include "util.c"
+#define CBASE_IMPLEMENT
+#include "cbase.h"
 
 #if !defined(error2)
 #define error2(...) fprintf(stderr, __VA_ARGS__)
