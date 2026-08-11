@@ -119,7 +119,9 @@ main(void) {
             free2(str_ptr, strlen32(str_ptr) + 1);
         }
 
-        ASSERT_EQUAL(POWER_OF2_str(0), "NONE");
+        str_ptr = POWER_OF2_str(0);
+        ASSERT_EQUAL(str_ptr, "NONE");
+        POWER_OF2_str_free(str_ptr);
     }
 
     {
