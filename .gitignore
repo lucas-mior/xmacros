@@ -10,3 +10,4 @@ tags
 *.tar.gz
 *temp_delete_me*
 xmacros
+*.obj
