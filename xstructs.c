@@ -125,7 +125,7 @@ typedef struct STRUCT_NAME {
     #undef X
 } STRUCT_NAME;
 
-static StructFormat CAT(STRUCT_NAME, _fmt) = {
+static const StructFormat CAT(STRUCT_NAME, _fmt) = {
     .struct_name = QUOTE(STRUCT_NAME),
     .num_members = (
         #define X_C2(L, R) 1 +
