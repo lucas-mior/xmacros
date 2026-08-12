@@ -3,10 +3,11 @@
 # shellcheck disable=SC2086
 
 dir=$(dirname "$(readlink -f "$0")")
-# shellcheck source=/dev/null
-. "$dir/cbase/common.sh"
-
 cd "$dir" || exit
+
+# shellcheck source=./cbase/common.sh
+. "./cbase/common.sh"
+
 program=$(common_get_program "$0")
 script=$(basename "$0")
 common_build_parse_args "$@"
@@ -21,7 +22,7 @@ mkdir -p "$(dirname "$exe")"
 
 CC=$(common_get_compiler "$mode")
 
-CPPFLAGS="$CPPFLAGS -I$dir/cbase"
+CPPFLAGS="$CPPFLAGS -Icbase"
 
 CFLAGS="$CFLAGS -std=c11"
 CFLAGS="$CFLAGS -Wfatal-errors"
