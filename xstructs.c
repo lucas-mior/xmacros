@@ -94,8 +94,7 @@ print_primitive(void *pointer, int32 type_id) {
     X(long, il)               \
     X(ulong, ul)              \
     X(float, f, 10)           \
-    X(double, d)              \
-    X(long double, ld)
+    X(double, d)
 #endif
 
 #define X_STRUCT_2(L, R)    L R;
@@ -292,7 +291,6 @@ int main(void) {
         original.f[i] = 0.5f;
     }
     original.d = 0.5;
-    original.ld = 0.5;
 
     ASSERT_EQUAL(ExampleStruct_fmt.struct_name, "ExampleStruct");
 
