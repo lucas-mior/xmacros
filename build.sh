@@ -13,7 +13,7 @@ script=$(basename "$0")
 common_build_parse_args "$@"
 
 case "$mode" in
-build|check|debug|fast_feedback|install|test|uninstall)
+build|check|debug|debug-fast|fast_feedback|install|test|uninstall)
     ;;
 *)
     common_build_unknown_mode
@@ -68,6 +68,10 @@ debug)
     CPPFLAGS="$CPPFLAGS -DDEBUGGING=1"
     exe="bin/$program"
     ;;
+debug-fast)
+    CFLAGS="$CFLAGS -g2 -O2 -flto -march=native -ftree-vectorize"
+    CPPFLAGS="$CPPFLAGS -DDEBUGGING=1"
+    ;;
 build)
     CFLAGS="$CFLAGS -O2 -flto -march=native -ftree-vectorize"
     ;;
@@ -75,7 +79,7 @@ fast_feedback)
     ;;
 test|install|uninstall)
     ;;
-build|check|debug|fast_feedback|install|test|uninstall)
+build|check|debug|debug-fast|fast_feedback|install|test|uninstall)
     ;;
 *)
     common_build_unknown_mode
@@ -110,7 +114,7 @@ install)
     install -Dm755 "$exe" "${DESTDIR}${PREFIX}/bin/${program}"
     trace_off
     ;;
-build|debug|fast_feedback)
+build|debug|debug-fast|fast_feedback)
     common_build_tags
     trace_on
     $CC $CPPFLAGS $CFLAGS -o "$exe" main.c $LDFLAGS

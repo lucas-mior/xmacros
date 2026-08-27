@@ -20,28 +20,28 @@
 
 #define STRUCT_NAME NumberStruct
 #define STRUCT_FIELDS                                                          \
-    X(char, ic)                                                                \
-    X(uchar, uc)                                                               \
-    X(signed short, is)                                                        \
-    X(ushort, us)                                                              \
-    X(int, ii)                                                                 \
-    X(uint, ui)                                                                \
-    X(long, il)                                                                \
-    X(ulong, ul)                                                               \
-    X(float, f, 10)                                                            \
-    X(double, d)
+    XX(char, ic)                                                                \
+    XX(uchar, uc)                                                               \
+    XX(signed short, is)                                                        \
+    XX(ushort, us)                                                              \
+    XX(int, ii)                                                                 \
+    XX(uint, ui)                                                                \
+    XX(long, il)                                                                \
+    XX(ulong, ul)                                                               \
+    XX(float, f, 10)                                                            \
+    XX(double, d)
 #include "xstructs.c"
 
 #define STRUCT_NAME SmallStruct
 #define STRUCT_FIELDS                                                          \
-    X(char *, string)                                                          \
-    X(NumberStruct, number_struct)
+    XX(char *, string)                                                          \
+    XX(NumberStruct, number_struct)
 #include "xstructs.c"
 
 #define STRUCT_NAME BigStruct
 #define STRUCT_FIELDS                                                          \
-    X(long, l)                                                                 \
-    X(SmallStruct *, small_struct)
+    XX(long, l)                                                                 \
+    XX(SmallStruct *, small_struct)
 #include "xstructs.c"
 
 #define EXPAND_STRUCTS                                                         \
@@ -54,37 +54,37 @@
 #define ENUM_PREFIX_ WEEK_DAY_
 #define ENUM_BITFLAGS 0
 #define ENUM_FIELDS   \
-    X(WEEK_DAY_SUNDAY, 0)      \
-    X(WEEK_DAY_MONDAY)         \
-    X(WEEK_DAY_TUESDAY, 10)    \
-    X(WEEK_DAY_WEDNESDAY)      \
-    X(WEEK_DAY_THURSDAY)       \
-    X(WEEK_DAY_FRIDAY, 5)      \
-    X(WEEK_DAY_SATURDAY, 20)
+    XX(WEEK_DAY_SUNDAY, 0)      \
+    XX(WEEK_DAY_MONDAY)         \
+    XX(WEEK_DAY_TUESDAY, 10)    \
+    XX(WEEK_DAY_WEDNESDAY)      \
+    XX(WEEK_DAY_THURSDAY)       \
+    XX(WEEK_DAY_FRIDAY, 5)      \
+    XX(WEEK_DAY_SATURDAY, 20)
 #include "xenums.c"
 
 #define ENUM_NAME PowerOfTwo
 #define ENUM_PREFIX_ POWER_OF2_
 #define ENUM_BITFLAGS 1
 #define ENUM_FIELDS \
-    X(POWER_OF2_ONE)          \
-    X(POWER_OF2_TWO)          \
-    X(POWER_OF2_FOUR)         \
-    X(POWER_OF2_EIGHT)        \
-    X(POWER_OF2_SIXTEEN)      \
-    X(POWER_OF2_THIRTY2)      \
-    X(POWER_OF2_SIXTY4)
+    XX(POWER_OF2_ONE)          \
+    XX(POWER_OF2_TWO)          \
+    XX(POWER_OF2_FOUR)         \
+    XX(POWER_OF2_EIGHT)        \
+    XX(POWER_OF2_SIXTEEN)      \
+    XX(POWER_OF2_THIRTY2)      \
+    XX(POWER_OF2_SIXTY4)
 #include "xenums.c"
 
 #define ENUM_NAME Flags
 #define ENUM_PREFIX_ FLAG_
 #define ENUM_BITFLAGS 1
 #define ENUM_FIELDS \
-    X(FLAG_READ) \
-    X(FLAG_WRITE) \
-    X(FLAG_EXEC) \
-    X(FLAG_READ_WRITE, FLAG_READ|FLAG_WRITE) \
-    X(FLAG_READ_EXEC)
+    XX(FLAG_READ) \
+    XX(FLAG_WRITE) \
+    XX(FLAG_EXEC) \
+    XX(FLAG_READ_WRITE, FLAG_READ|FLAG_WRITE) \
+    XX(FLAG_READ_EXEC)
 #include "xenums.c"
 
 int

@@ -85,16 +85,16 @@ print_primitive(void *pointer, int32 type_id) {
 #if TESTING_xstructs
 #define STRUCT_NAME ExampleStruct
 #define STRUCT_FIELDS         \
-    X(char, ic)               \
-    X(uchar, uc)              \
-    X(signed short, is)       \
-    X(ushort, us)             \
-    X(int, ii)                \
-    X(uint, ui)               \
-    X(long, il)               \
-    X(ulong, ul)              \
-    X(float, f, 10)           \
-    X(double, d)
+    XX(char, ic)               \
+    XX(uchar, uc)              \
+    XX(signed short, is)       \
+    XX(ushort, us)             \
+    XX(int, ii)                \
+    XX(uint, ui)               \
+    XX(long, il)               \
+    XX(ulong, ul)              \
+    XX(float, f, 10)           \
+    XX(double, d)
 #endif
 
 #define X_STRUCT_2(L, R)    L R;
@@ -119,9 +119,9 @@ print_primitive(void *pointer, int32 type_id) {
 #define X_TID_3(L, R, N)    TYPEID(((STRUCT_NAME*)0)->R[0]),
 
 typedef struct STRUCT_NAME {
-    #define X(...) SELECT_ON_NUM_ARGS(X_STRUCT_, __VA_ARGS__)
+    #define XX(...) SELECT_ON_NUM_ARGS(X_STRUCT_, __VA_ARGS__)
     STRUCT_FIELDS
-    #undef X
+    #undef XX
 } STRUCT_NAME;
 
 static const StructFormat CAT(STRUCT_NAME, _fmt) = {
@@ -129,9 +129,9 @@ static const StructFormat CAT(STRUCT_NAME, _fmt) = {
     .num_members = (
         #define X_C2(L, R) 1 +
         #define X_C3(L, R, N) 1 +
-        #define X(...) SELECT_ON_NUM_ARGS(X_C, __VA_ARGS__)
+        #define XX(...) SELECT_ON_NUM_ARGS(X_C, __VA_ARGS__)
         STRUCT_FIELDS
-        #undef X
+        #undef XX
         #undef X_C2
         #undef X_C3
         0),
@@ -139,41 +139,41 @@ static const StructFormat CAT(STRUCT_NAME, _fmt) = {
     .packed_size = (
         #define X_P2(L, R) sizeof(((STRUCT_NAME*)0)->R) +
         #define X_P3(L, R, N) sizeof(((STRUCT_NAME*)0)->R) +
-        #define X(...) SELECT_ON_NUM_ARGS(X_P, __VA_ARGS__)
+        #define XX(...) SELECT_ON_NUM_ARGS(X_P, __VA_ARGS__)
         STRUCT_FIELDS
-        #undef X
+        #undef XX
         #undef X_P2
         #undef X_P3
         0),
     .offsets = (int32[]){
-        #define X(...) SELECT_ON_NUM_ARGS(X_OFF_, __VA_ARGS__)
+        #define XX(...) SELECT_ON_NUM_ARGS(X_OFF_, __VA_ARGS__)
         STRUCT_FIELDS
-        #undef X
+        #undef XX
     },
     .sizes = (int32[]){
-        #define X(...) SELECT_ON_NUM_ARGS(X_SIZE_, __VA_ARGS__)
+        #define XX(...) SELECT_ON_NUM_ARGS(X_SIZE_, __VA_ARGS__)
         STRUCT_FIELDS
-        #undef X
+        #undef XX
     },
     .array_lens = (int32[]){
-        #define X(...) SELECT_ON_NUM_ARGS(X_ALEN_, __VA_ARGS__)
+        #define XX(...) SELECT_ON_NUM_ARGS(X_ALEN_, __VA_ARGS__)
         STRUCT_FIELDS
-        #undef X
+        #undef XX
     },
     .names = (char *[]){
-        #define X(...) SELECT_ON_NUM_ARGS(X_NAME_, __VA_ARGS__)
+        #define XX(...) SELECT_ON_NUM_ARGS(X_NAME_, __VA_ARGS__)
         STRUCT_FIELDS
-        #undef X
+        #undef XX
     },
     .types = (char *[]){
-        #define X(...) SELECT_ON_NUM_ARGS(X_TYPE_, __VA_ARGS__)
+        #define XX(...) SELECT_ON_NUM_ARGS(X_TYPE_, __VA_ARGS__)
         STRUCT_FIELDS
-        #undef X
+        #undef XX
     },
     .type_ids = (enum Type []){
-        #define X(...) SELECT_ON_NUM_ARGS(X_TID_, __VA_ARGS__)
+        #define XX(...) SELECT_ON_NUM_ARGS(X_TID_, __VA_ARGS__)
         STRUCT_FIELDS
-        #undef X
+        #undef XX
     },
 };
 
@@ -206,9 +206,9 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
             dispatch_print(&structure->R[i], TYPEID(structure->R[0]), #L, buf, nested + 1); \
         }
 
-    #define X(...) SELECT_ON_NUM_ARGS(X_PR, __VA_ARGS__)
+    #define XX(...) SELECT_ON_NUM_ARGS(X_PR, __VA_ARGS__)
     STRUCT_FIELDS
-    #undef X
+    #undef XX
     #undef X_PR2
     #undef X_PR3
 
@@ -233,11 +233,11 @@ CAT(STRUCT_NAME, _pack)(STRUCT_NAME *structure, uchar *buffer) {
     #define X_PK3(L, R, N) \
         memcpy64(buffer + pos, structure->R, sizeof(structure->R)); \
         pos += sizeof(structure->R);
-    #define X(...) SELECT_ON_NUM_ARGS(X_PK, __VA_ARGS__)
+    #define XX(...) SELECT_ON_NUM_ARGS(X_PK, __VA_ARGS__)
 
     STRUCT_FIELDS
 
-    #undef X
+    #undef XX
     #undef X_PK2
     #undef X_PK3
     return pos;
@@ -253,11 +253,11 @@ CAT(STRUCT_NAME, _unpack)(uchar *buffer, STRUCT_NAME *structure) {
     #define X_UP3(L, R, N) \
         memcpy64(structure->R, buffer + pos, sizeof(structure->R)); \
         pos += sizeof(structure->R);
-    #define X(...) SELECT_ON_NUM_ARGS(X_UP, __VA_ARGS__)
+    #define XX(...) SELECT_ON_NUM_ARGS(X_UP, __VA_ARGS__)
 
     STRUCT_FIELDS
 
-    #undef X
+    #undef XX
     #undef X_UP2
     #undef X_UP3
     return pos;
