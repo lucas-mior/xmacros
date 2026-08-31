@@ -13,10 +13,10 @@ static void print_primitive(void *pointer, enum Type type);
 
 static void
 dispatch_print(void *pointer,
-               int32 type_id, char *type_name,
+               enum Type type, char *type_name,
                char *field_name, int32 nested) {
-    if (type_id != TYPE_OTHER) {
-        print_primitive(pointer, type_id);
+    if (type != TYPE_OTHER) {
+        print_primitive(pointer, type);
         return;
     }
 

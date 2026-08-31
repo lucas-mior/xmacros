@@ -35,7 +35,8 @@ print_buffer(uchar *buffer, int64 size) {
 }
 
 static void
-dispatch_print(void *pointer, int32 type_id, char *type_name, char *name, int32 nested);
+dispatch_print(void *pointer, enum Type type, char *type_name,
+               char *name, int32 nested);
 
 static void
 print_primitive(void *pointer, enum Type type) {
