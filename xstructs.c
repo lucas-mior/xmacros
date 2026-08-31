@@ -38,8 +38,8 @@ static void
 dispatch_print(void *pointer, int32 type_id, char *type_name, char *name, int32 nested);
 
 static void
-print_primitive(void *pointer, int32 type_id) {
-    switch (type_id) {
+print_primitive(void *pointer, enum Type type) {
+    switch (type) {
     case TYPE_BOOL:    printf("%s\n",     *(bool *)pointer ? "true" : "false"); break;
     case TYPE_CHAR:    printf("'%c'\n",   *(char *)pointer);                    break;
     case TYPE_SCHAR:   printf("%d\n",     *(schar *)pointer);                   break;
@@ -57,7 +57,7 @@ print_primitive(void *pointer, int32 type_id) {
     case TYPE_CHARP:   printf("\"%s\"\n", *(char **)pointer);                   break;
     case TYPE_VOIDP:   printf("%p\n",     *(void **)pointer);                   break;
     default:
-        fprintf(stderr, "Unhandled primitive type ID: %d\n", type_id);
+        fprintf(stderr, "Unhandled primitive type ID: %d\n", type);
         exit(EXIT_FAILURE);
     }
     return;
