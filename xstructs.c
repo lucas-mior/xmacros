@@ -1,19 +1,5 @@
-/*
- * Copyright (C) 2025 Mior, Lucas;
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published
- * by the Free Software Foundation, either version 3 of the*License,
- * or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+// SPDX-License-Identifier: AGPL
+// Copyright (c) 2026 Lucas Mior
 
 #define CBASE_IMPLEMENT
 #include "cbase.h"
@@ -80,16 +66,16 @@ print_primitive(void *pointer, int32 type_id) {
 
 #if TESTING_xstructs
 #define STRUCT_NAME ExampleStruct
-#define STRUCT_FIELDS         \
-    XX(char, ic)               \
-    XX(uchar, uc)              \
-    XX(signed short, is)       \
-    XX(ushort, us)             \
-    XX(int, ii)                \
-    XX(uint, ui)               \
-    XX(long, il)               \
-    XX(ulong, ul)              \
-    XX(float, f, 10)           \
+#define STRUCT_FIELDS                                                          \
+    XX(char, ic)                                                               \
+    XX(uchar, uc)                                                              \
+    XX(signed short, is)                                                       \
+    XX(ushort, us)                                                             \
+    XX(int, ii)                                                                \
+    XX(uint, ui)                                                               \
+    XX(long, il)                                                               \
+    XX(ulong, ul)                                                              \
+    XX(float, f, 10)                                                           \
     XX(double, d)
 #endif
 
@@ -184,22 +170,22 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
     }
     printf("{\n");
 
-    #define X_PR2(L, R) \
-        for (int32 j = 0; j <= nested; j += 1) { \
-            printf("\t"); \
-        } \
-        printf(GREEN(#L)" " #R " = "); \
+    #define X_PR2(L, R)                                                        \
+        for (int32 j = 0; j <= nested; j += 1) {                               \
+            printf("\t");                                                      \
+        }                                                                      \
+        printf(GREEN(#L)" " #R " = ");                                         \
         dispatch_print(&structure->R, TYPEID(structure->R), #L, #R, nested + 1);
 
-    #define X_PR3(L, R, N) \
-        for (int32 i = 0; i < N; i += 1) { \
-            char buf[128]; \
-            for (int32 j = 0; j <= nested; j += 1) { \
-                printf("\t"); \
-            } \
-            snprintf(buf, sizeof(buf), "%s[%d]", #R, i); \
-            printf(GREEN(#L)" " #R "[%d] = ", i); \
-            dispatch_print(&structure->R[i], TYPEID(structure->R[0]), #L, buf, nested + 1); \
+    #define X_PR3(L, R, N)                                                     \
+        for (int32 i = 0; i < N; i += 1) {                                     \
+            char buf[128];                                                     \
+            for (int32 j = 0; j <= nested; j += 1) {                           \
+                printf("\t");                                                  \
+            }                                                                  \
+            snprintf(buf, sizeof(buf), "%s[%d]", #R, i);                       \
+            printf(GREEN(#L)" " #R "[%d] = ", i);                              \
+            dispatch_print(&structure->R[i], TYPEID(structure->R[0]), #L, buf, nested + 1);\
         }
 
     #define XX(...) SELECT_ON_NUM_ARGS(X_PR, __VA_ARGS__)
@@ -223,11 +209,11 @@ static int64
 CAT(STRUCT_NAME, _pack)(STRUCT_NAME *structure, uchar *buffer) {
     int64 pos = 0;
 
-    #define X_PK2(L, R) \
-        memcpy64(buffer + pos, &structure->R, sizeof(structure->R)); \
+    #define X_PK2(L, R)                                                        \
+        memcpy64(buffer + pos, &structure->R, sizeof(structure->R));           \
         pos += sizeof(structure->R);
-    #define X_PK3(L, R, N) \
-        memcpy64(buffer + pos, structure->R, sizeof(structure->R)); \
+    #define X_PK3(L, R, N)                                                     \
+        memcpy64(buffer + pos, structure->R, sizeof(structure->R));            \
         pos += sizeof(structure->R);
     #define XX(...) SELECT_ON_NUM_ARGS(X_PK, __VA_ARGS__)
 
@@ -243,11 +229,11 @@ static int64
 CAT(STRUCT_NAME, _unpack)(uchar *buffer, STRUCT_NAME *structure) {
     int64 pos = 0;
 
-    #define X_UP2(L, R) \
-        memcpy64(&structure->R, buffer + pos, sizeof(structure->R)); \
+    #define X_UP2(L, R)                                                        \
+        memcpy64(&structure->R, buffer + pos, sizeof(structure->R));           \
         pos += sizeof(structure->R);
-    #define X_UP3(L, R, N) \
-        memcpy64(structure->R, buffer + pos, sizeof(structure->R)); \
+    #define X_UP3(L, R, N)                                                     \
+        memcpy64(structure->R, buffer + pos, sizeof(structure->R));            \
         pos += sizeof(structure->R);
     #define XX(...) SELECT_ON_NUM_ARGS(X_UP, __VA_ARGS__)
 
@@ -265,7 +251,7 @@ CAT(STRUCT_NAME, _unpack)(uchar *buffer, STRUCT_NAME *structure) {
 #if TESTING_xstructs
 #define CBASE_IMPLEMENT
 #include "cbase.h"
-#define EXPAND_STRUCTS \
+#define EXPAND_STRUCTS                                                         \
     STRUCT(ExampleStruct)
 #include "fmt_functions.h"
 
