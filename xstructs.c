@@ -193,10 +193,10 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
 
     #define X_PR3(L, R, N) \
         for (int32 i = 0; i < N; i += 1) { \
+            char buf[128]; \
             for (int32 j = 0; j <= nested; j += 1) { \
                 printf("\t"); \
             } \
-            char buf[128]; \
             snprintf(buf, sizeof(buf), "%s[%d]", #R, i); \
             printf(GREEN(#L)" " #R "[%d] = ", i); \
             dispatch_print(&structure->R[i], TYPEID(structure->R[0]), #L, buf, nested + 1); \
