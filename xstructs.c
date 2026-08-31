@@ -161,7 +161,7 @@ static const StructFormat CAT(STRUCT_NAME, _fmt) = {
     },
 };
 
-static void
+static void UNUSED
 CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
     if (structure == NULL) {
         printf("NULL\n");
@@ -207,7 +207,7 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
     return;
 }
 
-static int64
+static int64 UNUSED
 CAT(STRUCT_NAME, _pack)(STRUCT_NAME *structure, uchar *buffer) {
     int64 pos = 0;
 
@@ -227,7 +227,7 @@ CAT(STRUCT_NAME, _pack)(STRUCT_NAME *structure, uchar *buffer) {
     return pos;
 }
 
-static int64
+static int64 UNUSED
 CAT(STRUCT_NAME, _unpack)(uchar *buffer, STRUCT_NAME *structure) {
     int64 pos = 0;
 
