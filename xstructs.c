@@ -57,6 +57,7 @@ print_primitive(void *pointer, enum Type type) {
     case TYPE_DOUBLE:  printf("%f\n",     *(double *)pointer);                  break;
     case TYPE_CHARP:   printf("\"%s\"\n", *(char **)pointer);                   break;
     case TYPE_VOIDP:   printf("%p\n",     *(void **)pointer);                   break;
+    case TYPE_OTHER:
     default:
         error("Unhandled primitive type ID.\n");
         exit(EXIT_FAILURE);
