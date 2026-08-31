@@ -18,10 +18,6 @@
 #define CBASE_IMPLEMENT
 #include "cbase.h"
 
-#if !defined(error2)
-#define error2(...) fprintf(stderr, __VA_ARGS__)
-#endif
-
 #if defined(__INCLUDE_LEVEL__) && (__INCLUDE_LEVEL__ == 0)
 #define TESTING_xstructs 1
 #elif !defined(TESTING_xstructs)
