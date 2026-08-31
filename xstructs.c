@@ -15,6 +15,7 @@
 
 typedef struct StructFormat {
     char *struct_name;
+    int32 struct_name_len;
     int32 num_members;
     int32 struct_size;
     int32 packed_size;
@@ -110,6 +111,7 @@ typedef struct STRUCT_NAME {
 
 static const StructFormat CAT(STRUCT_NAME, _fmt) = {
     .struct_name = QUOTE(STRUCT_NAME),
+    .struct_name_len = STRLIT_LEN(QUOTE(STRUCT_NAME)),
     .num_members = (
         #define X_C2(L, R) 1 +
         #define X_C3(L, R, N) 1 +
