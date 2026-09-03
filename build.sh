@@ -75,6 +75,7 @@ check)
     CFLAGS="$CFLAGS -Wno-unused-command-line-argument"
     CFLAGS="$CFLAGS -fno-color-diagnostics"
     CC=clang CFLAGS="$CFLAGS" "$0" debug
+    echo "static analysis finished."
     exit
     ;;
 uninstall)
