@@ -172,11 +172,11 @@ main(void) {
         NumberStruct_unpack(n_buf, &restored_num);
 
         ASSERT_EQ_VAR(original_num.ic, restored_num.ic);
-        ASSERT_EQ(original_num.is, restored_num.is);
-        ASSERT_EQ(original_num.ui, restored_num.ui);
+        ASSERT_EQ_VAR(original_num.is, restored_num.is);
+        ASSERT_EQ_VAR(original_num.ui, restored_num.ui);
 
         for (int32 i = 0; i < 10; i += 1) {
-            ASSERT_EQ(original_num.f[i], restored_num.f[i]);
+            ASSERT_EQ_VAR(original_num.f[i], restored_num.f[i]);
         }
 
         if ((s_buf = malloc2(SmallStruct_fmt.packed_size)) == NULL) {
@@ -189,13 +189,13 @@ main(void) {
 
         print_buffer(s_buf, SmallStruct_fmt.packed_size);
 
-        ASSERT_EQ(original_small.string, restored_small.string);
-        ASSERT_EQ(original_small.number_struct.ii,
-                     restored_small.number_struct.ii);
+        ASSERT_EQ_VAR(original_small.string, restored_small.string);
+        ASSERT_EQ_VAR(original_small.number_struct.ii,
+                      restored_small.number_struct.ii);
 
         for (int32 i = 0; i < 10; i += 1) {
-            ASSERT_EQ(original_small.number_struct.f[i],
-                         restored_small.number_struct.f[i]);
+            ASSERT_EQ_VAR(original_small.number_struct.f[i],
+                          restored_small.number_struct.f[i]);
         }
 
         printf("--- Printing BigStruct (Includes Pointer to SmallStruct) ---\n");
