@@ -92,50 +92,50 @@ main(void) {
     {
         char *s;
         enum Flags flag = FLAG_READ_WRITE;
-        ASSERT_EQUAL(s = FLAG_str(flag), "FLAG_READ_WRITE");
+        ASSERT_EQ(s = FLAG_str(flag), "FLAG_READ_WRITE");
         FLAG_str_free(s);
-        ASSERT_EQUAL(s = FLAG_str(FLAG_READ_EXEC), "FLAG_READ_EXEC");
+        ASSERT_EQ(s = FLAG_str(FLAG_READ_EXEC), "FLAG_READ_EXEC");
         FLAG_str_free(s);
-        ASSERT_EQUAL(FLAG_READ_EXEC, 1 << 3);
+        ASSERT_EQ(FLAG_READ_EXEC, 1 << 3);
     }
 
     {
         char *str_ptr;
 
-        ASSERT_EQUAL(WEEK_DAY_str(WEEK_DAY_SUNDAY), "WEEK_DAY_SUNDAY");
-        ASSERT_EQUAL(WEEK_DAY_str(WEEK_DAY_MONDAY), "WEEK_DAY_MONDAY");
-        ASSERT_EQUAL(WEEK_DAY_str(WEEK_DAY_SATURDAY), "WEEK_DAY_SATURDAY");
-        ASSERT_EQUAL(WEEK_DAY_str(999), "Invalid enum value");
+        ASSERT_EQ(WEEK_DAY_str(WEEK_DAY_SUNDAY), "WEEK_DAY_SUNDAY");
+        ASSERT_EQ(WEEK_DAY_str(WEEK_DAY_MONDAY), "WEEK_DAY_MONDAY");
+        ASSERT_EQ(WEEK_DAY_str(WEEK_DAY_SATURDAY), "WEEK_DAY_SATURDAY");
+        ASSERT_EQ(WEEK_DAY_str(999), "Invalid enum value");
 
         if ((str_ptr = POWER_OF2_str(POWER_OF2_ONE))) {
-            ASSERT_EQUAL(str_ptr, "POWER_OF2_ONE");
+            ASSERT_EQ(str_ptr, "POWER_OF2_ONE");
             POWER_OF2_str_free(str_ptr);
         }
 
         if ((str_ptr = POWER_OF2_str(POWER_OF2_ONE
                                      | POWER_OF2_FOUR
                                      | POWER_OF2_SIXTY4))) {
-            ASSERT_EQUAL(str_ptr, "POWER_OF2_ONE|POWER_OF2_FOUR|POWER_OF2_SIXTY4");
+            ASSERT_EQ(str_ptr, "POWER_OF2_ONE|POWER_OF2_FOUR|POWER_OF2_SIXTY4");
             free2(str_ptr, strlen32(str_ptr) + 1);
         }
 
         str_ptr = POWER_OF2_str(0);
-        ASSERT_EQUAL(str_ptr, "NONE");
+        ASSERT_EQ(str_ptr, "NONE");
         POWER_OF2_str_free(str_ptr);
     }
 
     {
         size_t expected_small_size = sizeof(char *) + sizeof(NumberStruct);
 
-        ASSERT_EQUAL(NumberStruct_fmt.num_members, 10);
-        ASSERT_EQUAL(SmallStruct_fmt.num_members, 2);
-        ASSERT_EQUAL(BigStruct_fmt.num_members, 2);
+        ASSERT_EQ(NumberStruct_fmt.num_members, 10);
+        ASSERT_EQ(SmallStruct_fmt.num_members, 2);
+        ASSERT_EQ(BigStruct_fmt.num_members, 2);
 
-        ASSERT_EQUAL(NumberStruct_fmt.struct_name, "NumberStruct");
-        ASSERT_EQUAL(SmallStruct_fmt.names[0], "string");
-        ASSERT_EQUAL(SmallStruct_fmt.types[0], "char *");
+        ASSERT_EQ(NumberStruct_fmt.struct_name, "NumberStruct");
+        ASSERT_EQ(SmallStruct_fmt.names[0], "string");
+        ASSERT_EQ(SmallStruct_fmt.types[0], "char *");
 
-        ASSERT_EQUAL(SmallStruct_fmt.packed_size, expected_small_size);
+        ASSERT_EQ_VAR(SmallStruct_fmt.packed_size, expected_small_size);
     }
 
     {
@@ -171,12 +171,12 @@ main(void) {
         NumberStruct_pack(&original_num, n_buf);
         NumberStruct_unpack(n_buf, &restored_num);
 
-        ASSERT_EQUAL(original_num.ic, restored_num.ic);
-        ASSERT_EQUAL(original_num.is, restored_num.is);
-        ASSERT_EQUAL(original_num.ui, restored_num.ui);
+        ASSERT_EQ_VAR(original_num.ic, restored_num.ic);
+        ASSERT_EQ(original_num.is, restored_num.is);
+        ASSERT_EQ(original_num.ui, restored_num.ui);
 
         for (int32 i = 0; i < 10; i += 1) {
-            ASSERT_EQUAL(original_num.f[i], restored_num.f[i]);
+            ASSERT_EQ(original_num.f[i], restored_num.f[i]);
         }
 
         if ((s_buf = malloc2(SmallStruct_fmt.packed_size)) == NULL) {
@@ -189,12 +189,12 @@ main(void) {
 
         print_buffer(s_buf, SmallStruct_fmt.packed_size);
 
-        ASSERT_EQUAL(original_small.string, restored_small.string);
-        ASSERT_EQUAL(original_small.number_struct.ii,
+        ASSERT_EQ(original_small.string, restored_small.string);
+        ASSERT_EQ(original_small.number_struct.ii,
                      restored_small.number_struct.ii);
 
         for (int32 i = 0; i < 10; i += 1) {
-            ASSERT_EQUAL(original_small.number_struct.f[i],
+            ASSERT_EQ(original_small.number_struct.f[i],
                          restored_small.number_struct.f[i]);
         }
 

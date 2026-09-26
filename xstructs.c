@@ -278,7 +278,7 @@ int main(void) {
     }
     original.d = 0.5;
 
-    ASSERT_EQUAL(ExampleStruct_fmt.struct_name,
+    ASSERT_EQ(ExampleStruct_fmt.struct_name,
                  ExampleStruct_fmt.struct_name_len,
                  "ExampleStruct");
 
@@ -292,15 +292,15 @@ int main(void) {
     STRUCT_PRINT(&original);
     STRUCT_PRINT(&restored);
 
-    ASSERT_EQUAL(original.ic, restored.ic);
-    ASSERT_EQUAL(original.uc, restored.uc);
-    ASSERT_EQUAL(original.is, restored.is);
-    ASSERT_EQUAL(original.us, restored.us);
-    ASSERT_EQUAL(original.ii, restored.ii);
-    ASSERT_EQUAL(original.ui, restored.ui);
-    ASSERT_EQUAL(original.il, restored.il);
-    ASSERT_EQUAL(original.ul, restored.ul);
-    ASSERT_EQUAL(original.d,  restored.d);
+    ASSERT_EQ(original.ic, restored.ic);
+    ASSERT_EQ(original.uc, restored.uc);
+    ASSERT_EQ(original.is, restored.is);
+    ASSERT_EQ(original.us, restored.us);
+    ASSERT_EQ(original.ii, restored.ii);
+    ASSERT_EQ(original.ui, restored.ui);
+    ASSERT_EQ(original.il, restored.il);
+    ASSERT_EQ(original.ul, restored.ul);
+    ASSERT_EQ(original.d,  restored.d);
 
     free2(buffer, ExampleStruct_fmt.packed_size);
 
