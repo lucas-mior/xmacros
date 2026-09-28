@@ -51,7 +51,7 @@ print_primitive(void *pointer, enum Type type) {
     case TYPE_INT:     printf("%d\n",     *(int *)pointer);                     break;
     case TYPE_UINT:    printf("%u\n",     *(uint *)pointer);                    break;
     case TYPE_LONG:    printf("%lld\n",   (llong)*(long *)pointer);             break;
-    case TYPE_ULONG:   printf("%lu\n",    *(ulong *)pointer);                   break;
+    case TYPE_ULONG:   printf("%llu\n",    (ullong)*(ulong *)pointer);          break;
     case TYPE_LLONG:   printf("%lld\n",   *(llong *)pointer);                   break;
     case TYPE_ULLONG:  printf("%llu\n",   *(ullong *)pointer);                  break;
     case TYPE_FLOAT:   printf("%f\n",     (double)*(float *)pointer);           break;
