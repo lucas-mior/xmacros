@@ -38,15 +38,17 @@ serve different purposes:
   * Code that is scared of enums being in an invalid state can put some
     assertions for piece of mind. This is very very rarely justifiable.
     ```c
-    ASSERT_BETWEEN(enum_val, 0, ENUM_COUNT - 1);
+    ASSERT_BETWEEN(enum_val, 1, ENUM_COUNT - 1);
     ```
 - `_COUNT` is the exclusive upper bound and can be named explicitly in a
   `switch`, which keeps exhaustive-enum warnings useful.
 - valid values are strictly greater than zero and strictly less than `_COUNT`.
-  * In practice, `_COUNT` will never happen. Never check for it. When
-    validating enum values, or dispatching code based on enum value:
+  * In practice, `_COUNT` will almost never happen. The only case were this
+    could happen is for external API's that receive enum values. Checking for
+    `_COUNT` in `switch` is also valid in internal code, just to avoid compiler
+    warnings.
     ```c
-    // bad (_COUNT *never* happens, no need to check fo it)
+    // use only for validating/disptaching at external API boundary.
     static void
     function(enum EnumType enum_val)  {
         if ((enum_val <= 0) || (enum_val >= ENUM_TYPE_COUNT)) {
@@ -84,8 +86,8 @@ serve different purposes:
     }
 
     // good (switch case for dispatching auto handles zero and _COUNT)
-    // (note that we only put _COUNT
-    //  to silence "missing enum values" compiler  warning)
+    // note that we put `case _COUNT` to silence "missing enum values" compiler
+    // warning and to handle invalid input in the case of external APIs.
     static void
     function(enum EnumType enum_val)  {
         switch (enum_val) {
@@ -308,6 +310,20 @@ upper bound for the formatted byte count, excluding the terminating `'\0'`.
 They consume and validate the same format grammar, but `%n` is only checked and
 does not write the count.
 
+A NULL `char *` passed to ordinary `%s` uses `FMT_NULL_STRING`, which defaults
+to `"null"`. Define `FMT_NULL_STRING` to a string literal when compiling the
+cbase implementation to select a different compile-time default. Programs
+linking a prebuilt cbase may instead call `fmt_set_null_string` during
+single-threaded initialization, before any formatter use. Passing NULL is a
+programmer error. The selected string is not copied and must remain alive and
+unmodified for the rest of the process. Calling the setter after formatting has
+begun, or concurrently with formatting, is outside the API contract. Once
+initialization is complete, formatting only reads this process-wide setting.
+
+This initialization rule is also required by estimate-then-format code: changing
+the NULL representation between estimation and output could make a previously
+computed bound too small.
+
 Normal formatter and estimator format strings are limited to 255 bytes plus the
 terminating `\0`. Cached plans use a smaller limit of 127 bytes plus the
 terminating `\0`.
@@ -355,7 +371,10 @@ extension semantics:
 - `%n` stores the logical byte count that would have been produced, not the
   number of bytes physically copied into the destination buffer. It supports the
   same length modifiers as cbase integers.
-- `%s` formats a NULL `char *` as `(null)`.
+- `%s` formats a NULL `char *` using the configured NULL-string
+  representation. The default is `"null"`; an empty string or another
+  nul-terminated string may be configured as described above. Ordinary
+  precision such as `%.Ns` truncates this representation normally.
 - `%.*s` is a cbase byte-span formatter. It consumes an `int32` byte length and
   a `char *`, writes exactly that many bytes, and ignores embedded `'\0'`
   bytes. `NULL` is accepted only when the length is zero.
