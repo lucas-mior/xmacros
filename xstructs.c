@@ -278,9 +278,8 @@ int main(void) {
     }
     original.d = 0.5;
 
-    ASSERT_EQ(ExampleStruct_fmt.struct_name,
-                 ExampleStruct_fmt.struct_name_len,
-                 "ExampleStruct");
+    ASSERT_EQ(ExampleStruct_fmt.struct_name, ExampleStruct_fmt.struct_name_len,
+              "ExampleStruct");
 
     buffer = xmalloc(ExampleStruct_fmt.packed_size, 0);
     packed_size = ExampleStruct_pack(&original, buffer);
