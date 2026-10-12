@@ -195,7 +195,7 @@ main(void) {
 
         for (int32 i = 0; i < 10; i += 1) {
             ASSERT_EQ(original_small.number_struct.f[i],
-                          restored_small.number_struct.f[i]);
+                      restored_small.number_struct.f[i]);
         }
 
         printf("--- Printing BigStruct (Includes Pointer to SmallStruct) ---\n");
