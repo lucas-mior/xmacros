@@ -191,7 +191,7 @@ main(void) {
 
         ASSERT_EQ(original_small.string, restored_small.string);
         ASSERT_EQ(original_small.number_struct.ii,
-                      restored_small.number_struct.ii);
+                  restored_small.number_struct.ii);
 
         for (int32 i = 0; i < 10; i += 1) {
             ASSERT_EQ(original_small.number_struct.f[i],

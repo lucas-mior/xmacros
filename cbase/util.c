@@ -55,7 +55,7 @@ static char *signal_names[] = {
 #endif
 
 char *
-signal_name(int32 signum) {
+signal_get_name(int32 signum) {
 #if OS_UNIX
     if ((signum >= 0)
         && (signum < LENGTH(signal_names))
@@ -479,7 +479,7 @@ rand_shuffle(void *items, int32 item_count, int32 item_size) {
     }
 
     ASSERT(items != NULL);
-    ASSERT_POSITIVE(item_size);
+    ASSERT_GT(item_size, 0);
 
     for (int32 i = item_count - 1; i > 0; i -= 1) {
         int32 j = rand_int_range(i + 1);
@@ -820,7 +820,7 @@ xdup2(int fd1, int fd2) {
 void
 xkill(pid_t pid, int signum) {
     if (kill(pid, signum) < 0) {
-        char *name = signal_name(signum);
+        char *name = signal_get_name(signum);
         if (name != NULL) {
             error("Error sending signal %d=%s to %d: %s.\n",
                   signum, name, pid, strerror(errno));
@@ -954,7 +954,7 @@ test_cmd_exists(char *command) {
             len = SNPRINTF(candidate, "./%s", command);
         } else {
             len = SNPRINTF(candidate, "%.*s/%s",
-                            end - start, path + start, command);
+                                      end - start, path + start, command);
         }
         if ((len > 0) && (len < SIZEOF(candidate))
             && (access(candidate, X_OK) == 0)) {
@@ -1173,7 +1173,7 @@ main(int argc, char **argv) {
         for (int32 i = 0; i < 100; i += 1) {
             double value = rand_float();
 
-            ASSERT_NON_NEGATIVE(value);
+            ASSERT_GE(value, 0.0);
             ASSERT_LT(value, 1.0);
         }
     }
@@ -1186,13 +1186,13 @@ main(int argc, char **argv) {
         for (int32 i = 0; i < 100; i += 1) {
             int32 value = rand_int_range(7);
 
-            ASSERT_NON_NEGATIVE(value);
+            ASSERT_GE(value, 0);
             ASSERT_LT(value, 7);
         }
 
         rand_shuffle(values, LENGTH(values), SIZEOF(*values));
         for (int32 i = 0; i < LENGTH(values); i += 1) {
-            ASSERT_NON_NEGATIVE(values[i]);
+            ASSERT_GE(values[i], 0);
             ASSERT_LT(values[i], LENGTH(values));
             ASSERT(!seen[values[i]]);
             seen[values[i]] = true;
@@ -1219,7 +1219,7 @@ main(int argc, char **argv) {
 
     ASSERT_EQ(deg2rad(180.0), 3.141592653589793);
     ASSERT_EQ(rad2deg(3.141592653589793), 180.0);
-    ASSERT_POSITIVE(util_nthreads());
+    ASSERT_GT(util_nthreads(), 0);
 
     ASSERT_EQ(CLAMP(2.0, -2.1, 2.1),   2.0);
     ASSERT_EQ(CLAMP(0.2, -0.1, 0.1),   0.1);
