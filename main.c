@@ -125,7 +125,7 @@ main(void) {
     }
 
     {
-        size_t expected_small_size = sizeof(char *) + sizeof(NumberStruct);
+        size_t expected_small_size = SIZEOF(char *) + SIZEOF(NumberStruct);
 
         ASSERT_EQ(NumberStruct_fmt.num_members, 10);
         ASSERT_EQ(SmallStruct_fmt.num_members, 2);
