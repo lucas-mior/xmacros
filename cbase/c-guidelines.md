@@ -576,6 +576,9 @@ STR_APPEND(&str, string, string_len);
 str_itoa(&str, number);
 ```
 
+## Avoid printf from libc.
+Instead, use `fmt_printf` from `fmt.c` which has almost the same semantics.
+
 ## Comparing strings:
 In general, avoid `strcmp()`, use the alternatives below instead:
 - For strings that are both null terminated and we don't know the length of
@@ -1114,6 +1117,8 @@ static struct TestCase tests[] = {
       int32 x;
   }
   ```
+  * Note: don't create artificial blocks if the nest level is already 3 or more.
+    (3 * 4 spaces = 12 spaces).
 - Prefer to declare variable at the top of blocks
   * Exception: for loop counters (`for (int32 i = 0; i < N; i += 1)`)
   * Don't mix declarations and code (`-Wdeclaration-after-statement`)
@@ -1286,6 +1291,32 @@ appropriate cbase/ C file.
   * Simply write the code for the function inlined.
   * Obvious exceptions are callbacks, like the ones defined in tables, passed as
     function arguments, etc. They can't be inlined by definition.
+- Don't have struct types that are only used inside a single function.
+  * Use the variables you were going to store in the struct directly instead.
+    (those variable might be even other struct instances).
+- Do not keep an `int32 status` temporary when every assignment is consumed
+  exactly once on the immediately following line. Inline each function call
+  into its use instead. This applies equally when the same `status` temporary is
+  reused for several independent assignment/use pairs. In that form, counting
+  the declaration, `status` has an odd number of uses: one declaration plus two
+  uses for every pair.
+  ```c
+  // bad
+  int32 status;
+
+  status = operation();
+  ASSERT_LE(status, 0);
+  status = other_operation();
+  ASSERT_EQ(status, 0);
+
+  // good
+  ASSERT_LE(operation(), 0);
+  ASSERT_EQ(other_operation(), 0);
+  ```
+  Keep a status variable when the value has an independent lifetime: for
+  example, when it is used more than once after an assignment, needed across
+  control-flow paths, returned through an output parameter, or retained for
+  cleanup/error handling.
 - Everytime you call a function, look at the implementation of the function to
   check the types and the semantics of the function. Don't call functions that
   you don't know how they work. 

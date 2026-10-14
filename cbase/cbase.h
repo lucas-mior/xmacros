@@ -217,8 +217,8 @@ typedef struct StrFlexList {
 
 #define SFLIT(literal) ((StrFlex *)&(struct {  \
     int32 len;                                 \
-    char data[sizeof(literal)];                \
-}){ sizeof(literal) - 1, literal })
+    char data[SIZEOF(literal)];                \
+}){ SIZEOF(literal) - 1, literal })
 
 // Macro trick to pass the int32 len and char *data for "%.*s" formatters.
 // Note: the single argument version is just for exploration purposes,
@@ -457,13 +457,13 @@ typedef struct FmtLocale {
 
 extern const FmtLocale fmt_locale_c;
 
-// cbase printf-compatible formatter. It returns the byte count that would
+// cbase fmt_printf-compatible formatter. It returns the byte count that would
 // have been written, excluding the terminating '\0'. It writes a terminating
 // '\0' when capacity is positive. buffer may be NULL only when capacity is
 // zero. Negative returns are errno-style failures. Floating precision is
 // bounded by the exact fixed-decimal limit of the argument type; larger
 // explicit precisions return -ERANGE. See cbase/README.md for the exact
-// supported grammar and deliberate differences from libc printf.
+// supported grammar and deliberate differences from libc fmt_printf.
 // The runtime NULL-string representation is process configuration. Call this
 // only during single-threaded initialization, before any formatter use. Passing
 // NULL is a programmer error. The selected string is not copied and must remain
@@ -473,7 +473,7 @@ int32 fmt_vsnprintf(char *, int64, char *, va_list)           ATTR_PRINTF(3, 0);
 int32 fmt_snprintf(char *, int64, char *, ...)                ATTR_PRINTF(3, 4);
 int32 fmt_vsprintf(char *, int64, char *, va_list)            ATTR_PRINTF(3, 0);
 int32 fmt_sprintf(char *, int64, char *, ...)                 ATTR_PRINTF(3, 4);
-void fmt_printf(char *, ...)                                  ATTR_PRINTF(1, 2);
+int32 fmt_printf(char *, ...)                                 ATTR_PRINTF(1, 2);
 int32 fmt_vsnprintf_estimate(char *, va_list)                 ATTR_PRINTF(1, 0);
 int32 fmt_snprintf_estimate(char *, ...)                      ATTR_PRINTF(1, 2);
 int32 fmt_vsnprintf_estimate_plan(FmtPlan *, char *, va_list) ATTR_PRINTF(2, 0);
@@ -736,7 +736,7 @@ _Generic((VAR),                                        \
 
 #define STRLIT_ARRAY(LITERAL, SIZE)                                    \
     ((void)SIZEOF(struct {                                             \
-        _Static_assert(sizeof(LITERAL) <= ((SIZE) + 1),                \
+        _Static_assert(SIZEOF(LITERAL) <= ((SIZE) + 1),                \
                        "string literal does not fit in STRLIT_ARRAY"); \
         char dummy;                                                    \
     }),                                                                \
@@ -967,8 +967,8 @@ int32 cmd_wait(Command *);
 
 #define CMD_PUSH(CMD, ...)                                    \
     cmd_push_array(CMD,                                       \
-                   (int32)(sizeof((char *[]){__VA_ARGS__})      \
-                           /sizeof(char *)),                   \
+                   (int32)(SIZEOF((char *[]){__VA_ARGS__})      \
+                           /SIZEOF(char *)),                   \
                    (char *[]){__VA_ARGS__})
 
 #define CMD_ENV_PUSH_2(A, B) cmd_env_push(A, B)
