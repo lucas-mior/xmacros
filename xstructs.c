@@ -42,22 +42,38 @@ dispatch_print(void *pointer, enum Type type, char *type_name,
 static void
 print_primitive(void *pointer, enum Type type) {
     switch (type) {
-    case TYPE_BOOL:    printf("%s\n",     *(bool *)pointer ? "true" : "false"); break;
-    case TYPE_CHAR:    printf("'%c'\n",   *(char *)pointer);                    break;
-    case TYPE_SCHAR:   printf("%d\n",     *(schar *)pointer);                   break;
-    case TYPE_UCHAR:   printf("%u\n",     *(uchar *)pointer);                   break;
-    case TYPE_SHORT:   printf("%d\n",     *(short *)pointer);                   break;
-    case TYPE_USHORT:  printf("%u\n",     *(ushort *)pointer);                  break;
-    case TYPE_INT:     printf("%d\n",     *(int *)pointer);                     break;
-    case TYPE_UINT:    printf("%u\n",     *(uint *)pointer);                    break;
-    case TYPE_LONG:    printf("%lld\n",   (llong)*(long *)pointer);             break;
-    case TYPE_ULONG:   printf("%llu\n",    (ullong)*(ulong *)pointer);          break;
-    case TYPE_LLONG:   printf("%lld\n",   *(llong *)pointer);                   break;
-    case TYPE_ULLONG:  printf("%llu\n",   *(ullong *)pointer);                  break;
-    case TYPE_FLOAT:   printf("%f\n",     (double)*(float *)pointer);           break;
-    case TYPE_DOUBLE:  printf("%f\n",     *(double *)pointer);                  break;
-    case TYPE_CHARP:   printf("\"%s\"\n", *(char **)pointer);                   break;
-    case TYPE_VOIDP:   printf("%p\n",     *(void **)pointer);                   break;
+    case TYPE_BOOL:
+        printf("%s\n",     *(bool *)pointer ? "true" : "false"); break;
+    case TYPE_CHAR:
+        printf("'%c'\n",   *(char *)pointer);                    break;
+    case TYPE_SCHAR:
+        printf("%d\n",     *(schar *)pointer);                   break;
+    case TYPE_UCHAR:
+        printf("%u\n",     *(uchar *)pointer);                   break;
+    case TYPE_SHORT:
+        printf("%d\n",     *(short *)pointer);                   break;
+    case TYPE_USHORT:
+        printf("%u\n",     *(ushort *)pointer);                  break;
+    case TYPE_INT:
+        printf("%d\n",     *(int *)pointer);                     break;
+    case TYPE_UINT:
+        printf("%u\n",     *(uint *)pointer);                    break;
+    case TYPE_LONG:
+        printf("%lld\n",   (llong)*(long *)pointer);             break;
+    case TYPE_ULONG:
+        printf("%llu\n",    (ullong)*(ulong *)pointer);          break;
+    case TYPE_LLONG:
+        printf("%lld\n",   *(llong *)pointer);                   break;
+    case TYPE_ULLONG:
+        printf("%llu\n",   *(ullong *)pointer);                  break;
+    case TYPE_FLOAT:
+        printf("%f\n",     (double)*(float *)pointer);           break;
+    case TYPE_DOUBLE:
+        printf("%f\n",     *(double *)pointer);                  break;
+    case TYPE_CHARP:
+        printf("\"%s\"\n", *(char **)pointer);                   break;
+    case TYPE_VOIDP:
+        printf("%p\n",     *(void **)pointer);                   break;
     case TYPE_OTHER:
     default:
         error("Unhandled primitive type ID.\n");
