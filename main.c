@@ -20,27 +20,27 @@
 
 #define STRUCT_NAME NumberStruct
 #define STRUCT_FIELDS                                                          \
-    XX(char, ic)                                                                \
-    XX(uchar, uc)                                                               \
-    XX(signed short, is)                                                        \
-    XX(ushort, us)                                                              \
-    XX(int, ii)                                                                 \
-    XX(uint, ui)                                                                \
-    XX(long, il)                                                                \
-    XX(ulong, ul)                                                               \
-    XX(float, f, 10)                                                            \
+    XX(char, ic)                                                               \
+    XX(uchar, uc)                                                              \
+    XX(signed short, is)                                                       \
+    XX(ushort, us)                                                             \
+    XX(int, ii)                                                                \
+    XX(uint, ui)                                                               \
+    XX(long, il)                                                               \
+    XX(ulong, ul)                                                              \
+    XX(float, f, 10)                                                           \
     XX(double, d)
 #include "xstructs.c"
 
 #define STRUCT_NAME SmallStruct
 #define STRUCT_FIELDS                                                          \
-    XX(char *, string)                                                          \
+    XX(char *, string)                                                         \
     XX(NumberStruct, number_struct)
 #include "xstructs.c"
 
 #define STRUCT_NAME BigStruct
 #define STRUCT_FIELDS                                                          \
-    XX(long, l)                                                                 \
+    XX(long, l)                                                                \
     XX(SmallStruct *, small_struct)
 #include "xstructs.c"
 
