@@ -205,7 +205,8 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
             }                                                                  \
             snprintf(buf, SIZEOF(buf), "%s[%d]", #R, i);                       \
             printf(GREEN(#L)" " #R "[%d] = ", i);                              \
-            dispatch_print(&structure->R[i], TYPEID(structure->R[0]), #L, buf, nested + 1);\
+            dispatch_print(&structure->R[i], TYPEID(structure->R[0]), #L,      \
+                           buf, nested + 1);\
         }
 
     #define XX(...) SELECT_ON_NUM_ARGS(X_PR, __VA_ARGS__)
