@@ -198,7 +198,7 @@ main(void) {
                       restored_small.number_struct.f[i]);
         }
 
-        printf("--- Printing BigStruct (Includes Pointer to SmallStruct) ---\n");
+        printf("--- Printing BigStruct (Includes Pointer to SmallStruct) --\n");
         STRUCT_PRINT(&big_val);
 
         printf("--- Printing BigStruct via Pointer ---\n");
