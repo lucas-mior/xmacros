@@ -154,12 +154,12 @@ main(void) {
         NumberStruct restored_num;
         SmallStruct original_small = {
             .string = "reflection test",
-            .number_struct = original_num
+            .number_struct = original_num,
         };
         SmallStruct restored_small;
         BigStruct big_val = {
             .l = 123456789,
-            .small_struct = &original_small
+            .small_struct = &original_small,
         };
         BigStruct *p_big = &big_val;
         uchar *n_buf;
