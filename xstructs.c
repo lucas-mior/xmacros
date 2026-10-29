@@ -30,7 +30,7 @@ typedef struct StructFormat {
 static void
 print_buffer(uchar *buffer, int64 size) {
     for (int64 j = 0; j < size; j += 1) {
-        printf(" %02x", buffer[j]);
+        fmt_printf(" %02x", buffer[j]);
     }
     return;
 }
@@ -43,37 +43,37 @@ static void
 print_primitive(void *pointer, enum Type type) {
     switch (type) {
     case TYPE_BOOL:
-        printf("%s\n",     *(bool *)pointer ? "true" : "false"); break;
+        fmt_printf("%s\n",     *(bool *)pointer ? "true" : "false"); break;
     case TYPE_CHAR:
-        printf("'%c'\n",   *(char *)pointer);                    break;
+        fmt_printf("'%c'\n",   *(char *)pointer);                    break;
     case TYPE_SCHAR:
-        printf("%d\n",     *(schar *)pointer);                   break;
+        fmt_printf("%d\n",     *(schar *)pointer);                   break;
     case TYPE_UCHAR:
-        printf("%u\n",     *(uchar *)pointer);                   break;
+        fmt_printf("%u\n",     *(uchar *)pointer);                   break;
     case TYPE_SHORT:
-        printf("%d\n",     *(short *)pointer);                   break;
+        fmt_printf("%d\n",     *(short *)pointer);                   break;
     case TYPE_USHORT:
-        printf("%u\n",     *(ushort *)pointer);                  break;
+        fmt_printf("%u\n",     *(ushort *)pointer);                  break;
     case TYPE_INT:
-        printf("%d\n",     *(int *)pointer);                     break;
+        fmt_printf("%d\n",     *(int *)pointer);                     break;
     case TYPE_UINT:
-        printf("%u\n",     *(uint *)pointer);                    break;
+        fmt_printf("%u\n",     *(uint *)pointer);                    break;
     case TYPE_LONG:
-        printf("%lld\n",   (llong)*(long *)pointer);             break;
+        fmt_printf("%lld\n",   (llong)*(long *)pointer);             break;
     case TYPE_ULONG:
-        printf("%llu\n",    (ullong)*(ulong *)pointer);          break;
+        fmt_printf("%llu\n",    (ullong)*(ulong *)pointer);          break;
     case TYPE_LLONG:
-        printf("%lld\n",   *(llong *)pointer);                   break;
+        fmt_printf("%lld\n",   *(llong *)pointer);                   break;
     case TYPE_ULLONG:
-        printf("%llu\n",   *(ullong *)pointer);                  break;
+        fmt_printf("%llu\n",   *(ullong *)pointer);                  break;
     case TYPE_FLOAT:
-        printf("%f\n",     (double)*(float *)pointer);           break;
+        fmt_printf("%f\n",     (double)*(float *)pointer);           break;
     case TYPE_DOUBLE:
-        printf("%f\n",     *(double *)pointer);                  break;
+        fmt_printf("%f\n",     *(double *)pointer);                  break;
     case TYPE_CHARP:
-        printf("\"%s\"\n", *(char **)pointer);                   break;
+        fmt_printf("\"%s\"\n", *(char **)pointer);                   break;
     case TYPE_VOIDP:
-        printf("%p\n",     *(void **)pointer);                   break;
+        fmt_printf("%p\n",     *(void **)pointer);                   break;
     case TYPE_OTHER:
     default:
         error("Unhandled primitive type ID.\n");
@@ -182,29 +182,29 @@ static const StructFormat CAT(STRUCT_NAME, _fmt) = {
 static void UNUSED
 CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
     if (structure == NULL) {
-        printf("NULL\n");
+        fmt_printf("NULL\n");
         return;
     }
     if (nested == 0) {
-        printf(GREEN(QUOTE(STRUCT_NAME))" %s = ", name);
+        fmt_printf(GREEN(QUOTE(STRUCT_NAME))" %s = ", name);
     }
-    printf("{\n");
+    fmt_printf("{\n");
 
     #define X_PR2(L, R)                                                        \
         for (int32 j = 0; j <= nested; j += 1) {                               \
-            printf("\t");                                                      \
+            fmt_printf("\t");                                                  \
         }                                                                      \
-        printf(GREEN(#L)" " #R " = ");                                         \
+        fmt_printf(GREEN(#L)" " #R " = ");                                     \
         dispatch_print(&structure->R, TYPEID(structure->R), #L, #R, nested + 1);
 
     #define X_PR3(L, R, N)                                                     \
         for (int32 i = 0; i < N; i += 1) {                                     \
             char buf[128];                                                     \
             for (int32 j = 0; j <= nested; j += 1) {                           \
-                printf("\t");                                                  \
+                fmt_printf("\t");                                              \
             }                                                                  \
-            snprintf(buf, SIZEOF(buf), "%s[%d]", #R, i);                       \
-            printf(GREEN(#L)" " #R "[%d] = ", i);                              \
+            fmt_snprintf(buf, SIZEOF(buf), "%s[%d]", #R, i);                   \
+            fmt_printf(GREEN(#L)" " #R "[%d] = ", i);                          \
             dispatch_print(&structure->R[i], TYPEID(structure->R[0]), #L,      \
                            buf, nested + 1);\
         }
@@ -216,12 +216,12 @@ CAT(STRUCT_NAME, _print)(STRUCT_NAME *structure, char *name, int32 nested) {
     #undef X_PR3
 
     for (int32 j = 0; j < nested; j += 1) {
-        printf("\t");
+        fmt_printf("\t");
     }
-    printf("}\n");
+    fmt_printf("}\n");
 
     if (nested == 0) {
-        printf("\n");
+        fmt_printf("\n");
     }
     return;
 }

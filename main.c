@@ -198,13 +198,14 @@ main(void) {
                       restored_small.number_struct.f[i]);
         }
 
-        printf("--- Printing BigStruct (Includes Pointer to SmallStruct) --\n");
+        fmt_printf("--- Printing BigStruct"
+                   " (Includes Pointer to SmallStruct) --\n");
         STRUCT_PRINT(&big_val);
 
-        printf("--- Printing BigStruct via Pointer ---\n");
+        fmt_printf("--- Printing BigStruct via Pointer ---\n");
         STRUCT_PRINT(p_big);
 
-        printf("--- Printing Restored NumberStruct ---\n");
+        fmt_printf("--- Printing Restored NumberStruct ---\n");
         STRUCT_PRINT(&restored_num);
 
         free2(n_buf, NumberStruct_fmt.packed_size);
@@ -212,6 +213,6 @@ main(void) {
         PRINT(original_num.f[0]);
     }
 
-    printf("\nmain.c: All tests passed.\n");
+    fmt_printf("\nmain.c: All tests passed.\n");
     return EXIT_SUCCESS;
 }
