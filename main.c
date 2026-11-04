@@ -116,7 +116,7 @@ main(void) {
                                      | POWER_OF2_FOUR
                                      | POWER_OF2_SIXTY4))) {
             ASSERT_EQ(str_ptr, "POWER_OF2_ONE|POWER_OF2_FOUR|POWER_OF2_SIXTY4");
-            free2(str_ptr, strlen32(str_ptr) + 1);
+            free2(str_ptr, opt_strlen32(str_ptr) + 1);
         }
 
         str_ptr = POWER_OF2_str(0);
