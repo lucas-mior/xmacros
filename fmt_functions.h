@@ -22,11 +22,11 @@ dispatch_print(void *pointer,
 
 #undef STRUCT
 #define STRUCT(TYPE) \
-    if (strcmp(type_name, #TYPE) == 0) { \
+    if (strequal(type_name, #TYPE)) { \
         CAT(TYPE, _print)((TYPE *)pointer, field_name, nested); \
         return; \
     } \
-    if (strcmp(type_name, #TYPE " *") == 0) { \
+    if (strequal(type_name, #TYPE " *")) { \
         TYPE **ptr = (TYPE **)pointer; \
         CAT(TYPE, _print)(*ptr, field_name, nested); \
         return; \
